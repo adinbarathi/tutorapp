@@ -217,6 +217,8 @@ class AppController {
     this.selectedSubjectFilter = "all";
     this.selectedProviderFilter = "all";
     this.selectedLevelFilter = "all";
+    this.selectedTypeFilter = "all";
+    this.playlistPlayerMode = false;
     this.currentPage = 1;
     this.pageSize = 24;
     this.recipientName = localStorage.getItem("opencourses_recipient_name") || "Arjun Sharma";
@@ -348,6 +350,12 @@ class AppController {
     });
 
     // Filter Dropdowns
+    document.getElementById("courses-filter-type")?.addEventListener("change", (e) => {
+      this.selectedTypeFilter = e.target.value;
+      this.currentPage = 1;
+      this.renderCoursesGrid();
+    });
+
     document.getElementById("courses-filter-provider")?.addEventListener("change", (e) => {
       this.selectedProviderFilter = e.target.value;
       this.currentPage = 1;
@@ -619,14 +627,25 @@ class AppController {
 
     // Filter by subject / channel tag
     if (this.selectedSubjectFilter !== "all") {
-      const q = this.selectedSubjectFilter.toLowerCase();
-      list = list.filter(c => {
-        const subj = (c.subject || "").toLowerCase();
-        const inst = (c.institution || "").toLowerCase();
-        const prov = (c.instructorName || "").toLowerCase();
-        const title = (c.title || "").toLowerCase();
-        return subj.includes(q) || inst.includes(q) || prov.includes(q) || title.includes(q);
-      });
+      if (this.selectedSubjectFilter === "yt-courses") {
+        list = list.filter(c => c.isYouTubeCourse || c.isOfficialPlaylist || c.playlistId);
+      } else {
+        const q = this.selectedSubjectFilter.toLowerCase();
+        list = list.filter(c => {
+          const subj = (c.subject || "").toLowerCase();
+          const inst = (c.institution || "").toLowerCase();
+          const prov = (c.instructorName || "").toLowerCase();
+          const title = (c.title || "").toLowerCase();
+          return subj.includes(q) || inst.includes(q) || prov.includes(q) || title.includes(q);
+        });
+      }
+    }
+
+    // Filter by format type dropdown
+    if (this.selectedTypeFilter === "youtube-course") {
+      list = list.filter(c => c.isYouTubeCourse);
+    } else if (this.selectedTypeFilter === "playlists") {
+      list = list.filter(c => c.isOfficialPlaylist || c.playlistId);
     }
 
     // Filter by provider dropdown
@@ -695,6 +714,9 @@ class AppController {
               <span class="badge-institution">
                 <strong>${providerCode}</strong> ${providerName}
               </span>
+              <span class="badge-yt-playlist" title="Official YouTube Course Section / Playlist">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10" style="vertical-align:-1px; margin-right:2px;"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h13v-2H2v2zm15-2v6l5-3-5-3z"/></svg>Playlist
+              </span>
               <span class="badge-free">Free</span>
             </div>
           </div>
@@ -719,9 +741,15 @@ class AppController {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               ${lessonCount} lesson${lessonCount === 1 ? '' : 's'}
             </span>
-            <button class="btn btn-primary btn-xs" onclick="app.openClassroomCourse('${c.id}')">
-              ${isEnrolled ? "Continue" : "Start Free"}
-            </button>
+            <div style="display:flex; align-items:center; gap:0.45rem;">
+              <a href="${c.playlistUrl}" target="_blank" rel="noopener noreferrer" class="card-playlist-direct" title="Open YouTube Playlist directly" onclick="event.stopPropagation();">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h13v-2H2v2zm15-2v6l5-3-5-3z"/></svg>
+                Playlist
+              </a>
+              <button class="btn btn-primary btn-xs" onclick="app.openClassroomCourse('${c.id}')">
+                ${isEnrolled ? "Continue" : "Start Free"}
+              </button>
+            </div>
           </div>
         </article>
       `;
@@ -793,6 +821,8 @@ class AppController {
     this.selectedSubjectFilter = "all";
     this.selectedProviderFilter = "all";
     this.selectedLevelFilter = "all";
+    this.selectedTypeFilter = "all";
+    this.playlistPlayerMode = false;
     this.currentPage = 1;
 
     const searchInput = document.getElementById("global-search-input");
@@ -802,6 +832,9 @@ class AppController {
     document.querySelectorAll("#category-filter-bar .filter-pill").forEach((p, idx) => {
       p.classList.toggle("active", idx === 0);
     });
+
+    const typeSelect = document.getElementById("courses-filter-type");
+    if (typeSelect) typeSelect.value = "all";
 
     const provSelect = document.getElementById("courses-filter-provider");
     if (provSelect) provSelect.value = "all";
@@ -961,8 +994,11 @@ class AppController {
     // Update iframe player
     const iframe = document.getElementById("youtube-player-iframe");
     const videoId = lesson.ytVideoId || extractYouTubeId(lesson.ytUrl);
-    if (iframe && videoId) {
-      const srcUrl = `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0`;
+    if (iframe) {
+      let srcUrl = `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0`;
+      if (this.playlistPlayerMode && course.playlistId) {
+        srcUrl = `https://www.youtube-nocookie.com/embed/videoseries?list=${course.playlistId}&enablejsapi=1&rel=0`;
+      }
       if (iframe.src !== srcUrl) {
         iframe.src = srcUrl;
       }
@@ -974,13 +1010,21 @@ class AppController {
     const institutionTagEl = document.getElementById("player-institution-tag");
     const durationEl = document.getElementById("player-lesson-duration");
     const directYtLink = document.getElementById("player-original-yt-link");
+    const playlistYtLink = document.getElementById("player-playlist-yt-link");
+    const modeLabel = document.getElementById("player-mode-label");
 
     if (courseTitleEl) courseTitleEl.textContent = course.title;
     if (lessonTitleEl) lessonTitleEl.textContent = lesson.title;
     if (institutionTagEl) institutionTagEl.textContent = course.institution || course.instructorName;
     if (durationEl) durationEl.textContent = lesson.duration || "15 mins";
     if (directYtLink) {
-      directYtLink.href = lesson.ytUrl || `https://www.youtube.com/watch?v=${videoId}`;
+      directYtLink.href = lesson.ytUrl || `https://www.youtube.com/watch?v=${videoId}&list=${course.playlistId}`;
+    }
+    if (playlistYtLink) {
+      playlistYtLink.href = course.playlistUrl || `https://www.youtube.com/playlist?list=${course.playlistId}`;
+    }
+    if (modeLabel) {
+      modeLabel.textContent = this.playlistPlayerMode ? "Switch to Lecture Player" : "Switch to Full Playlist Stream";
     }
 
     // Update Mark Completed button
@@ -1001,6 +1045,30 @@ class AppController {
 
     // Render Resources
     this.renderResources(lesson.resources);
+  }
+
+  togglePlaylistPlayerMode() {
+    this.playlistPlayerMode = !this.playlistPlayerMode;
+    const course = store.getCourseById(this.activeCourseId);
+    if (!course) return;
+    const lesson = (course.lessons || []).find(l => l.id === this.activeLessonId) || course.lessons[0];
+    const iframe = document.getElementById("youtube-player-iframe");
+    const modeLabel = document.getElementById("player-mode-label");
+
+    if (modeLabel) {
+      modeLabel.textContent = this.playlistPlayerMode ? "Switch to Lecture Player" : "Switch to Full Playlist Stream";
+    }
+
+    if (iframe) {
+      if (this.playlistPlayerMode && course.playlistId) {
+        iframe.src = `https://www.youtube-nocookie.com/embed/videoseries?list=${course.playlistId}&enablejsapi=1&rel=0`;
+        showToast("Switched to Full Playlist Stream (Watch continuously)", "info");
+      } else {
+        const videoId = lesson.ytVideoId || extractYouTubeId(lesson.ytUrl);
+        iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0`;
+        showToast("Switched to Single Lecture Player", "info");
+      }
+    }
   }
 
   updateLessonCompletionUI(isCompleted) {
@@ -1027,7 +1095,17 @@ class AppController {
     const labelEl = document.getElementById("playlist-progress-label");
     const fillEl = document.getElementById("playlist-progress-fill");
 
-    if (nameEl) nameEl.textContent = course.title;
+    if (nameEl) {
+      nameEl.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:0.25rem;">
+          <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px; color:#c4302b; font-weight:700; display:flex; align-items:center; gap:0.35rem;">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h13v-2H2v2zm15-2v6l5-3-5-3z"/></svg>
+            Official Course Playlist
+          </span>
+          <span style="font-size:0.95rem; font-weight:700; color:var(--text-main);">${course.title}</span>
+        </div>
+      `;
+    }
 
     const total = (course.lessons || []).length;
     let completedCount = 0;

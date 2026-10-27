@@ -141,7 +141,7 @@
             </div>
             <div class="hero-stats-row">
               <div class="stat-item">
-                <span class="stat-number">1,085+</span>
+                <span class="stat-number">1,050+</span>
                 <span class="stat-label">Free Courses</span>
               </div>
               <div class="stat-item">
@@ -149,7 +149,7 @@
                 <span class="stat-label">Top Universities & Tech Leaders</span>
               </div>
               <div class="stat-item">
-                <span class="stat-number">3,200+</span>
+                <span class="stat-number">4,200+</span>
                 <span class="stat-label">Video Lessons</span>
               </div>
               <div class="stat-item">
@@ -161,7 +161,11 @@
 
           <!-- Horizontal Category Filter Pills -->
           <div class="category-filter-bar" id="category-filter-bar">
-            <button class="filter-pill active" data-subject="all">All Courses (1,000+)</button>
+            <button class="filter-pill active" data-subject="all">All Courses (1,050+)</button>
+            <button class="filter-pill yt-course-pill" data-subject="yt-courses" title="Filter official YouTube course section playlists">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15" style="color:#e02424; vertical-align:-2px; margin-right:4px;"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              YouTube Courses (Playlists)
+            </button>
             <button class="filter-pill" data-subject="Harvard">Harvard University</button>
             <button class="filter-pill" data-subject="MIT">MIT OpenCourseWare</button>
             <button class="filter-pill" data-subject="Stanford">Stanford Online</button>
@@ -184,9 +188,14 @@
           <div class="view-header">
             <div>
               <h2>Course Catalog</h2>
-              <p class="section-sub" id="courses-count-label">Showing 1,085 courses</p>
+              <p class="section-sub" id="courses-count-label">Showing 1,050 courses</p>
             </div>
             <div class="filter-controls">
+              <select id="courses-filter-type" class="form-control-sm" title="Filter by learning format">
+                <option value="all">All Formats</option>
+                <option value="youtube-course">Official YouTube Courses</option>
+                <option value="playlists">Curated Playlists</option>
+              </select>
               <select id="courses-filter-provider" class="form-control-sm">
                 <option value="all">All Providers & Universities</option>
               </select>
@@ -288,10 +297,19 @@
                     <span class="meta-dot">•</span>
                     <span id="player-lesson-duration">Duration</span>
                     <span class="meta-dot">•</span>
-                    <a href="#" id="player-original-yt-link" target="_blank" rel="noopener noreferrer" class="yt-direct-link">
+                    <a href="#" id="player-original-yt-link" target="_blank" rel="noopener noreferrer" class="yt-direct-link" title="Open this specific lecture on YouTube">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                      Watch on YouTube
+                      Lecture Video
                     </a>
+                    <span class="meta-dot">•</span>
+                    <a href="#" id="player-playlist-yt-link" target="_blank" rel="noopener noreferrer" class="yt-direct-link" style="color: #c4302b; font-weight: 600;" title="Open full course playlist on YouTube">
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h13v-2H2v2zm15-2v6l5-3-5-3z"/></svg>
+                      Official Course Playlist
+                    </a>
+                    <span class="meta-dot">•</span>
+                    <button id="player-toggle-playlist-btn" class="text-link-btn" style="color: var(--primary); font-size: 0.8rem; font-weight: 600; cursor: pointer; border: none; background: none;" onclick="app.togglePlaylistPlayerMode()">
+                      <span id="player-mode-label">Switch to Full Playlist Stream</span>
+                    </button>
                   </div>
                 </div>
                 <div class="lesson-meta-right">
