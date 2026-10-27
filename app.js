@@ -7,56 +7,8 @@
 // 1. DEFAULT SEED DATA
 // =============================================================================
 
-const INITIAL_SIRS = [
-  {
-    id: "sir-raman",
-    name: "Prof. C. V. Raman Sir",
-    avatar: "👨‍🏫",
-    designation: "Senior Professor of Theoretical Physics & Applied Mathematics",
-    subject: "Physics & Mathematics",
-    bio: "Teaching physics and deep mathematical intuition for over 22 years. Believer in learning through visualization, thought experiments, and fundamental geometry.",
-    rating: 4.96,
-    studentsCount: 2450,
-    exp: "22 Years",
-    ytChannel: "https://youtube.com/@3blue1brown"
-  },
-  {
-    id: "sir-ananya",
-    name: "Ananya Ma'am",
-    avatar: "👩‍💻",
-    designation: "Lead Systems Architect & Fullstack AI Faculty",
-    subject: "Computer Science",
-    bio: "Ex-Google tech lead passionate about modern full-stack architectures, Node.js microservices, TypeScript, and Generative AI application engineering.",
-    rating: 4.98,
-    studentsCount: 3890,
-    exp: "12 Years",
-    ytChannel: "https://youtube.com/@freecodecamp"
-  },
-  {
-    id: "sir-vikram",
-    name: "Vikram Sir",
-    avatar: "👨‍💻",
-    designation: "Competitive Programming Mentor & DSA Specialist",
-    subject: "Algorithms",
-    bio: "Top 10 ACM-ICPC regional finalist. Teaching intuitive mental models for dynamic programming, graph algorithms, and system design interviews.",
-    rating: 4.93,
-    studentsCount: 1780,
-    exp: "8 Years",
-    ytChannel: "https://youtube.com/@abdulbari"
-  },
-  {
-    id: "sir-meera",
-    name: "Dr. Meera Nambiar",
-    avatar: "👩‍🔬",
-    designation: "Biotechnology & Organic Chemistry Faculty",
-    subject: "Chemistry",
-    bio: "Simplifying complex reaction mechanisms, molecular orbitals, and biochemical pathways for university and entrance aspirants.",
-    rating: 4.91,
-    studentsCount: 1420,
-    exp: "14 Years",
-    ytChannel: "https://youtube.com/@khanacademy"
-  }
-];
+const INITIAL_SIRS = (typeof window !== "undefined" && window.ALL_SIRS_DATA) ? window.ALL_SIRS_DATA : ((typeof ALL_SIRS_DATA !== "undefined" && Array.isArray(ALL_SIRS_DATA)) ? ALL_SIRS_DATA : []);
+const INITIAL_COURSES = (typeof window !== "undefined" && window.ALL_COURSES_DATA) ? window.ALL_COURSES_DATA : ((typeof ALL_COURSES_DATA !== "undefined" && Array.isArray(ALL_COURSES_DATA)) ? ALL_COURSES_DATA : []);
 
 const INITIAL_STUDENTS = [
   {
@@ -70,254 +22,6 @@ const INITIAL_STUDENTS = [
     name: "Sneha Patel",
     avatar: "🎒",
     target: "Olympiad & Advanced Physics"
-  }
-];
-
-const INITIAL_COURSES = [
-  {
-    id: "course-linear-algebra",
-    sirId: "sir-raman",
-    title: "Visual Linear Algebra & Vector Geometry",
-    subject: "Physics & Mathematics",
-    level: "Intermediate",
-    desc: "Understand vectors, matrices, dot products, cross products, and eigenvalues geometrically rather than as dry arithmetic formulas.",
-    theme: "theme-purple",
-    emoji: "📐",
-    lessons: [
-      {
-        id: "lesson-la-1",
-        title: "Vectors, what even are they? (Essence of linear algebra)",
-        ytUrl: "https://www.youtube.com/watch?v=fNk_zzaMoSs",
-        ytVideoId: "fNk_zzaMoSs",
-        duration: "10 mins",
-        desc: "Physics student vs computer science student vs mathematician perspectives on vectors. Standard basis and arrow representations.",
-        resourceLink: "https://www.3blue1brown.com/lessons/vectors",
-        quiz: {
-          q: "How does a mathematician fundamentally define a vector in linear algebra?",
-          opts: [
-            "An arrow pointing in space with magnitude and direction",
-            "A list of numbers stored inside a computer array",
-            "Anything where you can add vectors and multiply by scalars satisfying axioms",
-            "A physical coordinate on a grid"
-          ],
-          correct: 2,
-          exp: "To a mathematician, vectors are generalized elements of any vector space where addition and scalar multiplication hold true."
-        }
-      },
-      {
-        id: "lesson-la-2",
-        title: "Linear Combinations, Span, and Basis Vectors",
-        ytUrl: "https://www.youtube.com/watch?v=k7RM-ot2NWY",
-        ytVideoId: "k7RM-ot2NWY",
-        duration: "10 mins",
-        desc: "Exploring what happens when scaling and adding basis vectors i-hat and j-hat. The span of two 2D vectors and linear dependence.",
-        resourceLink: "https://www.3blue1brown.com/lessons/span",
-        quiz: {
-          q: "What is the 'span' of a set of vectors?",
-          opts: [
-            "The physical length of the largest vector",
-            "The set of all possible linear combinations that can be reached",
-            "The angle between two orthogonal vectors",
-            "The determinant of the vector matrix"
-          ],
-          correct: 1,
-          exp: "The span of a set of vectors is the complete subspace formed by all possible linear combinations (scalar scaling and addition)."
-        }
-      },
-      {
-        id: "lesson-la-3",
-        title: "Linear Transformations and Matrices",
-        ytUrl: "https://www.youtube.com/watch?v=kYB8IZa5AuE",
-        ytVideoId: "kYB8IZa5AuE",
-        duration: "11 mins",
-        desc: "Visualizing matrix multiplication as grid transformations that keep lines straight and parallel while keeping the origin fixed.",
-        resourceLink: "https://www.3blue1brown.com/lessons/linear-transformations",
-        quiz: {
-          q: "In a linear transformation, what happens to the origin (0,0)?",
-          opts: [
-            "It shifts according to the translation vector",
-            "It always remains fixed at (0,0)",
-            "It rotates 90 degrees clockwise",
-            "It becomes undefined"
-          ],
-          correct: 1,
-          exp: "By definition, a linear transformation must keep the origin fixed in place and map grid lines to evenly spaced grid lines."
-        }
-      }
-    ]
-  },
-  {
-    id: "course-calculus",
-    sirId: "sir-raman",
-    title: "Essence of Calculus & Intuitive Limits",
-    subject: "Physics & Mathematics",
-    level: "Beginner",
-    desc: "A visual exploration of derivatives, integrals, and the fundamental theorem of calculus from basic geometric intuition.",
-    theme: "theme-blue",
-    emoji: "📈",
-    lessons: [
-      {
-        id: "lesson-calc-1",
-        title: "The Essence of Calculus: Area of a circle from rings",
-        ytUrl: "https://www.youtube.com/watch?v=WUvTyaaNkzM",
-        ytVideoId: "WUvTyaaNkzM",
-        duration: "17 mins",
-        desc: "Deconstructing a circle into concentric onion rings to arrive at Pi * r^2 from the derivative of area. The core spirit of calculus.",
-        resourceLink: "https://www.3blue1brown.com/lessons/essence-of-calculus",
-        quiz: {
-          q: "Why do concentric rings unrolled from a circle form a right triangle of base 2*Pi*r and height r?",
-          opts: [
-            "Because each ring has thickness dr and circumference 2*Pi*x",
-            "Because circles are polygons with infinite corners",
-            "Because Pythagoras theorem applies to all shapes",
-            "It only works in spherical geometry"
-          ],
-          correct: 0,
-          exp: "Each thin ring has thickness dr and length 2*Pi*x, which linearly stack to form a triangle of area 1/2 * (2*Pi*r) * r = Pi*r^2."
-        }
-      }
-    ]
-  },
-  {
-    id: "course-fullstack-web",
-    sirId: "sir-ananya",
-    title: "Modern Full-Stack Web Development 2026",
-    subject: "Computer Science",
-    level: "Beginner",
-    desc: "From semantic HTML, modern responsive CSS, and ES6+ JavaScript to Node.js REST APIs and cloud deployment patterns.",
-    theme: "theme-emerald",
-    emoji: "🌐",
-    lessons: [
-      {
-        id: "lesson-web-1",
-        title: "HTML & CSS Crash Course for 2026",
-        ytUrl: "https://www.youtube.com/watch?v=mJgBOIoGihA",
-        ytVideoId: "mJgBOIoGihA",
-        duration: "24 mins",
-        desc: "Building rock solid layouts with CSS Flexbox, Grid, semantic HTML tags, and accessible web standards.",
-        resourceLink: "https://developer.mozilla.org/en-US/docs/Learn",
-        quiz: {
-          q: "Which CSS display property creates a two-dimensional grid layout?",
-          opts: ["display: flex", "display: grid", "display: inline-block", "display: table"],
-          correct: 1,
-          exp: "display: grid enables two-dimensional (columns and rows) alignment, whereas flexbox is primarily one-dimensional."
-        }
-      },
-      {
-        id: "lesson-web-2",
-        title: "JavaScript Full Course: Core Fundamentals",
-        ytUrl: "https://www.youtube.com/watch?v=mU6anWqZJcc",
-        ytVideoId: "mU6anWqZJcc",
-        duration: "35 mins",
-        desc: "Mastering closures, scopes, the event loop, Promises, Async/Await, and modern ES module structuring.",
-        resourceLink: "https://javascript.info",
-        quiz: {
-          q: "Which task queue executes first in the JavaScript event loop?",
-          opts: ["Microtask queue (Promises)", "Macrotask queue (setTimeout)", "Rendering engine queue", "File I/O queue"],
-          correct: 0,
-          exp: "Microtasks (such as Promise callbacks and queueMicrotask) are prioritized immediately after the current execution context empties."
-        }
-      },
-      {
-        id: "lesson-web-3",
-        title: "Node.js & Express REST API Architecture",
-        ytUrl: "https://www.youtube.com/watch?v=Oe421EPjeBE",
-        ytVideoId: "Oe421EPjeBE",
-        duration: "30 mins",
-        desc: "Creating scalable backends, routing, middleware pipelines, error handlers, and connecting to databases.",
-        resourceLink: "https://nodejs.org/api",
-        quiz: {
-          q: "What is middleware in Express.js?",
-          opts: [
-            "A software that compiles JavaScript to C++",
-            "Functions that have access to req, res, and the next middleware function",
-            "A hardware router between client and server",
-            "A database ORM tool"
-          ],
-          correct: 1,
-          exp: "Middleware functions have access to the request object (req), response object (res), and next() function in the app's request-response cycle."
-        }
-      }
-    ]
-  },
-  {
-    id: "course-dsa-mastery",
-    sirId: "sir-vikram",
-    title: "DSA Masterclass: Graphs & Dynamic Programming",
-    subject: "Algorithms",
-    level: "Advanced",
-    desc: "Master graph traversals (BFS, DFS, Dijkstra, Bellman-Ford) and break through the mental barrier of Dynamic Programming memoization.",
-    theme: "theme-amber",
-    emoji: "⚡",
-    lessons: [
-      {
-        id: "lesson-dsa-1",
-        title: "Graph Traversals: Breadth First Search (BFS) & DFS",
-        ytUrl: "https://www.youtube.com/watch?v=pcKY4hjDrxk",
-        ytVideoId: "pcKY4hjDrxk",
-        duration: "20 mins",
-        desc: "Visualizing adjacency lists, queue-based level order traversals, recursion stacks, and cycle detection in directed graphs.",
-        resourceLink: "https://visualgo.net/en/dfsbfs",
-        quiz: {
-          q: "Which data structure is primarily used to implement Breadth-First Search (BFS)?",
-          opts: ["Stack (LIFO)", "Queue (FIFO)", "Priority Heap", "Binary Search Tree"],
-          correct: 1,
-          exp: "BFS visits nodes level-by-level using a First-In-First-Out Queue."
-        }
-      },
-      {
-        id: "lesson-dsa-2",
-        title: "Dynamic Programming: 0/1 Knapsack & Memoization",
-        ytUrl: "https://www.youtube.com/watch?v=5dRGRUE8fb8",
-        ytVideoId: "5dRGRUE8fb8",
-        duration: "28 mins",
-        desc: "Overlapping subproblems, optimal substructure, top-down recursion with memoization tables vs bottom-up tabulation.",
-        resourceLink: "https://leetcode.com",
-        quiz: {
-          q: "What two properties must a problem have to be solved with Dynamic Programming?",
-          opts: [
-            "Greedy choice property and deterministic sorting",
-            "Optimal substructure and overlapping subproblems",
-            "Binary searchability and continuous time bounds",
-            "Graph connectivity and DAG structure"
-          ],
-          correct: 1,
-          exp: "Dynamic Programming applies to problems with optimal substructure (optimal solution contains optimal sub-solutions) and overlapping subproblems."
-        }
-      }
-    ]
-  },
-  {
-    id: "course-organic-chemistry",
-    sirId: "sir-meera",
-    title: "Organic Reaction Mechanisms & Orbital Theory",
-    subject: "Chemistry",
-    level: "Intermediate",
-    desc: "Nucleophiles, electrophiles, SN1 vs SN2 substitutions, elimination reactions, and aromaticity explained with clarity.",
-    theme: "theme-rose",
-    emoji: "🧪",
-    lessons: [
-      {
-        id: "lesson-chem-1",
-        title: "Introduction to Reaction Mechanisms: SN1 vs SN2",
-        ytUrl: "https://www.youtube.com/watch?v=bka20Q9nwnM",
-        ytVideoId: "bka20Q9nwnM",
-        duration: "18 mins",
-        desc: "Stepwise carbocation formation in SN1 vs backside concerted attack with stereochemical inversion in SN2.",
-        resourceLink: "https://chemguide.co.uk",
-        quiz: {
-          q: "Which factor strongly favors an SN2 substitution mechanism over SN1?",
-          opts: [
-            "Sterically unhindered primary alkyl halides and strong nucleophiles",
-            "Tertiary carbocation stability and polar protic solvents",
-            "High temperatures favoring elimination",
-            "Weak bulky bases"
-          ],
-          correct: 0,
-          exp: "SN2 proceeds via concerted backside attack, which is favored by primary (unhindered) substrates and strong nucleophiles."
-        }
-      }
-    ]
   }
 ];
 
@@ -381,14 +85,31 @@ class Store {
     
     // Student tracking
     this.studentProgress = this.load("tutor_student_progress", {
-      enrolledCourseIds: ["course-linear-algebra", "course-fullstack-web"],
-      completedLessonIds: ["lesson-la-1"],
+      enrolledCourseIds: ["course-linear-algebra", "course-fullstack-web", "course-neso-digital-electronics", "course-google-ml"],
+      completedLessonIds: ["lesson-la-1", "lesson-neso-de-1"],
       notes: {
-        "lesson-la-1": "Vectors can be viewed as arrows, lists of coordinates, or abstract members of a vector space satisfying linear closure."
+        "lesson-la-1": "Vectors can be viewed as arrows, lists of coordinates, or abstract members of a vector space satisfying linear closure.",
+        "lesson-neso-de-1": "Signals carry information. Digital signals offer superior noise immunity over continuous analog signals."
       },
-      lastWatchedCourseId: "course-linear-algebra",
-      lastWatchedLessonId: "lesson-la-1"
+      lastWatchedCourseId: "course-neso-digital-electronics",
+      lastWatchedLessonId: "lesson-neso-de-1"
     });
+
+    // Auto-merge new faculty and courses into existing localStorage stores
+    INITIAL_SIRS.forEach(newSir => {
+      if (!this.sirs.some(s => s.id === newSir.id)) {
+        this.sirs.push(newSir);
+      }
+    });
+    INITIAL_COURSES.forEach(newCourse => {
+      const existing = this.courses.find(c => c.id === newCourse.id);
+      if (!existing) {
+        this.courses.push(newCourse);
+      } else if (!existing.coverPhoto && newCourse.coverPhoto) {
+        existing.coverPhoto = newCourse.coverPhoto;
+      }
+    });
+    this.save();
   }
 
   load(key, fallback) {
@@ -939,7 +660,11 @@ class AppController {
 
     let filtered = store.sirs;
     if (subjectFilter !== "all") {
-      filtered = filtered.filter(s => s.subject.toLowerCase().includes(subjectFilter.toLowerCase()));
+      const q = subjectFilter.toLowerCase();
+      filtered = filtered.filter(s => 
+        s.subject.toLowerCase().includes(q) || 
+        s.name.toLowerCase().includes(q)
+      );
     }
 
     document.getElementById("stats-total-sirs").textContent = store.sirs.length;
@@ -1122,10 +847,12 @@ class AppController {
       });
     }
     const percent = lessonCount > 0 ? Math.round((completedInCourse / lessonCount) * 100) : 0;
+    const bannerStyle = course.coverPhoto ? `background-image: url('${course.coverPhoto}');` : '';
+    const bannerClass = course.coverPhoto ? 'has-cover' : (course.theme || 'theme-purple');
 
     return `
       <div class="course-card" data-course-id="${course.id}">
-        <div class="course-card-banner ${course.theme || 'theme-purple'}">
+        <div class="course-card-banner ${bannerClass}" style="${bannerStyle}">
           <div class="course-emoji-icon">${course.emoji || '📚'}</div>
           <span class="course-level-badge">${course.level || 'Intermediate'}</span>
         </div>
@@ -1639,9 +1366,12 @@ class AppController {
         return;
       }
 
-      container.innerHTML = myCourses.map(c => `
+      container.innerHTML = myCourses.map(c => {
+        const bannerStyle = c.coverPhoto ? `background-image: url('${c.coverPhoto}');` : '';
+        const bannerClass = c.coverPhoto ? 'has-cover' : (c.theme || 'theme-purple');
+        return `
         <div class="course-card">
-          <div class="course-card-banner ${c.theme || 'theme-purple'}">
+          <div class="course-card-banner ${bannerClass}" style="${bannerStyle}">
             <div class="course-emoji-icon">${c.emoji || '📚'}</div>
             <span class="course-level-badge">${c.level}</span>
           </div>
@@ -1662,7 +1392,8 @@ class AppController {
             </div>
           </div>
         </div>
-      `).join("");
+        `;
+      }).join("");
 
       container.querySelectorAll(".upload-to-course-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1787,6 +1518,7 @@ class AppController {
     const desc = document.getElementById("new-course-desc")?.value.trim();
     const theme = document.getElementById("new-course-theme")?.value;
     const emoji = document.getElementById("new-course-emoji")?.value.trim() || "📐";
+    const coverPhoto = document.getElementById("new-course-cover")?.value.trim() || "";
 
     if (!title || !subject || !desc) {
       showToast("Please fill in all required fields.", "error");
@@ -1802,6 +1534,7 @@ class AppController {
       desc: desc,
       theme: theme,
       emoji: emoji,
+      coverPhoto: coverPhoto,
       lessons: []
     };
 

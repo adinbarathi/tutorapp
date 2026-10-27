@@ -172,11 +172,18 @@
               
               <!-- Quick Filter Pills -->
               <div class="category-filters" id="sirs-subject-filters">
-                <button class="filter-pill active" data-subject="all">All Subjects</button>
-                <button class="filter-pill" data-subject="Physics & Mathematics">Physics & Math</button>
-                <button class="filter-pill" data-subject="Computer Science">Computer Science & AI</button>
-                <button class="filter-pill" data-subject="Algorithms">DSA & Coding</button>
-                <button class="filter-pill" data-subject="Chemistry">Chemistry & Science</button>
+                <button class="filter-pill active" data-subject="all">All Subjects (120+ Courses)</button>
+                <button class="filter-pill" data-subject="Google">Google (AI & Python)</button>
+                <button class="filter-pill" data-subject="Code.org">Code.org (CS & Internet)</button>
+                <button class="filter-pill" data-subject="Neso Academy">Neso Academy (Engg & OS)</button>
+                <button class="filter-pill" data-subject="freeCodeCamp">freeCodeCamp (Full Stack)</button>
+                <button class="filter-pill" data-subject="Harvard">Harvard CS50</button>
+                <button class="filter-pill" data-subject="MIT">MIT OpenCourseWare</button>
+                <button class="filter-pill" data-subject="Abdul Bari">Abdul Bari (Algorithms)</button>
+                <button class="filter-pill" data-subject="Chai aur Code">Chai aur Code (Hitesh Sir)</button>
+                <button class="filter-pill" data-subject="Gate Smashers">Gate Smashers (Core CS)</button>
+                <button class="filter-pill" data-subject="Khan Academy">Khan Academy</button>
+                <button class="filter-pill" data-subject="Physics Wallah">Physics Wallah</button>
               </div>
             </div>
             <div class="hero-stats-badge">
@@ -867,6 +874,12 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label for="new-course-cover">Course Cover Photo URL (Optional)</label>
+          <input type="url" id="new-course-cover" class="form-control" placeholder="https://images.unsplash.com/... or image link" />
+          <span class="form-hint">Leave blank to use default high-contrast gradient theme.</span>
+        </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-ghost" id="cancel-create-course-btn">Cancel</button>
           <button type="submit" class="btn btn-primary">Create Course</button>
@@ -950,6 +963,8 @@
     </div>
   </div>
 
+  <!-- Course Catalog Dataset -->
+  <script src="courses-data.js"></script>
   <!-- Application Logic -->
   <script src="app.js"></script>
 </body>
