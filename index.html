@@ -78,6 +78,11 @@
         <div>
           <div class="sidebar-section-title">EXPLORE CATALOG</div>
           <nav class="sidebar-nav">
+            <button class="nav-btn" data-view="view-fyp">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <span class="nav-label">For You (FYP)</span>
+              <span class="nav-chip" style="background:#0056d2; color:#fff; font-weight:700;">FYP</span>
+            </button>
             <button class="nav-btn active" data-view="view-courses">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
               <span class="nav-label">Explore All Courses</span>
@@ -125,6 +130,49 @@
       <main class="app-main-content">
 
         <!-- ============================================== -->
+        <!-- VIEW: FOR YOU (FYP) PERSONALIZED SUGGESTIONS   -->
+        <!-- ============================================== -->
+        <section id="view-fyp" class="content-view">
+          <div class="view-header">
+            <div>
+              <div class="fyp-title-row">
+                <h2>For You (FYP)</h2>
+                <span class="fyp-chip-badge">Personalized Stream</span>
+              </div>
+              <p class="section-sub" id="fyp-subtitle">Courses selected based on your ticked learning interests.</p>
+            </div>
+            <div class="fyp-header-actions">
+              <button class="btn btn-outline btn-sm" id="edit-interests-btn" onclick="app.openInterestsModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="margin-right: 4px; vertical-align: -2px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit My Interests
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Interests Filter Tags Bar -->
+          <div id="fyp-tags-bar" class="fyp-tags-bar">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Unset State: Prompt to select interests -->
+          <div id="fyp-empty-state" class="fyp-onboarding-card hidden">
+            <div class="fyp-onboarding-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="44" height="44"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <h3>Personalize Your Learning Feed</h3>
+            <p>Tell us what topics you want to master and tick your fields of interest. We will curate the highest-rated free university and industry courses for you.</p>
+            <button class="btn btn-primary" onclick="app.openInterestsModal()" style="font-weight: 700; padding: 0.75rem 1.75rem;">
+              Select Interests & Unlock FYP
+            </button>
+          </div>
+
+          <!-- FYP Courses Grid -->
+          <div class="courses-grid" id="fyp-courses-grid">
+            <!-- Rendered dynamically by JavaScript -->
+          </div>
+        </section>
+
+        <!-- ============================================== -->
         <!-- VIEW: EXPLORE ALL COURSES (DEFAULT)            -->
         <!-- ============================================== -->
         <section id="view-courses" class="content-view active">
@@ -156,6 +204,23 @@
                 <span class="stat-number">100% Free</span>
                 <span class="stat-label">With Verified Certificate</span>
               </div>
+            </div>
+          </div>
+
+          <!-- Personalized FYP Callout Banner -->
+          <div class="fyp-callout-banner">
+            <div class="fyp-callout-left">
+              <div class="fyp-callout-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div>
+                <strong>Want personalized suggestions?</strong>
+                <span>Tick your learning interests to get a tailored For You (FYP) feed.</span>
+              </div>
+            </div>
+            <div class="fyp-callout-actions">
+              <button class="btn btn-outline btn-xs" onclick="app.openInterestsModal()">Set Interests</button>
+              <button class="btn btn-primary btn-xs" onclick="app.switchView('view-fyp')">View My FYP</button>
             </div>
           </div>
 
@@ -309,6 +374,10 @@
                     <span class="meta-dot">•</span>
                     <button id="player-toggle-playlist-btn" class="text-link-btn" style="color: var(--primary); font-size: 0.8rem; font-weight: 600; cursor: pointer; border: none; background: none;" onclick="app.togglePlaylistPlayerMode()">
                       <span id="player-mode-label">Switch to Full Playlist Stream</span>
+                    </button>
+                    <span class="meta-dot">•</span>
+                    <button id="player-mirror-btn" class="text-link-btn" style="color: var(--text-muted); font-size: 0.78rem; cursor: pointer; border: none; background: none;" onclick="app.toggleMirrorBackupVideo()" title="If this video has playback restrictions, switch to verified backup video">
+                      Mirror Player
                     </button>
                   </div>
                 </div>
@@ -533,6 +602,132 @@
           <button type="submit" class="btn btn-primary">Post Question</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: LEARNER INTERESTS & FYP CUSTOMIZATION   -->
+  <!-- ============================================== -->
+  <div id="interests-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog interests-dialog">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div class="auth-icon-badge" style="background: rgba(0, 86, 210, 0.1); color: var(--primary);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div>
+            <h2 style="margin: 0; font-size: 1.25rem; color: var(--text-main);">Personalize Your Learning Feed (FYP)</h2>
+            <p class="modal-subtitle">Tick the fields and subjects you want to learn to unlock tailored course suggestions</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="close-interests-modal-btn" onclick="app.closeInterestsModal()">&times;</button>
+      </div>
+
+      <div class="modal-body" style="max-height: 65vh; overflow-y: auto; padding: 1.25rem 1.5rem;">
+        <!-- Group 1: Fields of Interest -->
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label style="font-weight: 700; margin-bottom: 0.65rem; display: block; color: var(--text-main); font-size: 0.95rem;">
+            1. Tick your fields of interest (select all that apply):
+          </label>
+          <div class="interests-grid-options" id="interest-fields-container">
+            <label class="interest-checkbox-card">
+              <input type="checkbox" name="fyp-field" value="Computer Science">
+              <div class="interest-card-inner">
+                <span class="interest-card-title">Computer Science & Algorithms</span>
+                <span class="interest-card-sub">Data structures, problem solving, computational complexity</span>
+              </div>
+            </label>
+            <label class="interest-checkbox-card">
+              <input type="checkbox" name="fyp-field" value="Artificial Intelligence">
+              <div class="interest-card-inner">
+                <span class="interest-card-title">AI, Machine Learning & LLMs</span>
+                <span class="interest-card-sub">Deep learning, neural vision, NLP, prompt engineering</span>
+              </div>
+            </label>
+            <label class="interest-checkbox-card">
+              <input type="checkbox" name="fyp-field" value="Web Development">
+              <div class="interest-card-inner">
+                <span class="interest-card-title">Full-Stack Web Development</span>
+                <span class="interest-card-sub">React, Node.js, JavaScript, modern APIs, frontend & backend</span>
+              </div>
+            </label>
+            <label class="interest-checkbox-card">
+              <input type="checkbox" name="fyp-field" value="Data Science">
+              <div class="interest-card-inner">
+                <span class="interest-card-title">Data Science, SQL & Analytics</span>
+                <span class="interest-card-sub">Relational databases, Python analytics, statistical modeling</span>
+              </div>
+            </label>
+            <label class="interest-checkbox-card">
+              <input type="checkbox" name="fyp-field" value="Cybersecurity">
+              <div class="interest-card-inner">
+                <span class="interest-card-title">Cybersecurity & Networking</span>
+                <span class="interest-card-sub">Network defense, cryptography, penetration testing, protocols</span>
+              </div>
+            </label>
+            <label class="interest-checkbox-card">
+              <input type="checkbox" name="fyp-field" value="Cloud Computing">
+              <div class="interest-card-inner">
+                <span class="interest-card-title">Cloud Computing & DevOps</span>
+                <span class="interest-card-sub">AWS, Azure, Docker containers, Kubernetes, CI/CD pipelines</span>
+              </div>
+            </label>
+            <label class="interest-checkbox-card">
+              <input type="checkbox" name="fyp-field" value="Mathematics">
+              <div class="interest-card-inner">
+                <span class="interest-card-title">Mathematics, Calculus & Physics</span>
+                <span class="interest-card-sub">Linear algebra, multivariable calculus, mechanics, geometric intuition</span>
+              </div>
+            </label>
+            <label class="interest-checkbox-card">
+              <input type="checkbox" name="fyp-field" value="Hardware & Systems">
+              <div class="interest-card-inner">
+                <span class="interest-card-title">Hardware & Operating Systems</span>
+                <span class="interest-card-sub">Digital electronics, logic gates, CPU architecture, kernel internals</span>
+              </div>
+            </label>
+            <label class="interest-checkbox-card">
+              <input type="checkbox" name="fyp-field" value="Mobile Development">
+              <div class="interest-card-inner">
+                <span class="interest-card-title">Mobile App Development</span>
+                <span class="interest-card-sub">iOS SwiftUI, Android Compose, Flutter & Dart apps</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Group 2: Skill Level -->
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label style="font-weight: 700; margin-bottom: 0.65rem; display: block; color: var(--text-main); font-size: 0.95rem;">
+            2. What is your current skill level?
+          </label>
+          <div class="interests-level-options">
+            <label class="interest-radio-card">
+              <input type="radio" name="fyp-level" value="all" checked>
+              <span>All Skill Levels</span>
+            </label>
+            <label class="interest-radio-card">
+              <input type="radio" name="fyp-level" value="Beginner">
+              <span>Beginner (Foundations)</span>
+            </label>
+            <label class="interest-radio-card">
+              <input type="radio" name="fyp-level" value="Intermediate">
+              <span>Intermediate (Building Projects)</span>
+            </label>
+            <label class="interest-radio-card">
+              <input type="radio" name="fyp-level" value="Advanced">
+              <span>Advanced (Deep Mastery)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 1rem 1.5rem; background: var(--bg-subtle); display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-subtle);">
+        <button type="button" class="btn btn-ghost" onclick="app.closeInterestsModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="app.saveInterestsFromModal()" style="font-weight: 700;">
+          Save Preferences & Generate My FYP
+        </button>
+      </div>
     </div>
   </div>
 

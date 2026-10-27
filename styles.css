@@ -845,6 +845,229 @@ input, select, textarea {
   color: #ffffff;
 }
 
+/* FYP & Personalized Suggestions */
+.fyp-chip-badge {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+}
+
+.fyp-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.fyp-callout-banner {
+  background: linear-gradient(135deg, rgba(0, 86, 210, 0.08) 0%, rgba(0, 86, 210, 0.02) 100%);
+  border: 1px solid rgba(0, 86, 210, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fyp-callout-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.fyp-callout-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fyp-callout-left strong {
+  display: block;
+  font-size: 0.92rem;
+  color: var(--text-main);
+}
+
+.fyp-callout-left span {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.fyp-callout-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.fyp-onboarding-card {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--bg-card);
+  border: 1px dashed var(--border-card);
+  border-radius: var(--radius-md);
+  margin-top: 1rem;
+}
+
+.fyp-onboarding-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem auto;
+}
+
+.fyp-onboarding-card h3 {
+  font-size: 1.35rem;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.fyp-onboarding-card p {
+  color: var(--text-muted);
+  max-width: 520px;
+  margin: 0 auto 1.5rem auto;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.fyp-tags-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.fyp-tag-pill {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.badge-fyp-match {
+  background: linear-gradient(135deg, #0056D2, #00419e);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-xs);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  letter-spacing: 0.3px;
+}
+
+/* Interests Modal */
+.interests-dialog {
+  max-width: 680px;
+  width: 95%;
+}
+
+.interests-grid-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.interest-checkbox-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1.5px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.interest-checkbox-card:hover {
+  border-color: var(--primary);
+  background: var(--bg-subtle);
+}
+
+.interest-checkbox-card input[type="checkbox"] {
+  margin-top: 0.25rem;
+  accent-color: var(--primary);
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+}
+
+.interest-checkbox-card input[type="checkbox"]:checked ~ .interest-card-inner .interest-card-title {
+  color: var(--primary);
+}
+
+.interest-card-inner {
+  display: flex;
+  flex-direction: column;
+}
+
+.interest-card-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.2rem;
+}
+
+.interest-card-sub {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.interests-level-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.6rem;
+}
+
+.interest-radio-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: all 0.2s ease;
+}
+
+.interest-radio-card:hover {
+  border-color: var(--primary);
+}
+
+.interest-radio-card input[type="radio"] {
+  accent-color: var(--primary);
+}
+
 /* Card Body */
 .course-card-body {
   padding: 1.25rem;

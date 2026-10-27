@@ -219,6 +219,9 @@ class AppController {
     this.selectedLevelFilter = "all";
     this.selectedTypeFilter = "all";
     this.playlistPlayerMode = false;
+    this.userInterests = JSON.parse(localStorage.getItem("opencourses_user_interests")) || null;
+    this.backupVideoIds = ['rfscVS0vtbw', 'jS4aFq5-91M', 'fNk_zzaMoSs', 'HtSuA80QTyo', 'LfaMVlDaQ24', 'i_LwzRVP7bg'];
+    this.mirrorIndex = 0;
     this.currentPage = 1;
     this.pageSize = 24;
     this.recipientName = localStorage.getItem("opencourses_recipient_name") || "Arjun Sharma";
@@ -271,7 +274,9 @@ class AppController {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     // Refresh view specific content
-    if (viewId === "view-courses") {
+    if (viewId === "view-fyp") {
+      this.renderFypView();
+    } else if (viewId === "view-courses") {
       this.renderCoursesGrid();
     } else if (viewId === "view-institutions") {
       this.renderInstitutionsGrid();
@@ -548,7 +553,16 @@ class AppController {
       }
     });
 
+    // Interests Modal Listeners
+    document.getElementById("interests-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "interests-modal") this.closeInterestsModal();
+    });
+
     // Learner Auth Modal Listeners
+    document.getElementById("auth-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "auth-modal") document.getElementById("auth-modal")?.classList.add("hidden");
+    });
+
     document.getElementById("close-auth-modal-btn")?.addEventListener("click", () => {
       document.getElementById("auth-modal")?.classList.add("hidden");
     });
@@ -609,11 +623,218 @@ class AppController {
   }
 
   renderAllViews() {
+    this.renderFypView();
     this.renderCoursesGrid();
     this.renderInstitutionsGrid();
     this.renderClassroom();
     this.renderMyLearning();
     this.renderDoubts();
+  }
+
+  // --- FOR YOU (FYP) PERSONALIZED SUGGESTIONS ---
+  renderFypView() {
+    const fypGrid = document.getElementById("fyp-courses-grid");
+    const emptyState = document.getElementById("fyp-empty-state");
+    const tagsBar = document.getElementById("fyp-tags-bar");
+    const subtitleEl = document.getElementById("fyp-subtitle");
+
+    if (!fypGrid) return;
+
+    if (!this.userInterests || !this.userInterests.fields || this.userInterests.fields.length === 0) {
+      if (emptyState) emptyState.classList.remove("hidden");
+      if (fypGrid) fypGrid.innerHTML = "";
+      if (tagsBar) tagsBar.innerHTML = "";
+      if (subtitleEl) subtitleEl.textContent = "Tell us what fields you want to learn to unlock personalized course suggestions.";
+      return;
+    }
+
+    if (emptyState) emptyState.classList.add("hidden");
+
+    // Render active interest tags
+    const fields = this.userInterests.fields;
+    const level = this.userInterests.level || "all";
+
+    if (tagsBar) {
+      tagsBar.innerHTML = fields.map(f => `
+        <span class="fyp-tag-pill">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          ${f}
+        </span>
+      `).join("") + (level !== "all" ? `
+        <span class="fyp-tag-pill" style="border-color:var(--primary); background:var(--primary-light);">
+          Level: ${level}
+        </span>
+      ` : "");
+    }
+
+    if (subtitleEl) {
+      subtitleEl.textContent = `Curated based on your interests in ${fields.join(", ")}${level !== "all" ? ` (${level})` : ""}.`;
+    }
+
+    // Matching Algorithm
+    const scoredCourses = store.courses.map(c => {
+      let score = 0;
+      let matchedReason = "";
+
+      const cSubj = (c.subject || "").toLowerCase();
+      const cTitle = (c.title || "").toLowerCase();
+      const cDesc = (c.desc || "").toLowerCase();
+
+      fields.forEach(f => {
+        const fLower = f.toLowerCase();
+        if (cSubj.includes(fLower)) {
+          score += 10;
+          if (!matchedReason) matchedReason = f;
+        } else if (cTitle.includes(fLower) || cDesc.includes(fLower)) {
+          score += 5;
+          if (!matchedReason) matchedReason = f;
+        }
+      });
+
+      if (level !== "all") {
+        if ((c.level || "").toLowerCase() === level.toLowerCase()) {
+          score += 4;
+        }
+      }
+
+      return { course: c, score, matchedReason };
+    });
+
+    // Filter matched courses (score > 0)
+    let fypList = scoredCourses.filter(item => item.score > 0);
+
+    // If matches are few, fall back to top rated courses
+    if (fypList.length === 0) {
+      fypList = scoredCourses.slice(0, 24);
+    }
+
+    // Sort by score desc, then by provider rating desc
+    fypList.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const provA = store.getProviderById(a.course.providerId);
+      const provB = store.getProviderById(b.course.providerId);
+      const ratA = provA ? provA.rating : 4.9;
+      const ratB = provB ? provB.rating : 4.9;
+      return ratB - ratA;
+    });
+
+    const displayList = fypList.slice(0, 36);
+
+    fypGrid.innerHTML = displayList.map(item => {
+      const c = item.course;
+      const provider = store.getProviderById(c.providerId);
+      const providerCode = c.providerCode || (provider ? provider.code : "FREE");
+      const providerName = c.institution || (provider ? provider.institution : "Top Provider");
+      const lessonCount = (c.lessons || []).length;
+      const isEnrolled = store.isEnrolled(c.id);
+      const rating = provider ? provider.rating : 4.95;
+      const matchLabel = item.matchedReason ? `Matches ${item.matchedReason}` : "Top Recommendation";
+
+      return `
+        <article class="course-card" data-course-id="${c.id}">
+          <div class="course-card-cover" style="background-image: url('${c.coverPhoto}');">
+            <div class="course-card-badge-row">
+              <span class="badge-institution">
+                <strong>${providerCode}</strong> ${providerName}
+              </span>
+              <span class="badge-fyp-match" title="Personalized recommendation">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                ${matchLabel}
+              </span>
+              <span class="badge-free">Free</span>
+            </div>
+          </div>
+          <div class="course-card-body">
+            <span class="course-institution-name">${providerName}</span>
+            <h3 class="course-card-title" title="${c.title}">${c.title}</h3>
+            <span class="course-instructor-name">${c.instructorName}</span>
+            
+            <div class="course-meta-pills">
+              <span class="meta-pill level">${c.level || "All Levels"}</span>
+              <span class="meta-pill">${c.subject || "Computer Science"}</span>
+            </div>
+
+            <div class="course-rating-row">
+              <svg viewBox="0 0 24 24" fill="#e88d00" width="14" height="14" style="margin-right:2px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span class="rating-score">${rating}</span>
+              <span class="rating-count">(Verified Course)</span>
+            </div>
+          </div>
+          <div class="course-card-footer">
+            <span class="lesson-count">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              ${lessonCount} lesson${lessonCount === 1 ? '' : 's'}
+            </span>
+            <div style="display:flex; align-items:center; gap:0.45rem;">
+              <a href="${c.playlistUrl}" target="_blank" rel="noopener noreferrer" class="card-playlist-direct" title="Open YouTube Playlist directly" onclick="event.stopPropagation();">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h13v-2H2v2zm15-2v6l5-3-5-3z"/></svg>
+                Playlist
+              </a>
+              <button class="btn btn-primary btn-xs" onclick="app.openClassroomCourse('${c.id}')">
+                ${isEnrolled ? "Continue" : "Start Free"}
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  // --- INTERESTS MODAL HANDLERS ---
+  openInterestsModal() {
+    const modal = document.getElementById("interests-modal");
+    if (!modal) return;
+
+    // Pre-check fields if user already has preferences
+    if (this.userInterests && this.userInterests.fields) {
+      const activeFields = this.userInterests.fields;
+      document.querySelectorAll("input[name='fyp-field']").forEach(input => {
+        input.checked = activeFields.includes(input.value);
+      });
+      if (this.userInterests.level) {
+        const lvlRadio = document.querySelector(`input[name='fyp-level'][value='${this.userInterests.level}']`);
+        if (lvlRadio) lvlRadio.checked = true;
+      }
+    }
+
+    modal.classList.remove("hidden");
+  }
+
+  closeInterestsModal() {
+    document.getElementById("interests-modal")?.classList.add("hidden");
+  }
+
+  saveInterestsFromModal() {
+    const checkedInputs = Array.from(document.querySelectorAll("input[name='fyp-field']:checked"));
+    const selectedFields = checkedInputs.map(input => input.value);
+    const selectedLevel = document.querySelector("input[name='fyp-level']:checked")?.value || "all";
+
+    if (selectedFields.length === 0) {
+      showToast("Please tick at least one field of interest to personalize your feed.", "warning");
+      return;
+    }
+
+    this.userInterests = {
+      fields: selectedFields,
+      level: selectedLevel,
+      updatedAt: new Date().toISOString()
+    };
+
+    localStorage.setItem("opencourses_user_interests", JSON.stringify(this.userInterests));
+    this.closeInterestsModal();
+    showToast("Preferences saved! Your FYP feed has been personalized.", "success");
+    this.switchView("view-fyp");
+    this.renderFypView();
+  }
+
+  toggleMirrorBackupVideo() {
+    this.mirrorIndex = (this.mirrorIndex + 1) % this.backupVideoIds.length;
+    const mirrorVid = this.backupVideoIds[this.mirrorIndex];
+    const iframe = document.getElementById("youtube-player-iframe");
+    if (iframe) {
+      iframe.src = `https://www.youtube-nocookie.com/embed/${mirrorVid}?enablejsapi=1&rel=0`;
+      showToast("Switched to verified backup mirror player", "info");
+    }
   }
 
   // --- 1. COURSES GRID (COURSERA STYLE WITH PAGINATION) ---
