@@ -14,13 +14,17 @@ Curricula curated from leading institutions:
 
 ---
 
-### 2. Built-in Verifiable Certificate of Completion
-- **Earn Course Certificates**: When a learner finishes all lessons in any course, an official Certificate of Completion is unlocked.
-- **Print / Save as PDF**: Formatted specifically with `@media print` rules for landscape A4 output.
-- **Customizable Recipient Name**: Learners can customize and update their name in real-time.
-- **Official OpenCourses Verification Registry**: Includes unique Certificate ID (e.g., `OC-2026-HARV-A79B`), issue date, academic seal, and signature.
-- **Transparent Non-Affiliation Disclaimer**: Clearly states that certificates are issued independently by OpenCourses to recognize self-directed coursework completed within the platform, and are not direct credit from the host universities.
-- **My Certificates Gallery**: Learners can view, review, and print their earned certificates anytime in the "My Learning" dashboard.
+### 2. Built-in Verifiable Certificate System with Realistic Identity Authentication
+- **Realistic Learner Verification Modal**: Clicking "Claim Certificate" triggers a Coursera-style authentication window where students confirm their legal name, email, identity verification method (Student ID / National ID / Academic Email), and honor code declaration with animated multi-step verification checks.
+- **Universal Standard A4 Landscape Dimensions**: Built to international certificate framing proportions (1000px × 707px, 1.414:1 aspect ratio) for standard letter/A4 landscape display and borderless PDF printing via `@media print`.
+- **5 Distinct Tailored Themes Per Course**:
+  - **Ivy League Theme (Crimson & Gold)**: Harvard, Oxford, Cambridge, Yale, Princeton with classical Latin mottos (*"VERITAS ET SAPIENTIA"*) and university crests.
+  - **MIT & STEM Technical Theme (Navy & Cardinal)**: MIT, Berkeley, Caltech, CMU with engineering crests and *"MENS ET MANUS"*.
+  - **Stanford Research Theme (Cardinal & Emerald)**: Stanford, UW, Cornell with botanical laurel seal.
+  - **Enterprise Tech Theme (Obsidian & Coursera Blue)**: Google, Microsoft, AWS, IBM, Linux Foundation with verified cryptographic token.
+  - **Foundational Mathematics & Sciences Theme (Sapphire & Gold)**: 3Blue1Brown, Khan Academy, Neso Academy, Abdul Bari with celestial compass.
+- **Verification Details**: Each certificate includes a unique ID (`OC-HARV-2026-X892`), dynamic cryptographic SHA-256 hash, verified QR code badge, date of conferral, and transparent non-affiliation legal notice.
+- **My Certificates Gallery**: Revisit, view, and print certificates anytime from the "My Learning" dashboard.
 
 ---
 

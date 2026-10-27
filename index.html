@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OpenCourses - Find 120+ Free Online Courses from Top Universities & Tech Leaders</title>
-  <!-- Google Fonts: Plus Jakarta Sans for clean modern typography -->
+  <!-- Google Fonts: Plus Jakarta Sans + Cinzel & Playfair Display for prestigious certificates -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -519,13 +519,92 @@
   </div>
 
   <!-- ============================================== -->
-  <!-- MODAL: VERIFIED CERTIFICATE GENERATOR          -->
+  <!-- MODAL: LEARNER AUTHENTICATION & CLAIM FLOW     -->
+  <!-- ============================================== -->
+  <div id="auth-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog auth-dialog">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div class="auth-icon-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div>
+            <h2>Learner Verification & Sign-In</h2>
+            <p class="modal-subtitle">Authenticate student identity to issue verified credential</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="close-auth-modal-btn">&times;</button>
+      </div>
+
+      <div class="modal-body auth-body">
+        <!-- Target Course Verification Pill -->
+        <div class="auth-course-summary">
+          <div class="auth-course-tag">Credited Course</div>
+          <h4 id="auth-target-course-title">Course Title</h4>
+          <span id="auth-target-course-inst">Harvard University &bull; Open Curriculum</span>
+          <div class="auth-progress-indicator">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            100% Instructional Modules &amp; Assessments Completed
+          </div>
+        </div>
+
+        <!-- Verification Form -->
+        <form id="learner-auth-form" class="form-grid">
+          <div class="form-group">
+            <label for="auth-legal-name">Full Legal Name (For Permanent Certificate Record) *</label>
+            <input type="text" id="auth-legal-name" class="form-control" placeholder="e.g. Dr. Alex Mercer / Priya Sharma" required />
+            <span class="form-hint">This name will be inscribed permanently on your verified credential.</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="auth-email">Student / Professional Email *</label>
+              <input type="email" id="auth-email" class="form-control" placeholder="student@university.edu" required />
+            </div>
+            <div class="form-group flex-1">
+              <label for="auth-id-type">Identity Verification Method *</label>
+              <select id="auth-id-type" class="form-control">
+                <option value="student">Student Registry ID Verification</option>
+                <option value="gov">National ID / Passport Verification</option>
+                <option value="email">Verified Academic Email Token</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="auth-honor-code-box">
+            <label class="checkbox-container">
+              <input type="checkbox" id="auth-honor-checkbox" checked required />
+              <span class="honor-text">
+                I hereby affirm under the <strong>OpenCourses Academic Honor Code</strong> that I have personally completed all coursework modules, lectures, and assessments for this credential.
+              </span>
+            </label>
+          </div>
+
+          <!-- Live Verification State Animation -->
+          <div id="auth-verifying-state" class="auth-verifying-state hidden">
+            <div class="spinner"></div>
+            <div class="auth-step-text" id="auth-step-text">Verifying curriculum completion records...</div>
+          </div>
+
+          <div class="form-actions" style="margin-top: 0.5rem;">
+            <button type="submit" class="btn btn-primary btn-block" id="btn-submit-auth">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Authenticate &amp; Issue Official Certificate</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: VERIFIED UNIVERSAL CERTIFICATE (A4)     -->
   <!-- ============================================== -->
   <div id="certificate-modal" class="modal-backdrop hidden">
     <div class="modal-dialog certificate-modal">
       <div class="modal-header">
         <div>
-          <h2>Verified Certificate of Completion</h2>
+          <h2>Verified Credential of Completion</h2>
           <p class="modal-subtitle">Official verifiable recognition issued by OpenCourses Academy</p>
         </div>
         <button class="modal-close-btn" id="close-cert-modal-btn">&times;</button>
@@ -534,7 +613,7 @@
       <!-- Actions Bar -->
       <div class="certificate-actions-bar">
         <div class="certificate-name-input-group">
-          <label for="cert-recipient-input">Recipient Name:</label>
+          <label for="cert-recipient-input">Certificate Inscribed To:</label>
           <input type="text" id="cert-recipient-input" placeholder="Your Full Name" value="Arjun Sharma" />
         </div>
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -544,68 +623,101 @@
           </button>
           <button class="btn btn-primary btn-sm" id="btn-copy-cert-id">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Copy Certificate ID
+            Copy Credential ID
           </button>
         </div>
       </div>
 
-      <!-- Certificate Canvas -->
+      <!-- Universal Landscape A4 Certificate Canvas -->
       <div class="certificate-paper-container">
-        <div class="certificate-paper" id="certificate-print-area">
+        <div class="certificate-paper cert-theme-ivy" id="certificate-print-area">
+          
+          <!-- Guilloche Background Texture -->
+          <div class="cert-guilloche-bg"></div>
+
+          <!-- Ornamental Corners -->
           <div class="cert-corner-ornament cert-corner-tl"></div>
           <div class="cert-corner-ornament cert-corner-tr"></div>
           <div class="cert-corner-ornament cert-corner-bl"></div>
           <div class="cert-corner-ornament cert-corner-br"></div>
 
-          <!-- Header -->
+          <!-- Header Section -->
           <div class="cert-header">
             <div class="cert-org-logo">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
-              <span class="cert-org-name">OpenCourses Learning Academy</span>
+              <div id="cert-institution-crest-box" class="cert-crest-wrapper">
+                <!-- Tailored SVG Crest dynamically injected -->
+              </div>
+              <div class="cert-org-details">
+                <span class="cert-org-name">OpenCourses Academy of Higher Learning</span>
+                <span class="cert-motto-tag" id="cert-motto-tag">VERITAS ET SAPIENTIA &bull; OPEN EDUCATION FOR ALL</span>
+              </div>
             </div>
-            <h1 class="cert-main-title">Certificate of Completion</h1>
-            <div class="cert-sub-title">Verified Academic Achievement</div>
+            <h1 class="cert-main-title">Certificate of Course Completion</h1>
+            <div class="cert-sub-title" id="cert-sub-title">Verified Academic Credential</div>
           </div>
 
-          <!-- Recipient & Details -->
+          <!-- Body Details Section -->
           <div class="cert-body">
-            <p class="cert-certifies-text">This is to certify that</p>
+            <p class="cert-certifies-text">This is to officially certify that</p>
             <div class="cert-recipient-name" id="cert-display-name">Arjun Sharma</div>
-            <p class="cert-reason-text">has successfully completed all lectures, curriculum modules, and interactive assessments for the online course:</p>
+            <p class="cert-reason-text">has demonstrated intellectual dedication and successfully completed all rigorous lecture curricula, modules, and interactive assessments for:</p>
             <div class="cert-course-name" id="cert-display-course">Machine Learning Fundamentals</div>
+            <div class="cert-specialty-pill" id="cert-display-specialty">Advanced Specialization in Computer Science &amp; AI</div>
             <div class="cert-institution-tag" id="cert-display-institution">Authorized by Harvard University &bull; Open Curriculum</div>
 
             <div class="cert-disclaimer-box">
-              <strong>Non-Affiliation Notice:</strong> This verified certificate is issued independently by OpenCourses Academy to validate self-paced completion of the course curriculum within the OpenCourses learning system. OpenCourses is an independent educational platform and is not officially affiliated with or endorsed by the university or instructor.
+              <strong>Non-Affiliation &amp; Verification Notice:</strong> This verified certificate of completion is issued independently by OpenCourses Academy to validate self-paced completion of the course curriculum within the OpenCourses learning system. OpenCourses is an independent educational platform and is not officially affiliated with or endorsed by the university or instructor.
             </div>
           </div>
 
-          <!-- Footer & Security Seal -->
+          <!-- Footer & Security Verification Seal -->
           <div class="cert-footer">
-            <div class="cert-footer-item">
-              <span class="cert-meta-label">Certificate ID</span>
-              <span class="cert-meta-value" id="cert-display-id">OC-2026-X892-F71B</span>
-              <span class="cert-meta-label" style="margin-top: 0.5rem;">Issue Date</span>
+            <div class="cert-footer-item cert-meta-col">
+              <span class="cert-meta-label">Credential Verification ID</span>
+              <span class="cert-meta-value" id="cert-display-id">OC-HARV-2026-X892-F71B</span>
+              <span class="cert-meta-label" style="margin-top: 0.35rem;">Cryptographic Hash (SHA-256)</span>
+              <span class="cert-meta-hash" id="cert-display-hash">8f2b109c...4a1e90df</span>
+              <span class="cert-meta-label" style="margin-top: 0.35rem;">Date of Conferral</span>
               <span class="cert-meta-value" id="cert-display-date">October 27, 2026</span>
             </div>
 
-            <div class="cert-seal-badge">
-              <svg class="cert-seal-icon" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
-                <path d="M12 4l1.5 3.5 3.5.5-2.5 2.5.5 3.5-3-1.5-3 1.5.5-3.5-2.5-2.5 3.5-.5z"/>
-                <path d="M8 17l-2 5 6-2 6 2-2-5" fill="none" stroke="currentColor" stroke-width="2"/>
-              </svg>
-              <span class="cert-seal-label">Verified Course</span>
+            <!-- Authentic Rosette Security Seal -->
+            <div class="cert-seal-badge" id="cert-seal-badge">
+              <div class="cert-seal-outer">
+                <svg class="cert-seal-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M12 4l1.5 3.5 3.5.5-2.5 2.5.5 3.5-3-1.5-3 1.5.5-3.5-2.5-2.5 3.5-.5z"/>
+                  <path d="M8 17l-2 5 6-2 6 2-2-5" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <span class="cert-seal-label">Verified Credential</span>
             </div>
 
-            <div class="cert-footer-item" style="text-align: right;">
-              <div class="cert-signature-line" style="margin-left: auto;"></div>
-              <span class="cert-sig-name">Academic Verification Registry</span>
-              <span class="cert-sig-title">OpenCourses Learning Platform</span>
+            <!-- Signatures & Verification QR -->
+            <div class="cert-footer-item cert-sig-col">
+              <div class="cert-qr-box" id="cert-qr-box" title="Scan to verify credential authenticity">
+                <!-- Dynamic SVG QR Code -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="38" height="38">
+                  <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                  <line x1="7" y1="17" x2="7" y2="17.01"/><line x1="17" y1="7" x2="17" y2="7.01"/>
+                </svg>
+                <span>VERIFIED</span>
+              </div>
+              <div class="cert-signatures-wrap">
+                <div class="cert-sig-block">
+                  <div class="cert-signature-line"></div>
+                  <span class="cert-sig-name" id="cert-sig-dean">Dean of Academic Faculty</span>
+                  <span class="cert-sig-title">Open Curriculum Registry</span>
+                </div>
+                <div class="cert-sig-block">
+                  <div class="cert-signature-line"></div>
+                  <span class="cert-sig-name">Director of Certification</span>
+                  <span class="cert-sig-title">OpenCourses Academy</span>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>

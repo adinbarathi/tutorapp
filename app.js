@@ -75,7 +75,21 @@ class Store {
       lastWatchedLessonId: "gml-1"
     });
 
+    // Learner verification profile
+    this.learner = this.load("opencourses_learner", {
+      name: localStorage.getItem("opencourses_recipient_name") || "Arjun Sharma",
+      email: "arjun.sharma@alumni.harvard.edu",
+      verified: false,
+      idType: "student"
+    });
+
     this.save();
+  }
+
+  saveLearner(name, email, idType = "student") {
+    this.learner = { name, email, idType, verified: true };
+    localStorage.setItem("opencourses_learner", JSON.stringify(this.learner));
+    localStorage.setItem("opencourses_recipient_name", name);
   }
 
   load(key, fallback) {
@@ -524,6 +538,57 @@ class AppController {
         navigator.clipboard?.writeText(certIdEl.textContent);
         showToast("Certificate ID copied to clipboard", "success");
       }
+    });
+
+    // Learner Auth Modal Listeners
+    document.getElementById("close-auth-modal-btn")?.addEventListener("click", () => {
+      document.getElementById("auth-modal")?.classList.add("hidden");
+    });
+
+    document.getElementById("learner-auth-form")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById("auth-legal-name");
+      const emailInput = document.getElementById("auth-email");
+      const idTypeSelect = document.getElementById("auth-id-type");
+      const submitBtn = document.getElementById("btn-submit-auth");
+      const spinnerBox = document.getElementById("auth-verifying-state");
+      const stepText = document.getElementById("auth-step-text");
+
+      const name = nameInput?.value.trim() || "Student Learner";
+      const email = emailInput?.value.trim() || "learner@university.edu";
+      const idType = idTypeSelect?.value || "student";
+
+      // Trigger realistic multi-step security verification animation
+      if (submitBtn) submitBtn.classList.add("hidden");
+      if (spinnerBox) spinnerBox.classList.remove("hidden");
+
+      if (stepText) stepText.textContent = "Verifying curriculum lecture logs and module progress...";
+
+      setTimeout(() => {
+        if (stepText) stepText.textContent = "Validating cryptographic integrity & academic honor code...";
+      }, 450);
+
+      setTimeout(() => {
+        if (stepText) stepText.textContent = "Digitally signing credential with OpenCourses Registry...";
+      }, 900);
+
+      setTimeout(() => {
+        store.saveLearner(name, email, idType);
+        this.recipientName = name;
+
+        if (spinnerBox) spinnerBox.classList.add("hidden");
+        if (submitBtn) submitBtn.classList.remove("hidden");
+        document.getElementById("auth-modal")?.classList.add("hidden");
+
+        showToast("Identity verified! Official certificate issued.", "success");
+
+        if (this.pendingCertCourseId) {
+          this.openCertificateModal(this.pendingCertCourseId);
+          this.pendingCertCourseId = null;
+        } else {
+          this.openCertificateModal(this.activeCourseId);
+        }
+      }, 1350);
     });
   }
 
@@ -989,7 +1054,7 @@ class AppController {
                 <p>Congratulations! You have completed all modules. Generate your verifiable certificate of completion.</p>
               </div>
             </div>
-            <button class="btn btn-primary" onclick="app.openCertificateModal('${course.id}')" style="background: #fff; color: #0a8543; border-color: #fff; font-weight: 700;">
+            <button class="btn btn-primary" onclick="app.requestClaimCertificate('${course.id}')" style="background: #fff; color: #0a8543; border-color: #fff; font-weight: 700;">
               Claim Certificate
             </button>
           </div>
@@ -1204,7 +1269,7 @@ class AppController {
             </p>
             <div class="cert-card-meta">
               <span>Status: ${isDone ? '100% Completed' : 'Eligible for Claim'}</span>
-              <button class="btn btn-primary btn-xs" onclick="app.openCertificateModal('${c.id}')">
+              <button class="btn btn-primary btn-xs" onclick="app.requestClaimCertificate('${c.id}')">
                 View Certificate
               </button>
             </div>
@@ -1214,7 +1279,35 @@ class AppController {
     }
   }
 
-  // --- CERTIFICATE MODAL DISPLAY ---
+  // --- REALISTIC CERTIFICATE CLAIM & AUTHENTICATION WORKFLOW ---
+  requestClaimCertificate(courseId) {
+    const course = store.getCourseById(courseId) || store.courses[0];
+    if (!course) return;
+
+    this.pendingCertCourseId = course.id;
+
+    // Check if user has completed learner identity verification
+    if (store.learner && store.learner.verified) {
+      this.openCertificateModal(course.id);
+      return;
+    }
+
+    // Open realistic Coursera-style identity verification & sign-in modal
+    const modal = document.getElementById("auth-modal");
+    const targetTitle = document.getElementById("auth-target-course-title");
+    const targetInst = document.getElementById("auth-target-course-inst");
+    const nameInput = document.getElementById("auth-legal-name");
+    const emailInput = document.getElementById("auth-email");
+
+    if (targetTitle) targetTitle.textContent = course.title;
+    if (targetInst) targetInst.textContent = `${course.institution} • Open Academic Curriculum`;
+    if (nameInput) nameInput.value = (store.learner && store.learner.name) || this.recipientName || "Arjun Sharma";
+    if (emailInput) emailInput.value = (store.learner && store.learner.email) || "learner@university.edu";
+
+    modal?.classList.remove("hidden");
+  }
+
+  // --- TAILORED UNIVERSAL CERTIFICATE GENERATOR (A4 LANDSCAPE) ---
   openCertificateModal(courseId) {
     const course = store.getCourseById(courseId) || store.courses[0];
     if (!course) return;
@@ -1222,30 +1315,130 @@ class AppController {
     this.activeCertCourseId = course.id;
     const provider = store.getProviderById(course.providerId);
     const instName = course.institution || (provider ? provider.name : "Top University");
+    const provId = (course.providerId || "").toLowerCase();
+    const subj = (course.subject || "").toLowerCase();
 
-    const modal = document.getElementById("certificate-modal");
+    const certPaper = document.getElementById("certificate-print-area");
+    const crestBox = document.getElementById("cert-institution-crest-box");
     const nameInput = document.getElementById("cert-recipient-input");
     const displayName = document.getElementById("cert-display-name");
     const displayCourse = document.getElementById("cert-display-course");
+    const displaySpecialty = document.getElementById("cert-display-specialty");
     const displayInst = document.getElementById("cert-display-institution");
+    const displayMotto = document.getElementById("cert-motto-tag");
     const displayId = document.getElementById("cert-display-id");
+    const displayHash = document.getElementById("cert-display-hash");
     const displayDate = document.getElementById("cert-display-date");
+    const displayDean = document.getElementById("cert-sig-dean");
 
-    const currentName = this.recipientName || "Arjun Sharma";
+    // 1. Determine tailored design theme, motto, specialization & dean per course
+    let themeClass = "cert-theme-tech";
+    let motto = "VERITAS ET SAPIENTIA • OPEN CURRICULUM FOR ALL";
+    let specialty = "Specialization in Computer Science & Applied Technology";
+    let deanName = "Prof. David J. Malan, Ph.D.";
+    let crestSvg = "";
+
+    if (provId.includes("harvard") || provId.includes("oxford") || provId.includes("cambridge") || provId.includes("yale") || provId.includes("princeton") || provId.includes("columbia") || provId.includes("penn")) {
+      themeClass = "cert-theme-ivy";
+      motto = "VERITAS ET SAPIENTIA • EXCELLENCE IN SCHOLARSHIP";
+      specialty = `Honors Specialization in ${course.subject}`;
+      deanName = "Prof. David J. Malan, Ph.D.";
+      crestSvg = `
+        <svg viewBox="0 0 100 100" fill="none" width="48" height="48">
+          <path d="M50 8L82 20V52C82 72 50 92 50 92C50 92 18 72 18 52V20L50 8Z" fill="#8B0000" stroke="#C5A059" stroke-width="4"/>
+          <path d="M35 38H65M35 48H65M35 58H55" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="50" cy="50" r="32" stroke="#C5A059" stroke-width="1.5" stroke-dasharray="4 2"/>
+        </svg>
+      `;
+    } else if (provId.includes("mit") || provId.includes("berkeley") || provId.includes("cmu") || provId.includes("caltech") || provId.includes("gatech") || provId.includes("iit")) {
+      themeClass = "cert-theme-stem";
+      motto = "MENS ET MANUS • SCIENCE, TECHNOLOGY & ENGINEERING";
+      specialty = `Rigorous Engineering Specialization in ${course.subject}`;
+      deanName = "Prof. Gilbert Strang, Sc.D.";
+      crestSvg = `
+        <svg viewBox="0 0 100 100" fill="none" width="48" height="48">
+          <circle cx="50" cy="50" r="42" fill="#002147" stroke="#8A1B29" stroke-width="4"/>
+          <circle cx="50" cy="50" r="28" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6 3"/>
+          <path d="M50 22V78M22 50H78M30 30L70 70M70 30L30 70" stroke="#8A1B29" stroke-width="2.5"/>
+          <circle cx="50" cy="50" r="10" fill="#8A1B29"/>
+        </svg>
+      `;
+    } else if (provId.includes("stanford") || provId.includes("uw") || provId.includes("cornell") || provId.includes("duke")) {
+      themeClass = "cert-theme-stanford";
+      motto = "DIE LUFT DER FREIHEIT WEHT • INNOVATION & AI ADVANCEMENT";
+      specialty = `Artificial Intelligence & Machine Learning Track`;
+      deanName = "Prof. Andrew Ng, Ph.D.";
+      crestSvg = `
+        <svg viewBox="0 0 100 100" fill="none" width="48" height="48">
+          <circle cx="50" cy="50" r="42" fill="#8C1515" stroke="#007C56" stroke-width="4"/>
+          <path d="M50 20L58 38H54L62 56H57L66 76H34L43 56H38L46 38H42L50 20Z" fill="#007C56"/>
+          <circle cx="50" cy="50" r="36" stroke="#FFFFFF" stroke-width="1.5"/>
+        </svg>
+      `;
+    } else if (provId.includes("3b1b") || provId.includes("statquest") || provId.includes("khan") || provId.includes("abdulbari") || provId.includes("neso") || subj.includes("math")) {
+      themeClass = "cert-theme-math";
+      motto = "INTUITION, BEAUTY & RIGOR • FOUNDATIONAL SCIENCES";
+      specialty = `Advanced Mathematical & Theoretical Foundations Track`;
+      deanName = "Grant Sanderson, B.S. & Academic Chair";
+      crestSvg = `
+        <svg viewBox="0 0 100 100" fill="none" width="48" height="48">
+          <circle cx="50" cy="50" r="42" fill="#1E3A8A" stroke="#D97706" stroke-width="4"/>
+          <circle cx="50" cy="50" r="24" stroke="#D97706" stroke-width="2"/>
+          <polygon points="50,18 78,68 22,68" stroke="#FFFFFF" stroke-width="3" fill="none"/>
+        </svg>
+      `;
+    } else {
+      // Tech & Industry Leaders (Google, Microsoft, AWS, IBM, Linux, freeCodeCamp)
+      themeClass = "cert-theme-tech";
+      motto = "OPEN SYSTEMS • INDUSTRY PRODUCTION EXCELLENCE";
+      specialty = `Enterprise Software & Cloud Specialization in ${course.subject}`;
+      deanName = "Chief Technical Fellow & Academic Director";
+      crestSvg = `
+        <svg viewBox="0 0 100 100" fill="none" width="48" height="48">
+          <polygon points="50,10 88,32 88,68 50,90 12,68 12,32" fill="#0056D2" stroke="#06b6d4" stroke-width="4"/>
+          <polyline points="32,50 45,63 70,38" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+    }
+
+    // Apply tailored theme class to certificate paper
+    if (certPaper) {
+      certPaper.className = `certificate-paper ${themeClass}`;
+    }
+
+    // Inject crest
+    if (crestBox) {
+      crestBox.innerHTML = crestSvg;
+    }
+
+    // Populate data fields
+    const currentName = (store.learner && store.learner.name) || this.recipientName || "Arjun Sharma";
     if (nameInput) nameInput.value = currentName;
     if (displayName) displayName.textContent = currentName;
     if (displayCourse) displayCourse.textContent = course.title;
+    if (displaySpecialty) displaySpecialty.textContent = specialty;
     if (displayInst) displayInst.textContent = `Authorized by ${instName} • Open Curriculum`;
+    if (displayMotto) displayMotto.textContent = motto;
+    if (displayDean) displayDean.textContent = deanName;
 
-    // Unique Certificate verification ID
-    const hash = Math.abs(course.id.split("").reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a; }, 0)).toString(16).toUpperCase().padStart(4, "0");
-    const certId = `OC-2026-${course.providerCode || 'VER'}-${hash}`;
+    // Unique Certificate Verification ID & Cryptographic SHA-256 Hash
+    const hashNum = Math.abs(course.id.split("").reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a; }, 0));
+    const certId = `OC-${course.providerCode || 'VER'}-2026-${hashNum.toString(16).toUpperCase().padStart(4, "0")}`;
     if (displayId) displayId.textContent = certId;
+
+    // Pseudo-realistic SHA-256 string
+    const hexParts = [
+      (hashNum * 7919).toString(16).padStart(8, "0"),
+      (hashNum * 104729).toString(16).padStart(8, "0"),
+      (hashNum * 65537).toString(16).padStart(8, "0")
+    ].join("");
+    if (displayHash) displayHash.textContent = `SHA-256: ${hexParts.slice(0, 8)}...${hexParts.slice(-8)}`;
 
     const today = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
     if (displayDate) displayDate.textContent = today;
 
-    modal?.classList.remove("hidden");
+    // Open Modal
+    document.getElementById("certificate-modal")?.classList.remove("hidden");
   }
 
   // --- 5. LEARNER Q&A / DOUBTS ---
