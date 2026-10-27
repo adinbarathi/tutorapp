@@ -50,7 +50,7 @@
       <div class="header-right">
         <span class="header-catalog-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          124+ Free Courses
+          1,000+ Free Courses
         </span>
 
         <button id="btn-quick-my-learning" class="btn btn-outline btn-sm">
@@ -81,12 +81,12 @@
             <button class="nav-btn active" data-view="view-courses">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
               <span class="nav-label">Explore All Courses</span>
-              <span class="nav-chip">124</span>
+              <span class="nav-chip">1,000+</span>
             </button>
             <button class="nav-btn" data-view="view-institutions">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
               <span class="nav-label">Top Universities & Providers</span>
-              <span class="nav-chip">21</span>
+              <span class="nav-chip">35</span>
             </button>
             <button class="nav-btn" data-view="view-classroom">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -136,51 +136,55 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                 Verified Free University & Industry Curricula
               </span>
-              <h1>Learn Without Limits. 100% Free Online Courses.</h1>
-              <p>Discover 124+ complete courses and verified video lectures from Google, Harvard CS50, MIT OpenCourseWare, Stanford, Code.org, Neso Academy, and world-renowned educators.</p>
+              <h1>Learn Without Limits. 1,000+ Free Online Courses.</h1>
+              <p>Discover 1,000+ complete courses and verified video lectures from Harvard, MIT, Stanford, UC Berkeley, Carnegie Mellon, Google, Code.org, and top world institutions with free completion certificates.</p>
             </div>
             <div class="hero-stats-row">
               <div class="stat-item">
-                <span class="stat-number">124</span>
+                <span class="stat-number">1,085+</span>
                 <span class="stat-label">Free Courses</span>
               </div>
               <div class="stat-item">
-                <span class="stat-number">21</span>
-                <span class="stat-label">Universities & Providers</span>
+                <span class="stat-number">35</span>
+                <span class="stat-label">Top Universities & Tech Leaders</span>
               </div>
               <div class="stat-item">
-                <span class="stat-number">150+</span>
+                <span class="stat-number">3,200+</span>
                 <span class="stat-label">Video Lessons</span>
               </div>
               <div class="stat-item">
-                <span class="stat-number">100%</span>
-                <span class="stat-label">Free Access</span>
+                <span class="stat-number">100% Free</span>
+                <span class="stat-label">With Verified Certificate</span>
               </div>
             </div>
           </div>
 
           <!-- Horizontal Category Filter Pills -->
           <div class="category-filter-bar" id="category-filter-bar">
-            <button class="filter-pill active" data-subject="all">All Courses (124)</button>
-            <button class="filter-pill" data-subject="Google">Google for Developers</button>
-            <button class="filter-pill" data-subject="Harvard">Harvard CS50</button>
+            <button class="filter-pill active" data-subject="all">All Courses (1,000+)</button>
+            <button class="filter-pill" data-subject="Harvard">Harvard University</button>
             <button class="filter-pill" data-subject="MIT">MIT OpenCourseWare</button>
             <button class="filter-pill" data-subject="Stanford">Stanford Online</button>
-            <button class="filter-pill" data-subject="Code.org">Code.org</button>
-            <button class="filter-pill" data-subject="Neso Academy">Neso Academy</button>
+            <button class="filter-pill" data-subject="Berkeley">UC Berkeley</button>
+            <button class="filter-pill" data-subject="Carnegie">Carnegie Mellon</button>
+            <button class="filter-pill" data-subject="Google">Google for Developers</button>
+            <button class="filter-pill" data-subject="Microsoft">Microsoft Learn</button>
+            <button class="filter-pill" data-subject="AWS">AWS Training</button>
+            <button class="filter-pill" data-subject="IBM">IBM Skills</button>
+            <button class="filter-pill" data-subject="DeepLearning">DeepLearning.AI</button>
             <button class="filter-pill" data-subject="freeCodeCamp">freeCodeCamp</button>
-            <button class="filter-pill" data-subject="3Blue1Brown">3Blue1Brown</button>
-            <button class="filter-pill" data-subject="Khan Academy">Khan Academy</button>
-            <button class="filter-pill" data-subject="Abdul Bari">Abdul Bari</button>
-            <button class="filter-pill" data-subject="Gate Smashers">Gate Smashers</button>
-            <button class="filter-pill" data-subject="Chai aur Code">Chai aur Code</button>
+            <button class="filter-pill" data-subject="Neso Academy">Neso Academy</button>
+            <button class="filter-pill" data-subject="Computer Science">Computer Science</button>
+            <button class="filter-pill" data-subject="Artificial Intelligence">AI & Machine Learning</button>
+            <button class="filter-pill" data-subject="Web Development">Web Development</button>
+            <button class="filter-pill" data-subject="Mathematics">Mathematics</button>
           </div>
 
           <!-- Section Controls Header -->
           <div class="view-header">
             <div>
               <h2>Course Catalog</h2>
-              <p class="section-sub" id="courses-count-label">Showing 124 courses</p>
+              <p class="section-sub" id="courses-count-label">Showing 1,085 courses</p>
             </div>
             <div class="filter-controls">
               <select id="courses-filter-provider" class="form-control-sm">
@@ -197,6 +201,11 @@
 
           <!-- Coursera Course Card Grid -->
           <div class="courses-grid" id="all-courses-grid">
+            <!-- Rendered dynamically by JavaScript -->
+          </div>
+
+          <!-- Pagination Controls for 1000+ Courses -->
+          <div class="pagination-container" id="courses-pagination-container">
             <!-- Rendered dynamically by JavaScript -->
           </div>
         </section>
@@ -265,6 +274,9 @@
                   </iframe>
                 </div>
               </div>
+
+              <!-- Certificate Unlocked Banner (Shown when course is completed) -->
+              <div id="classroom-cert-unlocked-box" class="hidden"></div>
 
               <!-- Active Lesson Info -->
               <div class="lesson-meta-bar">
@@ -435,6 +447,17 @@
           <div class="courses-grid" id="student-enrolled-courses-grid">
             <!-- Enrolled courses -->
           </div>
+
+          <!-- Earned Certificates Gallery -->
+          <div class="section-heading" style="margin-top: 2.5rem;">
+            <div>
+              <h3>My Certificates of Completion</h3>
+              <p class="section-sub">Official verifiable certificates earned for successfully completing courses.</p>
+            </div>
+          </div>
+          <div class="certificates-grid" id="student-certificates-grid">
+            <!-- Rendered by JS -->
+          </div>
         </section>
 
         <!-- ============================================== -->
@@ -492,6 +515,99 @@
           <button type="submit" class="btn btn-primary">Post Question</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: VERIFIED CERTIFICATE GENERATOR          -->
+  <!-- ============================================== -->
+  <div id="certificate-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog certificate-modal">
+      <div class="modal-header">
+        <div>
+          <h2>Verified Certificate of Completion</h2>
+          <p class="modal-subtitle">Official verifiable recognition issued by OpenCourses Academy</p>
+        </div>
+        <button class="modal-close-btn" id="close-cert-modal-btn">&times;</button>
+      </div>
+
+      <!-- Actions Bar -->
+      <div class="certificate-actions-bar">
+        <div class="certificate-name-input-group">
+          <label for="cert-recipient-input">Recipient Name:</label>
+          <input type="text" id="cert-recipient-input" placeholder="Your Full Name" value="Arjun Sharma" />
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn btn-outline btn-sm" id="btn-print-cert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Print / Save as PDF
+          </button>
+          <button class="btn btn-primary btn-sm" id="btn-copy-cert-id">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy Certificate ID
+          </button>
+        </div>
+      </div>
+
+      <!-- Certificate Canvas -->
+      <div class="certificate-paper-container">
+        <div class="certificate-paper" id="certificate-print-area">
+          <div class="cert-corner-ornament cert-corner-tl"></div>
+          <div class="cert-corner-ornament cert-corner-tr"></div>
+          <div class="cert-corner-ornament cert-corner-bl"></div>
+          <div class="cert-corner-ornament cert-corner-br"></div>
+
+          <!-- Header -->
+          <div class="cert-header">
+            <div class="cert-org-logo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+              <span class="cert-org-name">OpenCourses Learning Academy</span>
+            </div>
+            <h1 class="cert-main-title">Certificate of Completion</h1>
+            <div class="cert-sub-title">Verified Academic Achievement</div>
+          </div>
+
+          <!-- Recipient & Details -->
+          <div class="cert-body">
+            <p class="cert-certifies-text">This is to certify that</p>
+            <div class="cert-recipient-name" id="cert-display-name">Arjun Sharma</div>
+            <p class="cert-reason-text">has successfully completed all lectures, curriculum modules, and interactive assessments for the online course:</p>
+            <div class="cert-course-name" id="cert-display-course">Machine Learning Fundamentals</div>
+            <div class="cert-institution-tag" id="cert-display-institution">Authorized by Harvard University &bull; Open Curriculum</div>
+
+            <div class="cert-disclaimer-box">
+              <strong>Non-Affiliation Notice:</strong> This verified certificate is issued independently by OpenCourses Academy to validate self-paced completion of the course curriculum within the OpenCourses learning system. OpenCourses is an independent educational platform and is not officially affiliated with or endorsed by the university or instructor.
+            </div>
+          </div>
+
+          <!-- Footer & Security Seal -->
+          <div class="cert-footer">
+            <div class="cert-footer-item">
+              <span class="cert-meta-label">Certificate ID</span>
+              <span class="cert-meta-value" id="cert-display-id">OC-2026-X892-F71B</span>
+              <span class="cert-meta-label" style="margin-top: 0.5rem;">Issue Date</span>
+              <span class="cert-meta-value" id="cert-display-date">October 27, 2026</span>
+            </div>
+
+            <div class="cert-seal-badge">
+              <svg class="cert-seal-icon" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 4l1.5 3.5 3.5.5-2.5 2.5.5 3.5-3-1.5-3 1.5.5-3.5-2.5-2.5 3.5-.5z"/>
+                <path d="M8 17l-2 5 6-2 6 2-2-5" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              <span class="cert-seal-label">Verified Course</span>
+            </div>
+
+            <div class="cert-footer-item" style="text-align: right;">
+              <div class="cert-signature-line" style="margin-left: auto;"></div>
+              <span class="cert-sig-name">Academic Verification Registry</span>
+              <span class="cert-sig-title">OpenCourses Learning Platform</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

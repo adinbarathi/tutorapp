@@ -203,6 +203,9 @@ class AppController {
     this.selectedSubjectFilter = "all";
     this.selectedProviderFilter = "all";
     this.selectedLevelFilter = "all";
+    this.currentPage = 1;
+    this.pageSize = 24;
+    this.recipientName = localStorage.getItem("opencourses_recipient_name") || "Arjun Sharma";
 
     this.init();
   }
@@ -302,6 +305,7 @@ class AppController {
 
     searchInput?.addEventListener("input", (e) => {
       this.searchQuery = e.target.value.trim().toLowerCase();
+      this.currentPage = 1;
       clearBtn?.classList.toggle("hidden", !this.searchQuery);
       if (this.currentViewId !== "view-courses") {
         this.switchView("view-courses");
@@ -313,6 +317,7 @@ class AppController {
     clearBtn?.addEventListener("click", () => {
       if (searchInput) searchInput.value = "";
       this.searchQuery = "";
+      this.currentPage = 1;
       clearBtn.classList.add("hidden");
       this.renderCoursesGrid();
     });
@@ -323,6 +328,7 @@ class AppController {
         document.querySelectorAll("#category-filter-bar .filter-pill").forEach(p => p.classList.remove("active"));
         pill.classList.add("active");
         this.selectedSubjectFilter = pill.getAttribute("data-subject") || "all";
+        this.currentPage = 1;
         this.renderCoursesGrid();
       });
     });
@@ -330,11 +336,13 @@ class AppController {
     // Filter Dropdowns
     document.getElementById("courses-filter-provider")?.addEventListener("change", (e) => {
       this.selectedProviderFilter = e.target.value;
+      this.currentPage = 1;
       this.renderCoursesGrid();
     });
 
     document.getElementById("courses-filter-level")?.addEventListener("change", (e) => {
       this.selectedLevelFilter = e.target.value;
+      this.currentPage = 1;
       this.renderCoursesGrid();
     });
 
@@ -489,6 +497,34 @@ class AppController {
       this.renderDoubts();
       showToast("Question posted to Q&A Desk", "success");
     });
+
+    // Certificate Modal Listeners
+    const certRecipientInput = document.getElementById("cert-recipient-input");
+    if (certRecipientInput) {
+      certRecipientInput.value = this.recipientName;
+      certRecipientInput.addEventListener("input", (e) => {
+        this.recipientName = e.target.value.trim() || "Student Learner";
+        localStorage.setItem("opencourses_recipient_name", this.recipientName);
+        const displayName = document.getElementById("cert-display-name");
+        if (displayName) displayName.textContent = this.recipientName;
+      });
+    }
+
+    document.getElementById("close-cert-modal-btn")?.addEventListener("click", () => {
+      document.getElementById("certificate-modal")?.classList.add("hidden");
+    });
+
+    document.getElementById("btn-print-cert")?.addEventListener("click", () => {
+      window.print();
+    });
+
+    document.getElementById("btn-copy-cert-id")?.addEventListener("click", () => {
+      const certIdEl = document.getElementById("cert-display-id");
+      if (certIdEl && certIdEl.textContent) {
+        navigator.clipboard?.writeText(certIdEl.textContent);
+        showToast("Certificate ID copied to clipboard", "success");
+      }
+    });
   }
 
   populateFilterDropdowns() {
@@ -507,10 +543,11 @@ class AppController {
     this.renderDoubts();
   }
 
-  // --- 1. COURSES GRID (COURSERA STYLE) ---
+  // --- 1. COURSES GRID (COURSERA STYLE WITH PAGINATION) ---
   renderCoursesGrid() {
     const container = document.getElementById("all-courses-grid");
     const countLabel = document.getElementById("courses-count-label");
+    const paginationContainer = document.getElementById("courses-pagination-container");
     if (!container) return;
 
     let list = store.courses;
@@ -549,22 +586,36 @@ class AppController {
       });
     }
 
-    if (countLabel) {
-      countLabel.textContent = `Showing ${list.length} of ${store.courses.length} courses`;
+    const totalCount = list.length;
+    const totalPages = Math.ceil(totalCount / this.pageSize) || 1;
+
+    if (this.currentPage > totalPages) {
+      this.currentPage = 1;
     }
 
-    if (list.length === 0) {
+    const startIdx = (this.currentPage - 1) * this.pageSize;
+    const endIdx = Math.min(startIdx + this.pageSize, totalCount);
+    const pagedList = list.slice(startIdx, endIdx);
+
+    if (countLabel) {
+      countLabel.textContent = totalCount > 0 
+        ? `Showing ${startIdx + 1} - ${endIdx} of ${totalCount.toLocaleString()} courses` 
+        : `0 courses found`;
+    }
+
+    if (totalCount === 0) {
       container.innerHTML = `
         <div style="grid-column: 1 / -1; padding: 4rem 2rem; text-align: center; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle);">
           <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">No matching courses found</h3>
-          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Try adjusting your keyword or reset filters to browse all 124+ courses.</p>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Try adjusting your keyword or reset filters to browse all 1,000+ courses.</p>
           <button class="btn btn-primary" onclick="app.resetFilters()">Reset All Filters</button>
         </div>
       `;
+      if (paginationContainer) paginationContainer.innerHTML = "";
       return;
     }
 
-    container.innerHTML = list.map(c => {
+    container.innerHTML = pagedList.map(c => {
       const provider = store.getProviderById(c.providerId);
       const providerCode = c.providerCode || (provider ? provider.code : "FREE");
       const providerName = c.institution || (provider ? provider.institution : "Top Provider");
@@ -610,6 +661,66 @@ class AppController {
         </article>
       `;
     }).join("");
+
+    // Render Pagination Controls
+    if (paginationContainer) {
+      if (totalPages <= 1) {
+        paginationContainer.innerHTML = "";
+      } else {
+        let pagesHtml = "";
+        
+        // Prev button
+        pagesHtml += `
+          <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="app.setPage(${this.currentPage - 1})">
+            Previous
+          </button>
+        `;
+
+        // Page numbers (smart window around current page)
+        const maxButtons = 5;
+        let startPage = Math.max(1, this.currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+        if (endPage - startPage < maxButtons - 1) {
+          startPage = Math.max(1, endPage - maxButtons + 1);
+        }
+
+        if (startPage > 1) {
+          pagesHtml += `<button class="pagination-btn" onclick="app.setPage(1)">1</button>`;
+          if (startPage > 2) pagesHtml += `<span class="pagination-info">...</span>`;
+        }
+
+        for (let p = startPage; p <= endPage; p++) {
+          pagesHtml += `
+            <button class="pagination-btn ${p === this.currentPage ? 'active' : ''}" onclick="app.setPage(${p})">
+              ${p}
+            </button>
+          `;
+        }
+
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) pagesHtml += `<span class="pagination-info">...</span>`;
+          pagesHtml += `<button class="pagination-btn" onclick="app.setPage(${totalPages})">${totalPages}</button>`;
+        }
+
+        // Next button
+        pagesHtml += `
+          <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="app.setPage(${this.currentPage + 1})">
+            Next
+          </button>
+        `;
+
+        paginationContainer.innerHTML = pagesHtml;
+      }
+    }
+  }
+
+  setPage(pageNum) {
+    this.currentPage = pageNum;
+    this.renderCoursesGrid();
+    const heading = document.querySelector("#view-courses .view-header");
+    if (heading) {
+      heading.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 
   resetFilters() {
@@ -617,6 +728,7 @@ class AppController {
     this.selectedSubjectFilter = "all";
     this.selectedProviderFilter = "all";
     this.selectedLevelFilter = "all";
+    this.currentPage = 1;
 
     const searchInput = document.getElementById("global-search-input");
     if (searchInput) searchInput.value = "";
@@ -863,6 +975,30 @@ class AppController {
     if (labelEl) labelEl.textContent = `${completedCount} of ${total} completed (${percent}%)`;
     if (fillEl) fillEl.style.width = `${percent}%`;
 
+    // Check if course is 100% completed to unlock certificate banner
+    const certBox = document.getElementById("classroom-cert-unlocked-box");
+    if (certBox) {
+      if (completedCount === total && total > 0) {
+        certBox.classList.remove("hidden");
+        certBox.innerHTML = `
+          <div class="cert-claim-banner">
+            <div class="cert-claim-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              <div>
+                <h4>Course Completed 100%! Claim Your Official Certificate</h4>
+                <p>Congratulations! You have completed all modules. Generate your verifiable certificate of completion.</p>
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="app.openCertificateModal('${course.id}')" style="background: #fff; color: #0a8543; border-color: #fff; font-weight: 700;">
+              Claim Certificate
+            </button>
+          </div>
+        `;
+      } else {
+        certBox.classList.add("hidden");
+      }
+    }
+
     if (list) {
       list.innerHTML = (course.lessons || []).map((l, idx) => {
         const isDone = store.isLessonCompleted(l.id);
@@ -1034,6 +1170,82 @@ class AppController {
         </article>
       `;
     }).join("");
+
+    // Render Certificates of Completion Gallery
+    const certGrid = document.getElementById("student-certificates-grid");
+    if (certGrid) {
+      const completedCourses = enrolledCourses.filter(c => {
+        const totalL = (c.lessons || []).length;
+        if (totalL === 0) return false;
+        let d = 0;
+        c.lessons.forEach(l => { if (store.isLessonCompleted(l.id)) d++; });
+        return d === totalL;
+      });
+
+      const certCourses = completedCourses.length > 0 
+        ? completedCourses 
+        : (enrolledCourses.length > 0 ? [enrolledCourses[0]] : [store.courses[0]]);
+
+      certGrid.innerHTML = certCourses.map(c => {
+        const isDone = completedCourses.includes(c);
+        return `
+          <article class="certificate-card">
+            <div class="cert-card-header">
+              <span class="badge-gold">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+                ${isDone ? 'Verified Completion' : 'Certificate Ready'}
+              </span>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">OpenCourses Academy</span>
+            </div>
+            <h4 class="cert-card-title">${c.title}</h4>
+            <div class="cert-card-inst">${c.institution || "Provider"}</div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.4;">
+              Official non-affiliated certificate recognizing complete module study, lecture participation, and evaluation mastery.
+            </p>
+            <div class="cert-card-meta">
+              <span>Status: ${isDone ? '100% Completed' : 'Eligible for Claim'}</span>
+              <button class="btn btn-primary btn-xs" onclick="app.openCertificateModal('${c.id}')">
+                View Certificate
+              </button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+  }
+
+  // --- CERTIFICATE MODAL DISPLAY ---
+  openCertificateModal(courseId) {
+    const course = store.getCourseById(courseId) || store.courses[0];
+    if (!course) return;
+
+    this.activeCertCourseId = course.id;
+    const provider = store.getProviderById(course.providerId);
+    const instName = course.institution || (provider ? provider.name : "Top University");
+
+    const modal = document.getElementById("certificate-modal");
+    const nameInput = document.getElementById("cert-recipient-input");
+    const displayName = document.getElementById("cert-display-name");
+    const displayCourse = document.getElementById("cert-display-course");
+    const displayInst = document.getElementById("cert-display-institution");
+    const displayId = document.getElementById("cert-display-id");
+    const displayDate = document.getElementById("cert-display-date");
+
+    const currentName = this.recipientName || "Arjun Sharma";
+    if (nameInput) nameInput.value = currentName;
+    if (displayName) displayName.textContent = currentName;
+    if (displayCourse) displayCourse.textContent = course.title;
+    if (displayInst) displayInst.textContent = `Authorized by ${instName} • Open Curriculum`;
+
+    // Unique Certificate verification ID
+    const hash = Math.abs(course.id.split("").reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a; }, 0)).toString(16).toUpperCase().padStart(4, "0");
+    const certId = `OC-2026-${course.providerCode || 'VER'}-${hash}`;
+    if (displayId) displayId.textContent = certId;
+
+    const today = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    if (displayDate) displayDate.textContent = today;
+
+    modal?.classList.remove("hidden");
   }
 
   // --- 5. LEARNER Q&A / DOUBTS ---
