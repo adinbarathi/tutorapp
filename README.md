@@ -1,105 +1,85 @@
-# TutorApp 🎓
+# OpenCourses - 100% Free Online Courses Platform
 
-A full-featured, production-ready educational platform built with modern HTML5, CSS3, and JavaScript where **Teachers (Sirs)** can publish structured courses, upload YouTube video lessons, and answer student doubts, and **Students** can access a curated catalog of **124+ courses** categorized **by each Sir / Channel**, watch embedded lectures with timestamped notes, and submit questions.
-
----
-
-## 🌟 Key Features
-
-### 🏛️ 1. Massive 124+ Free Course Catalog Across 21 Top Channels & Sirs
-- **Pre-loaded with 124+ complete courses** spanning Computer Science, Web Development, Artificial Intelligence, Mathematics, Electronics, GATE Prep, and more.
-- **21 Renowned Educators and Global Institutions Included**:
-  - 🌐 **Google for Developers** (Android Kotlin, TensorFlow, Web Performance, Flutter, Gemini AI)
-  - 🧩 **Code.org** (Intro to CS, How Computers Work, AI for Oceans, Hour of Code, Cybersecurity Basics)
-  - ⚡ **Neso Academy** (Digital Electronics, C Programming, Theory of Computation, Operating Systems, Computer Organization, Microprocessors)
-  - 🚀 **freeCodeCamp** (Full-Stack Web Dev, Python for Beginners, Responsive Web Design, JavaScript Algorithms, Data Analysis with Python)
-  - 🎓 **CS50 Harvard** (David J. Malan's CS50x Intro to Computer Science, CS50 Python, CS50 Web, CS50 Cybersecurity)
-  - 🏛️ **MIT OpenCourseWare** (Prof. Strang's Linear Algebra, Intro to Algorithms, Classical Mechanics, Physics 8.01)
-  - 📐 **3Blue1Brown** (Essence of Linear Algebra, Essence of Calculus, Neural Networks Deep Dive)
-  - 📊 **StatQuest with Josh Starmer** (Machine Learning Fundamentals, Neural Networks & Backprop, PCA & Data Reduction)
-  - 🧠 **Abdul Bari** (Analysis of Algorithms, Dynamic Programming Masterclass, Sorting & Searching)
-  - 🎯 **Gate Smashers** (DBMS Complete Gate Course, Operating Systems, Computer Networks, Theory of Computation)
-  - ☕ **Chai aur Code (Hitesh Choudhary)** (JavaScript in Hindi, React JS Masterclass, Backend with Node.js)
-  - 💻 **Traversy Media** (Web Development 2024 Roadmap, Node.js & Express REST API, Modern CSS & Flexbox/Grid)
-  - 🥷 **The Net Ninja** (Complete Modern React & Hooks, TypeScript Tutorial, Next.js Full Course)
-  - 🎒 **Bro Code** (Python Full Course for Free, C++ Masterclass, HTML & CSS Complete Guide)
-  - 🌍 **Khan Academy** (Calculus 1, Organic Chemistry, World History)
-  - 💡 **Kunal Kushwaha** (Complete Java & DSA Bootcamp, Git & GitHub Masterclass, DevOps & Cloud Fundamentals)
-  - 🌟 **Apna College (Shradha Ma'am)** (Complete C++ with DSA, Full Stack Web Development)
-  - ⚛️ **Physics Wallah (Alakh Pandey Sir)** (Physics Fundamentals for Class 11/12, Thermodynamics, Wave Optics)
-  - 📜 **CrashCourse (Hank & John Green)** (Computer Science Crash Course, Biology, World History)
-  - 🌲 **Stanford Online** (CS229 Machine Learning by Andrew Ng, Convolutional Neural Networks for Visual Recognition)
-  - 🔬 **Prof. C. V. Raman Sir** (Quantum Mechanics & Classical Physics)
-- **High-Definition Cover Photos**: Every single course includes a hand-picked, high-contrast Unsplash cover photo tailored to its topic.
-- **Embedded Real YouTube Lectures**: Over 150 real, verified YouTube video lessons ready to play instantly in a distraction-free player.
+OpenCourses is a professional, Coursera-inspired open education web application built with modern HTML5, CSS3, and JavaScript. It aggregates **124+ verified free courses** and **150+ video lectures** from world-renowned universities, tech pioneers, and premier educators (Google, Harvard University, MIT, Stanford, Code.org, Neso Academy, freeCodeCamp, and more) into a single, distraction-free learning experience.
 
 ---
 
-### 👨‍🏫 2. Teacher / Sir Studio
-- **Role Onboarding & Switcher**: Easily switch between Teacher and Student perspectives anytime.
-- **Add & Organize Courses**: Define course titles, subject departments, difficulty levels, descriptions, custom cover photo URLs, and color themes.
-- **YouTube Video Lesson Studio**:
-  - Automatically parses standard YouTube URLs (`watch?v=`, `youtu.be`, `embed`, `shorts`, or direct 11-character video IDs).
-  - **Live YouTube Embed Preview** while typing or pasting URLs.
-  - Attach lecture notes, approximate durations, and external PDF/Google Drive resource links.
-- **Doubts & Questions Q&A Desk**: View questions asked by students across your courses, write official responses, and update doubt statuses in real-time.
-- **Sir Profile Customization**: Edit display name, academic designation, teaching philosophy/bio, avatar emoji, and experience.
+## Key Highlights & Features
+
+### 1. Coursera-Inspired Design System
+- **Signature Coursera Palette**: Designed with Coursera royal blue (`#0056D2`), deep blue hover states (`#00419e`), crisp white cards (`#ffffff`), and clean off-white background canvas (`#f5f7fa`).
+- **Zero Emojis / Clean Professional UI**: Removed all generic AI emojis and replaced with clean, crisp SVG iconography, typography-driven institution monograms, and verified academic badges.
+- **Academic Typography**: Clean layout using Plus Jakarta Sans, high-contrast course cards, level pills, and verified rating indicators.
+- **Dual Theme Support**: Light theme by default, with accessible dark theme option.
 
 ---
 
-### 🎓 3. Student Experience ("Access by Each Sir")
-- **"Browse by Sir" Faculty Directory**:
-  - Dedicated showcase cards for each Sir / Channel with teacher badges, student counts, course counts, and bios.
-  - Subject filter pills (All, Google, Code.org, Neso Academy, CS50 Harvard, MIT OCW, freeCodeCamp, Computer Science, Web Dev, Mathematics, etc.).
-- **Sir Showcase & Channel Page**:
-  - View all courses and standalone YouTube video playlists created by a specific Sir.
-  - "Ask Sir a Doubt" form that routes questions directly to that educator.
-- **Distraction-Free YouTube Classroom**:
-  - 16:9 responsive embedded YouTube video player with high-definition playback.
-  - **Course Playlist Sidebar**: Switch lessons smoothly with one click and track completion progress with checkboxes.
-  - **Live Timestamped Notes Pad**: Type notes while watching; notes automatically persist in your browser per lecture.
-  - **Concept Quick-Check**: Interactive multiple-choice question per lecture with instant answer feedback and explanations.
-  - **Teacher Resources & Slides**: Quick links to supplementary study materials.
-  - **"Ask Sir on this Video"**: Instant doubt submission directly from the classroom.
-- **Student Dashboard**:
-  - "Continue Learning" banner to resume exactly where you left off.
-  - Enrolled courses with real-time percentage progress bars.
-  - Personal doubt history and teacher replies feed.
+### 2. Dedicated Free Course Discovery Platform
+- **Pivot to Pure Learning Platform**: Removed dual-role / teacher switching portals to create a focused, high-utility **Find Free Courses Online** destination.
+- **124+ Free Courses Across 21 Leading Institutions & Providers**:
+  - **Google for Developers**: Machine Learning, TensorFlow, Android Kotlin, Flutter, Gemini AI
+  - **Harvard University (CS50)**: CS50x Intro to CS, CS50 Python, CS50 Web, CS50 Cybersecurity
+  - **MIT OpenCourseWare**: Prof. Strang's Linear Algebra, Intro to Algorithms, Classical Mechanics
+  - **Stanford Online**: Machine Learning (Andrew Ng), Deep Learning for Computer Vision
+  - **Code.org**: Computer Science Discoveries, How Computers Work, AI for Oceans, Internet Fundamentals
+  - **Neso Academy**: Digital Electronics, Operating Systems, C Programming, Theory of Computation
+  - **freeCodeCamp.org**: Full-Stack Web Development, Responsive Web Design, Python Data Analysis
+  - **3Blue1Brown**: Essence of Linear Algebra, Essence of Calculus, Neural Networks
+  - **StatQuest with Josh Starmer**: Machine Learning Fundamentals, Neural Networks, PCA
+  - **Abdul Bari**: Analysis & Design of Algorithms, Dynamic Programming Masterclass
+  - **Gate Smashers**: DBMS Complete GATE Course, Operating Systems, Computer Networks
+  - **Chai aur Code**: Modern JavaScript, React JS Masterclass, Backend with Node.js
+  - **Traversy Media**: Modern Web Development Roadmap, Node.js & Express REST APIs
+  - **The Net Ninja**: Modern React & Hooks, TypeScript, Next.js Full Course
+  - **Bro Code**: Python Full Course, C++ Masterclass, HTML & CSS Complete Guide
+  - **Khan Academy**: Calculus 1, Organic Chemistry, World History
+  - **Kunal Kushwaha**: Complete Java & DSA Bootcamp, Git & GitHub Masterclass
+  - **Apna College**: Complete C++ with DSA, Full-Stack Web Development
+  - **Physics Wallah**: Fundamentals of Physics, Thermodynamics, Wave Optics
+  - **CrashCourse**: Computer Science, Biology, World History
+  - **Prof. C. V. Raman**: Quantum Mechanics & Theoretical Physics
 
 ---
 
-### ⚡ 4. Architecture & Persistence
-- **Zero External Backend Required**: Pure client-side application running seamlessly in any modern web browser.
-- **Full LocalStorage Persistence with Auto-Merge**: All user-added courses, custom edits, notes, progress, and doubts persist across browser refreshes while auto-merging newly published catalogue entries.
-- **Data Export & Reset**: Single-click "Reset Demo Data" and "Backup / Export Data" controls.
-- **Responsive & Dual Theme**: Dark mode default with light mode toggle, designed for mobile, tablet, and desktop screens.
+### 3. Distraction-Free Video Classroom
+- **16:9 Responsive Embedded Video Player**: High-definition YouTube playback with zero external distractions.
+- **Curriculum Playlist Sidebar**: One-click lesson switching with real-time completion checkmarks and progress bars.
+- **Timestamped Personal Notes Pad**: Take lecture notes while watching; notes automatically persist in your browser.
+- **Interactive Concept Quick-Check**: Multiple-choice question per lecture with instant answer feedback and conceptual explanations.
+- **Supplemental Study Resources**: Direct links to slide decks, code repositories, and documentation.
 
 ---
 
-## 🚀 How to Run Locally
-
-1. Open `index.html` directly in any web browser (Chrome, Edge, Firefox, Safari):
-   ```bash
-   # Double-click index.html or open via terminal:
-   start index.html
-   ```
-2. Or serve via any local static web server (such as Python, Node, or VS Code Live Server):
-   ```bash
-   npx serve .
-   # or
-   python -m http.server 8080
-   ```
+### 4. My Learning Dashboard & Persistence
+- **Zero Backend Required**: Runs completely in the browser without any build tools or server installation.
+- **LocalStorage Persistence**: Enrolled courses, finished lessons, personal notes, and question history persist automatically across sessions.
+- **One-Click Data Backup & Reset**: Export your learning progress to a JSON backup file or reset demo data anytime.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 tutor-app/
-├── index.html        # Main semantic HTML structure, hero filters & modals
-├── styles.css        # Responsive stylesheet with light/dark theme variables & cover overlays
-├── courses-data.js   # 124+ detailed courses across 21 top educators with YouTube IDs & cover photos
-├── app.js            # Application logic, YouTube parser, role management, classroom & stores
-├── README.md         # Comprehensive documentation & feature guide
-└── .gitignore        # Git ignore rules
+├── index.html        # Semantic HTML layout, Coursera header, hero, filter bar & modals
+├── styles.css        # Coursera design system (#0056D2), responsive cards & player styling
+├── courses-data.js   # Curated dataset with 124 courses and 21 institutions (zero emojis)
+├── app.js            # Controller: catalog search, filtering, classroom player, notes, quiz, & store
+└── README.md         # Documentation & guide
+```
+
+---
+
+## How to Run Locally
+
+Open `index.html` directly in any web browser:
+
+```bash
+# On Windows PowerShell / Command Prompt:
+start index.html
+
+# Or serve via any local static server:
+npx serve .
+# or
+python -m http.server 8080
 ```

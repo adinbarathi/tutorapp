@@ -1,66 +1,47 @@
 /**
- * TUTORAPP - Learn & Teach with Top Sirs
- * Complete Client-Side Learning & Educator Platform
+ * OPENCOURSES - Find 120+ Free Online Courses
+ * Coursera-style Curated Free Educational Courses Platform
  */
 
 // =============================================================================
-// 1. DEFAULT SEED DATA
+// 1. DATA SOURCE RESOLUTION
 // =============================================================================
 
-const INITIAL_SIRS = (typeof window !== "undefined" && window.ALL_SIRS_DATA) ? window.ALL_SIRS_DATA : ((typeof ALL_SIRS_DATA !== "undefined" && Array.isArray(ALL_SIRS_DATA)) ? ALL_SIRS_DATA : []);
-const INITIAL_COURSES = (typeof window !== "undefined" && window.ALL_COURSES_DATA) ? window.ALL_COURSES_DATA : ((typeof ALL_COURSES_DATA !== "undefined" && Array.isArray(ALL_COURSES_DATA)) ? ALL_COURSES_DATA : []);
+const ALL_PROVIDERS = (typeof window !== "undefined" && window.ALL_PROVIDERS_DATA) 
+  ? window.ALL_PROVIDERS_DATA 
+  : ((typeof ALL_PROVIDERS_DATA !== "undefined" && Array.isArray(ALL_PROVIDERS_DATA)) ? ALL_PROVIDERS_DATA : []);
 
-const INITIAL_STUDENTS = [
-  {
-    id: "student-arjun",
-    name: "Arjun Sharma",
-    avatar: "🎓",
-    target: "B.Tech Computer Science & AI"
-  },
-  {
-    id: "student-sneha",
-    name: "Sneha Patel",
-    avatar: "🎒",
-    target: "Olympiad & Advanced Physics"
-  }
-];
+const ALL_COURSES = (typeof window !== "undefined" && window.ALL_COURSES_DATA) 
+  ? window.ALL_COURSES_DATA 
+  : ((typeof ALL_COURSES_DATA !== "undefined" && Array.isArray(ALL_COURSES_DATA)) ? ALL_COURSES_DATA : []);
 
 const INITIAL_DOUBTS = [
   {
-    id: "doubt-1",
-    studentId: "student-arjun",
-    studentName: "Arjun Sharma",
-    sirId: "sir-raman",
-    courseId: "course-linear-algebra",
-    courseTitle: "Visual Linear Algebra & Vector Geometry",
-    title: "Geometric intuition for negative determinants?",
-    content: "Sir, in Lecture 3 on transformations, you explained that the determinant measures how area scales. What does it physically mean when the determinant is negative (-2 for instance)?",
+    id: "q-1",
+    courseId: "course-google-ml",
+    courseTitle: "Machine Learning Crash Course by Google",
+    title: "How does gradient descent avoid local minima?",
+    content: "When training deep neural networks with non-convex loss functions, does stochastic gradient descent (SGD) jump out of shallow local minima due to noisy batch approximations?",
     timestamp: "2 hours ago",
     status: "answered",
-    answer: "Excellent question Arjun! When the determinant is negative, the orientation of space has been reversed (like turning a sheet of paper inside out, or looking at a coordinate grid through a mirror). The absolute value |det| still gives the area scaling factor, while the minus sign signifies an orientation flip!"
+    answer: "Yes, exactly! Stochastic gradient descent introduces variance into gradient updates because each batch is a small sample. This stochastic noise often helps the optimizer escape saddle points and shallow local minima to find better global solutions."
   },
   {
-    id: "doubt-2",
-    studentId: "student-sneha",
-    studentName: "Sneha Patel",
-    sirId: "sir-ananya",
-    courseId: "course-fullstack-web",
-    courseTitle: "Modern Full-Stack Web Development 2026",
-    title: "Difference between Promises and async/await?",
-    content: "Ma'am, does async/await run on a different thread compared to `.then()` chaining, or is it purely syntax sugar on top of the same microtask queue?",
+    id: "q-2",
+    courseId: "course-neso-digital-electronics",
+    courseTitle: "Digital Electronics & Logic Design (Neso Academy)",
+    title: "Difference between combinational and sequential circuits?",
+    content: "In lecture 1 on logic gates, what is the fundamental architectural difference between combinational logic and sequential logic in terms of clock memory?",
     timestamp: "5 hours ago",
     status: "answered",
-    answer: "It is 100% syntactic sugar on top of Promises! When the JavaScript engine reaches an `await`, it pauses execution of that async function and schedules the rest as a microtask when the Promise resolves. The underlying thread and event loop behavior are identical."
+    answer: "Combinational circuits depend purely on current inputs with no feedback or memory elements (like AND gates, adders, and multiplexers). Sequential circuits include memory elements (flip-flops, registers) and depend on both current inputs and previous internal state, typically regulated by a clock signal."
   },
   {
-    id: "doubt-3",
-    studentId: "student-arjun",
-    studentName: "Arjun Sharma",
-    sirId: "sir-vikram",
-    courseId: "course-dsa-mastery",
-    courseTitle: "DSA Masterclass: Graphs & Dynamic Programming",
-    title: "Dijkstra algorithm with negative edge weights?",
-    content: "Vikram Sir, why does Dijkstra fail on graphs with negative cycles or even single negative weights? Should we always switch to Bellman-Ford?",
+    id: "q-3",
+    courseId: "course-harvard-cs50x",
+    courseTitle: "CS50x: Introduction to Computer Science (Harvard)",
+    title: "Pointers and memory allocation in C?",
+    content: "Why does freeing a pointer without setting it to NULL create a dangling pointer security vulnerability in C?",
     timestamp: "1 day ago",
     status: "pending",
     answer: null
@@ -73,42 +54,27 @@ const INITIAL_DOUBTS = [
 
 class Store {
   constructor() {
-    this.sirs = this.load("tutor_sirs", INITIAL_SIRS);
-    this.students = this.load("tutor_students", INITIAL_STUDENTS);
-    this.courses = this.load("tutor_courses", INITIAL_COURSES);
-    this.doubts = this.load("tutor_doubts", INITIAL_DOUBTS);
+    this.providers = ALL_PROVIDERS;
+    this.courses = ALL_COURSES;
+    this.doubts = this.load("opencourses_doubts", INITIAL_DOUBTS);
     
-    // User preferences & session
-    this.currentRole = localStorage.getItem("tutor_role") || "student"; // 'teacher' or 'student'
-    this.activeSirId = localStorage.getItem("tutor_active_sir") || this.sirs[0].id;
-    this.activeStudentId = localStorage.getItem("tutor_active_student") || this.students[0].id;
-    
-    // Student tracking
-    this.studentProgress = this.load("tutor_student_progress", {
-      enrolledCourseIds: ["course-linear-algebra", "course-fullstack-web", "course-neso-digital-electronics", "course-google-ml"],
-      completedLessonIds: ["lesson-la-1", "lesson-neso-de-1"],
+    // User learning progress & enrolled courses
+    this.progress = this.load("opencourses_progress", {
+      enrolledCourseIds: [
+        "course-google-ml",
+        "course-harvard-cs50x",
+        "course-neso-digital-electronics",
+        "course-fcc-fullstack"
+      ],
+      completedLessonIds: ["gml-1", "cs50-1"],
       notes: {
-        "lesson-la-1": "Vectors can be viewed as arrows, lists of coordinates, or abstract members of a vector space satisfying linear closure.",
-        "lesson-neso-de-1": "Signals carry information. Digital signals offer superior noise immunity over continuous analog signals."
+        "gml-1": "Supervised learning maps input features X to target labels Y using loss minimization.",
+        "cs50-1": "Computational thinking is the application of precise algorithms to solve problems efficiently."
       },
-      lastWatchedCourseId: "course-neso-digital-electronics",
-      lastWatchedLessonId: "lesson-neso-de-1"
+      lastWatchedCourseId: "course-google-ml",
+      lastWatchedLessonId: "gml-1"
     });
 
-    // Auto-merge new faculty and courses into existing localStorage stores
-    INITIAL_SIRS.forEach(newSir => {
-      if (!this.sirs.some(s => s.id === newSir.id)) {
-        this.sirs.push(newSir);
-      }
-    });
-    INITIAL_COURSES.forEach(newCourse => {
-      const existing = this.courses.find(c => c.id === newCourse.id);
-      if (!existing) {
-        this.courses.push(newCourse);
-      } else if (!existing.coverPhoto && newCourse.coverPhoto) {
-        existing.coverPhoto = newCourse.coverPhoto;
-      }
-    });
     this.save();
   }
 
@@ -117,41 +83,70 @@ class Store {
       const data = localStorage.getItem(key);
       return data ? JSON.parse(data) : fallback;
     } catch (e) {
-      console.warn(`Error loading ${key} from localStorage, using fallback:`, e);
+      console.warn(`Error loading ${key}:`, e);
       return fallback;
     }
   }
 
   save() {
-    localStorage.setItem("tutor_sirs", JSON.stringify(this.sirs));
-    localStorage.setItem("tutor_students", JSON.stringify(this.students));
-    localStorage.setItem("tutor_courses", JSON.stringify(this.courses));
-    localStorage.setItem("tutor_doubts", JSON.stringify(this.doubts));
-    localStorage.setItem("tutor_role", this.currentRole);
-    localStorage.setItem("tutor_active_sir", this.activeSirId);
-    localStorage.setItem("tutor_active_student", this.activeStudentId);
-    localStorage.setItem("tutor_student_progress", JSON.stringify(this.studentProgress));
+    localStorage.setItem("opencourses_doubts", JSON.stringify(this.doubts));
+    localStorage.setItem("opencourses_progress", JSON.stringify(this.progress));
   }
 
   resetDemo() {
-    localStorage.clear();
+    localStorage.removeItem("opencourses_doubts");
+    localStorage.removeItem("opencourses_progress");
     location.reload();
   }
 
-  getActiveSir() {
-    return this.sirs.find(s => s.id === this.activeSirId) || this.sirs[0];
-  }
-
-  getActiveStudent() {
-    return this.students.find(s => s.id === this.activeStudentId) || this.students[0];
-  }
-
-  getSirById(id) {
-    return this.sirs.find(s => s.id === id);
+  getProviderById(id) {
+    return this.providers.find(p => p.id === id);
   }
 
   getCourseById(id) {
     return this.courses.find(c => c.id === id);
+  }
+
+  isEnrolled(courseId) {
+    return this.progress.enrolledCourseIds.includes(courseId);
+  }
+
+  enroll(courseId) {
+    if (!this.progress.enrolledCourseIds.includes(courseId)) {
+      this.progress.enrolledCourseIds.push(courseId);
+      this.save();
+    }
+  }
+
+  isLessonCompleted(lessonId) {
+    return this.progress.completedLessonIds.includes(lessonId);
+  }
+
+  toggleLessonComplete(lessonId) {
+    const idx = this.progress.completedLessonIds.indexOf(lessonId);
+    if (idx > -1) {
+      this.progress.completedLessonIds.splice(idx, 1);
+    } else {
+      this.progress.completedLessonIds.push(lessonId);
+    }
+    this.save();
+    return this.isLessonCompleted(lessonId);
+  }
+
+  saveNote(lessonId, text) {
+    this.progress.notes[lessonId] = text;
+    this.save();
+  }
+
+  getNote(lessonId) {
+    return this.progress.notes[lessonId] || "";
+  }
+
+  setLastWatched(courseId, lessonId) {
+    this.progress.lastWatchedCourseId = courseId;
+    this.progress.lastWatchedLessonId = lessonId;
+    this.enroll(courseId);
+    this.save();
   }
 }
 
@@ -164,23 +159,17 @@ const store = new Store();
 function extractYouTubeId(urlOrId) {
   if (!urlOrId) return "";
   const clean = urlOrId.trim();
-  // If already 11-char alphanumeric
   if (/^[a-zA-Z0-9_-]{11}$/.test(clean)) {
     return clean;
   }
-  // Standard watch URL: youtube.com/watch?v=ID
   const matchWatch = clean.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
   if (matchWatch) return matchWatch[1];
-  // Short URL: youtu.be/ID
   const matchShort = clean.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
   if (matchShort) return matchShort[1];
-  // Embed URL: youtube.com/embed/ID
   const matchEmbed = clean.match(/embed\/([a-zA-Z0-9_-]{11})/);
   if (matchEmbed) return matchEmbed[1];
-  // Shorts URL: youtube.com/shorts/ID
   const matchShorts = clean.match(/shorts\/([a-zA-Z0-9_-]{11})/);
   if (matchShorts) return matchShorts[1];
-
   return "";
 }
 
@@ -190,95 +179,105 @@ function showToast(message, type = "success") {
 
   const toast = document.createElement("div");
   toast.className = `toast toast-${type}`;
-  const icon = type === "success" ? "✓" : type === "error" ? "⚠️" : "ℹ️";
-  toast.innerHTML = `<strong>${icon}</strong> <span>${message}</span>`;
+  toast.textContent = message;
   container.appendChild(toast);
 
   setTimeout(() => {
     toast.style.opacity = "0";
     toast.style.transform = "translateY(10px)";
     setTimeout(() => toast.remove(), 300);
-  }, 3500);
+  }, 3000);
 }
 
 // =============================================================================
-// 4. APP CONTROLLER & VIEW ROUTING
+// 4. APP CONTROLLER
 // =============================================================================
 
 class AppController {
   constructor() {
-    this.currentViewId = "view-sirs";
-    this.selectedShowcaseSirId = null;
-    this.activeClassroomCourseId = "course-linear-algebra";
-    this.activeClassroomLessonId = "lesson-la-1";
+    this.currentViewId = "view-courses";
+    this.selectedProviderId = null;
+    this.activeCourseId = store.progress.lastWatchedCourseId || store.courses[0]?.id || "course-google-ml";
+    this.activeLessonId = store.progress.lastWatchedLessonId || store.courses[0]?.lessons[0]?.id || "gml-1";
+    this.searchQuery = "";
+    this.selectedSubjectFilter = "all";
+    this.selectedProviderFilter = "all";
+    this.selectedLevelFilter = "all";
+
     this.init();
   }
 
   init() {
     this.applyTheme();
     this.setupEventListeners();
-    this.updateRoleUI();
-    this.populateModalSelects();
-
-    // Default view routing based on role
-    if (store.currentRole === "teacher") {
-      this.switchView("view-teacher-dashboard");
-    } else {
-      this.switchView("view-sirs");
-    }
-
+    this.populateFilterDropdowns();
     this.renderAllViews();
   }
 
   applyTheme() {
-    const savedTheme = localStorage.getItem("tutor_theme") || "dark";
+    const savedTheme = localStorage.getItem("opencourses_theme") || "light";
     document.documentElement.setAttribute("data-theme", savedTheme);
     const sunIcon = document.querySelector(".sun-icon");
     const moonIcon = document.querySelector(".moon-icon");
-    if (savedTheme === "light") {
-      sunIcon.classList.add("hidden");
-      moonIcon.classList.remove("hidden");
+    if (savedTheme === "dark") {
+      sunIcon?.classList.remove("hidden");
+      moonIcon?.classList.add("hidden");
     } else {
-      sunIcon.classList.remove("hidden");
-      moonIcon.classList.add("hidden");
+      sunIcon?.classList.add("hidden");
+      moonIcon?.classList.remove("hidden");
     }
   }
 
   toggleTheme() {
-    const current = document.documentElement.getAttribute("data-theme") || "dark";
-    const next = current === "dark" ? "light" : "dark";
-    localStorage.setItem("tutor_theme", next);
+    const current = document.documentElement.getAttribute("data-theme") || "light";
+    const next = current === "light" ? "dark" : "light";
+    localStorage.setItem("opencourses_theme", next);
     this.applyTheme();
     showToast(`Switched to ${next} theme`, "info");
+  }
+
+  switchView(viewId) {
+    this.currentViewId = viewId;
+    document.querySelectorAll(".content-view").forEach(v => v.classList.remove("active"));
+    const target = document.getElementById(viewId);
+    if (target) {
+      target.classList.add("active");
+    }
+
+    // Update sidebar active buttons
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-view") === viewId);
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Refresh view specific content
+    if (viewId === "view-courses") {
+      this.renderCoursesGrid();
+    } else if (viewId === "view-institutions") {
+      this.renderInstitutionsGrid();
+    } else if (viewId === "view-classroom") {
+      this.renderClassroom();
+    } else if (viewId === "view-my-learning") {
+      this.renderMyLearning();
+    } else if (viewId === "view-doubts") {
+      this.renderDoubts();
+    }
   }
 
   setupEventListeners() {
     // Theme toggle
     document.getElementById("theme-toggle-btn")?.addEventListener("click", () => this.toggleTheme());
 
-    // Role switcher modal triggers
-    document.getElementById("role-switcher-btn")?.addEventListener("click", () => this.openRoleModal());
-    document.getElementById("quick-switch-mode-btn")?.addEventListener("click", () => this.openRoleModal());
-    document.getElementById("close-role-modal-btn")?.addEventListener("click", () => this.closeRoleModal());
-
-    // Header Action Button (Dynamic)
-    document.getElementById("header-action-btn")?.addEventListener("click", () => {
-      if (store.currentRole === "teacher") {
-        this.openAddCourseModal();
-      } else {
-        this.switchView("view-sirs");
-      }
-    });
-
-    // Sidebar Mobile Toggle
-    document.getElementById("sidebar-toggle")?.addEventListener("click", () => {
-      document.getElementById("app-sidebar")?.classList.toggle("open");
-    });
-
     // Brand Home Link
     document.getElementById("brand-home-link")?.addEventListener("click", (e) => {
       e.preventDefault();
-      this.switchView(store.currentRole === "teacher" ? "view-teacher-dashboard" : "view-sirs");
+      this.switchView("view-courses");
+    });
+
+    // Mobile sidebar toggle
+    document.getElementById("sidebar-toggle")?.addEventListener("click", () => {
+      document.getElementById("app-sidebar")?.classList.toggle("open");
     });
 
     // Navigation buttons in sidebar
@@ -292,1502 +291,790 @@ class AppController {
       });
     });
 
-    // Sir Showcase tabs
-    document.querySelectorAll("[data-sir-tab]").forEach(btn => {
+    // Quick header button for My Learning
+    document.getElementById("btn-quick-my-learning")?.addEventListener("click", () => {
+      this.switchView("view-my-learning");
+    });
+
+    // Global Search Input
+    const searchInput = document.getElementById("global-search-input");
+    const clearBtn = document.getElementById("clear-search-btn");
+
+    searchInput?.addEventListener("input", (e) => {
+      this.searchQuery = e.target.value.trim().toLowerCase();
+      clearBtn?.classList.toggle("hidden", !this.searchQuery);
+      if (this.currentViewId !== "view-courses") {
+        this.switchView("view-courses");
+      } else {
+        this.renderCoursesGrid();
+      }
+    });
+
+    clearBtn?.addEventListener("click", () => {
+      if (searchInput) searchInput.value = "";
+      this.searchQuery = "";
+      clearBtn.classList.add("hidden");
+      this.renderCoursesGrid();
+    });
+
+    // Category Filter Pills
+    document.querySelectorAll("#category-filter-bar .filter-pill").forEach(pill => {
+      pill.addEventListener("click", () => {
+        document.querySelectorAll("#category-filter-bar .filter-pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+        this.selectedSubjectFilter = pill.getAttribute("data-subject") || "all";
+        this.renderCoursesGrid();
+      });
+    });
+
+    // Filter Dropdowns
+    document.getElementById("courses-filter-provider")?.addEventListener("change", (e) => {
+      this.selectedProviderFilter = e.target.value;
+      this.renderCoursesGrid();
+    });
+
+    document.getElementById("courses-filter-level")?.addEventListener("change", (e) => {
+      this.selectedLevelFilter = e.target.value;
+      this.renderCoursesGrid();
+    });
+
+    // Back to institutions button
+    document.getElementById("back-to-institutions-btn")?.addEventListener("click", () => {
+      this.switchView("view-institutions");
+    });
+
+    // Reset Demo Data
+    document.getElementById("reset-demo-data-btn")?.addEventListener("click", () => {
+      if (confirm("Reset learning progress and saved notes to defaults?")) {
+        store.resetDemo();
+      }
+    });
+
+    // Export Data
+    document.getElementById("export-data-btn")?.addEventListener("click", () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(store.progress, null, 2));
+      const downloadAnchor = document.createElement("a");
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "opencourses-learning-backup.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Learning backup downloaded", "info");
+    });
+
+    // Classroom Tabs
+    document.querySelectorAll("[data-classroom-tab]").forEach(btn => {
       btn.addEventListener("click", () => {
-        const targetTab = btn.getAttribute("data-sir-tab");
-        document.querySelectorAll("[data-sir-tab]").forEach(b => b.classList.remove("active"));
-        document.querySelectorAll(".sir-tab-content").forEach(c => c.classList.remove("active"));
+        const targetTab = btn.getAttribute("data-classroom-tab");
+        document.querySelectorAll("[data-classroom-tab]").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".classroom-tab-pane").forEach(p => p.classList.remove("active"));
         btn.classList.add("active");
         document.getElementById(targetTab)?.classList.add("active");
       });
     });
 
-    // Back to Sirs button
-    document.getElementById("back-to-sirs-btn")?.addEventListener("click", () => {
-      this.switchView("view-sirs");
+    // Notes Save
+    document.getElementById("save-notes-btn")?.addEventListener("click", () => {
+      const textarea = document.getElementById("lesson-notes-textarea");
+      if (textarea && this.activeLessonId) {
+        store.saveNote(this.activeLessonId, textarea.value);
+        const status = document.getElementById("notes-save-status");
+        if (status) {
+          status.textContent = "Saved to browser";
+          setTimeout(() => { status.textContent = "Saved"; }, 2000);
+        }
+        showToast("Study notes saved", "success");
+      }
     });
 
-    // Subject Filter pills in Browse by Sir view
-    document.querySelectorAll("#sirs-subject-filters .filter-pill").forEach(pill => {
-      pill.addEventListener("click", () => {
-        document.querySelectorAll("#sirs-subject-filters .filter-pill").forEach(p => p.classList.remove("active"));
-        pill.classList.add("active");
-        this.renderSirsGrid(pill.getAttribute("data-subject"));
-      });
-    });
-
-    // Classroom tabs
-    document.querySelectorAll("[data-classroom-tab]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const target = btn.getAttribute("data-classroom-tab");
-        document.querySelectorAll("[data-classroom-tab]").forEach(b => b.classList.remove("active"));
-        document.querySelectorAll(".classroom-tab-pane").forEach(p => p.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById(target)?.classList.add("active");
-      });
-    });
-
-    // Notes auto-save & manual save in Classroom
-    document.getElementById("save-notes-btn")?.addEventListener("click", () => this.saveCurrentNotes());
     document.getElementById("clear-notes-btn")?.addEventListener("click", () => {
       const textarea = document.getElementById("lesson-notes-textarea");
-      if (textarea) textarea.value = "";
-      this.saveCurrentNotes();
-      showToast("Notes cleared", "info");
+      if (textarea && confirm("Clear your notes for this lecture?")) {
+        textarea.value = "";
+        store.saveNote(this.activeLessonId, "");
+        showToast("Notes cleared", "info");
+      }
     });
 
-    // Classroom mark lesson completed toggle
+    // Mark Lesson Complete
     document.getElementById("mark-lesson-complete-btn")?.addEventListener("click", () => {
-      this.toggleLessonCompletion(this.activeClassroomLessonId);
+      if (this.activeLessonId) {
+        const isDone = store.toggleLessonComplete(this.activeLessonId);
+        this.updateLessonCompletionUI(isDone);
+        this.updatePlaylistUI();
+        showToast(isDone ? "Lesson completed" : "Marked as incomplete", "info");
+      }
     });
 
-    // Classroom Quick Doubt form
+    // Classroom Question Form
     document.getElementById("classroom-quick-doubt-form")?.addEventListener("submit", (e) => {
       e.preventDefault();
-      this.handleClassroomDoubtSubmit();
+      const textarea = document.getElementById("classroom-doubt-text");
+      const content = textarea?.value.trim();
+      if (!content) return;
+
+      const course = store.getCourseById(this.activeCourseId);
+      const newDoubt = {
+        id: `q-${Date.now()}`,
+        courseId: this.activeCourseId,
+        courseTitle: course ? course.title : "Course Question",
+        title: content.slice(0, 60) + (content.length > 60 ? "..." : ""),
+        content: content,
+        timestamp: "Just now",
+        status: "pending",
+        answer: null
+      };
+
+      store.doubts.unshift(newDoubt);
+      store.save();
+      textarea.value = "";
+      showToast("Question submitted to Q&A Desk", "success");
     });
 
-    // Sir Showcase Doubt Form
-    document.getElementById("ask-sir-doubt-form")?.addEventListener("submit", (e) => {
-      e.preventDefault();
-      this.handleSirShowcaseDoubtSubmit();
-    });
-
-    // Ask Doubt Modal trigger in Student Doubts view
-    document.getElementById("open-ask-doubt-modal-btn")?.addEventListener("click", () => {
-      this.switchView("view-sirs");
-      showToast("Select any Sir to submit a question directly!", "info");
-    });
-
-    // Continue Learning Button in Student Dashboard
+    // Continue Learning Resume Button
     document.getElementById("continue-learning-btn")?.addEventListener("click", () => {
-      this.openClassroom(store.studentProgress.lastWatchedCourseId, store.studentProgress.lastWatchedLessonId);
+      if (store.progress.lastWatchedCourseId && store.progress.lastWatchedLessonId) {
+        this.openClassroomLesson(store.progress.lastWatchedCourseId, store.progress.lastWatchedLessonId);
+      } else {
+        const firstCourse = store.courses[0];
+        if (firstCourse && firstCourse.lessons.length > 0) {
+          this.openClassroomLesson(firstCourse.id, firstCourse.lessons[0].id);
+        }
+      }
     });
 
-    // All Courses view filters
-    document.getElementById("courses-filter-sir")?.addEventListener("change", () => this.renderAllCoursesGrid());
-    document.getElementById("courses-filter-level")?.addEventListener("change", () => this.renderAllCoursesGrid());
-
-    // Global Search
-    const searchInput = document.getElementById("global-search-input");
-    const clearSearchBtn = document.getElementById("clear-search-btn");
-    searchInput?.addEventListener("input", (e) => {
-      const q = e.target.value.trim();
-      clearSearchBtn?.classList.toggle("hidden", !q);
-      this.handleGlobalSearch(q);
-    });
-    clearSearchBtn?.addEventListener("click", () => {
-      if (searchInput) searchInput.value = "";
-      clearSearchBtn.classList.add("hidden");
-      this.renderAllViews();
-    });
-
-    // --- Teacher Actions ---
-    document.getElementById("studio-add-course-btn")?.addEventListener("click", () => this.openAddCourseModal());
-    document.getElementById("btn-create-course-header")?.addEventListener("click", () => this.openAddCourseModal());
-    document.getElementById("studio-upload-yt-btn")?.addEventListener("click", () => this.switchView("view-teacher-youtube"));
-
-    // Add Course Modal handlers
-    document.getElementById("close-add-course-modal")?.addEventListener("click", () => this.closeAddCourseModal());
-    document.getElementById("cancel-create-course-btn")?.addEventListener("click", () => this.closeAddCourseModal());
-    document.getElementById("create-course-form")?.addEventListener("submit", (e) => {
-      e.preventDefault();
-      this.handleCreateCourse();
-    });
-
-    // YouTube Upload Form in Teacher view
-    const ytUrlInput = document.getElementById("yt-video-url");
-    ytUrlInput?.addEventListener("input", (e) => {
-      this.previewYouTubeVideo(e.target.value);
-    });
-    document.getElementById("upload-youtube-form")?.addEventListener("submit", (e) => {
-      e.preventDefault();
-      this.handleUploadYouTubeLesson();
-    });
-    document.getElementById("yt-reset-btn")?.addEventListener("click", () => {
-      document.getElementById("yt-preview-box")?.classList.add("hidden");
-    });
-
-    // Teacher Profile Edit form
-    document.getElementById("edit-sir-profile-form")?.addEventListener("submit", (e) => {
-      e.preventDefault();
-      this.handleEditSirProfile();
-    });
-
-    // Teacher Doubts filter
-    document.getElementById("teacher-doubt-filter")?.addEventListener("change", () => this.renderTeacherDoubtsList());
-
-    // Role modal selection buttons
-    document.getElementById("confirm-teacher-role-btn")?.addEventListener("click", () => {
-      const select = document.getElementById("choose-teacher-select");
+    // Ask Question Modal
+    document.getElementById("open-ask-doubt-modal-btn")?.addEventListener("click", () => {
+      const modal = document.getElementById("ask-doubt-modal");
+      const select = document.getElementById("modal-doubt-course-select");
       if (select) {
-        store.currentRole = "teacher";
-        store.activeSirId = select.value;
-        store.save();
-        this.closeRoleModal();
-        this.updateRoleUI();
-        this.switchView("view-teacher-dashboard");
-        this.renderAllViews();
-        showToast(`Logged in as Teacher (${store.getActiveSir().name})!`, "success");
+        select.innerHTML = store.courses.map(c => `<option value="${c.id}">${c.title}</option>`).join("");
       }
+      modal?.classList.remove("hidden");
     });
 
-    document.getElementById("confirm-student-role-btn")?.addEventListener("click", () => {
-      const select = document.getElementById("choose-student-select");
-      if (select) {
-        store.currentRole = "student";
-        store.activeStudentId = select.value;
-        store.save();
-        this.closeRoleModal();
-        this.updateRoleUI();
-        this.switchView("view-sirs");
-        this.renderAllViews();
-        showToast(`Logged in as Student (${store.getActiveStudent().name})!`, "success");
-      }
+    document.getElementById("close-ask-doubt-modal-btn")?.addEventListener("click", () => {
+      document.getElementById("ask-doubt-modal")?.classList.add("hidden");
     });
 
-    // New Sir Modal
-    document.getElementById("create-new-teacher-trigger")?.addEventListener("click", () => {
-      this.closeRoleModal();
-      document.getElementById("new-sir-modal")?.classList.remove("hidden");
+    document.getElementById("cancel-doubt-btn")?.addEventListener("click", () => {
+      document.getElementById("ask-doubt-modal")?.classList.add("hidden");
     });
-    document.getElementById("close-new-sir-modal")?.addEventListener("click", () => {
-      document.getElementById("new-sir-modal")?.classList.add("hidden");
-    });
-    document.getElementById("cancel-new-sir-btn")?.addEventListener("click", () => {
-      document.getElementById("new-sir-modal")?.classList.add("hidden");
-    });
-    document.getElementById("create-sir-form")?.addEventListener("submit", (e) => {
+
+    document.getElementById("ask-modal-doubt-form")?.addEventListener("submit", (e) => {
       e.preventDefault();
-      this.handleCreateNewSir();
-    });
+      const courseId = document.getElementById("modal-doubt-course-select")?.value;
+      const title = document.getElementById("modal-doubt-title-input")?.value.trim();
+      const content = document.getElementById("modal-doubt-content-input")?.value.trim();
+      const course = store.getCourseById(courseId);
 
-    // New Student Modal
-    document.getElementById("create-new-student-trigger")?.addEventListener("click", () => {
-      this.closeRoleModal();
-      document.getElementById("new-student-modal")?.classList.remove("hidden");
-    });
-    document.getElementById("close-new-student-modal")?.addEventListener("click", () => {
-      document.getElementById("new-student-modal")?.classList.add("hidden");
-    });
-    document.getElementById("cancel-new-student-btn")?.addEventListener("click", () => {
-      document.getElementById("new-student-modal")?.classList.add("hidden");
-    });
-    document.getElementById("create-student-form")?.addEventListener("submit", (e) => {
-      e.preventDefault();
-      this.handleCreateNewStudent();
-    });
+      if (!title || !content) return;
 
-    // Reset Demo Data & Backup
-    document.getElementById("reset-demo-data-btn")?.addEventListener("click", () => {
-      if (confirm("Reset all data to default demo state with verified Sirs and YouTube courses?")) {
-        store.resetDemo();
-      }
-    });
+      const newDoubt = {
+        id: `q-${Date.now()}`,
+        courseId: courseId,
+        courseTitle: course ? course.title : "General Topic",
+        title: title,
+        content: content,
+        timestamp: "Just now",
+        status: "pending",
+        answer: null
+      };
 
-    document.getElementById("export-data-btn")?.addEventListener("click", () => {
-      const json = JSON.stringify({
-        sirs: store.sirs,
-        courses: store.courses,
-        doubts: store.doubts,
-        students: store.students
-      }, null, 2);
-      const blob = new Blob([json], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `tutorapp-backup-${Date.now()}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast("Data exported as JSON file!", "info");
+      store.doubts.unshift(newDoubt);
+      store.save();
+
+      document.getElementById("ask-doubt-modal")?.classList.add("hidden");
+      document.getElementById("ask-modal-doubt-form")?.reset();
+      this.renderDoubts();
+      showToast("Question posted to Q&A Desk", "success");
     });
   }
 
-  // ===========================================================================
-  // 5. VIEW SWITCHING & ROLE MANAGEMENT
-  // ===========================================================================
-
-  switchView(viewId) {
-    document.querySelectorAll(".content-view").forEach(v => v.classList.remove("active"));
-    const target = document.getElementById(viewId);
-    if (target) {
-      target.classList.add("active");
-      this.currentViewId = viewId;
-    }
-
-    // Update active nav button
-    document.querySelectorAll(".nav-btn").forEach(btn => {
-      btn.classList.toggle("active", btn.getAttribute("data-view") === viewId);
-    });
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  updateRoleUI() {
-    const isTeacher = store.currentRole === "teacher";
-    const studentNav = document.getElementById("student-nav");
-    const teacherNav = document.getElementById("teacher-nav");
-    const roleIcon = document.getElementById("header-role-icon");
-    const roleTitle = document.getElementById("header-role-title");
-    const userName = document.getElementById("header-user-name");
-    const headerActionBtn = document.getElementById("header-action-btn");
-    const teaserTitle = document.getElementById("teaser-title");
-    const teaserDesc = document.getElementById("teaser-desc");
-
-    if (isTeacher) {
-      studentNav?.classList.add("hidden");
-      teacherNav?.classList.remove("hidden");
-      const sir = store.getActiveSir();
-      if (roleIcon) roleIcon.textContent = sir.avatar || "👨‍🏫";
-      if (roleTitle) roleTitle.textContent = "Teacher Mode";
-      if (userName) userName.textContent = sir.name;
-      if (headerActionBtn) {
-        headerActionBtn.querySelector(".btn-icon").textContent = "＋";
-        headerActionBtn.querySelector(".btn-text").textContent = "Add Course";
-      }
-      if (teaserTitle) teaserTitle.textContent = "Student Mode";
-      if (teaserDesc) teaserDesc.textContent = "Switch to student view to test your lessons as a learner.";
-    } else {
-      teacherNav?.classList.add("hidden");
-      studentNav?.classList.remove("hidden");
-      const student = store.getActiveStudent();
-      if (roleIcon) roleIcon.textContent = student.avatar || "🎓";
-      if (roleTitle) roleTitle.textContent = "Student Mode";
-      if (userName) userName.textContent = student.name;
-      if (headerActionBtn) {
-        headerActionBtn.querySelector(".btn-icon").textContent = "👨‍🏫";
-        headerActionBtn.querySelector(".btn-text").textContent = "Browse Sirs";
-      }
-      if (teaserTitle) teaserTitle.textContent = "Teacher Mode";
-      if (teaserDesc) teaserDesc.textContent = "Switch to Sir mode to create courses and upload YouTube videos.";
-    }
-
-    this.updatePendingDoubtsCounter();
-  }
-
-  openRoleModal() {
-    this.populateModalSelects();
-    document.getElementById("role-modal")?.classList.remove("hidden");
-  }
-
-  closeRoleModal() {
-    document.getElementById("role-modal")?.classList.add("hidden");
-  }
-
-  openAddCourseModal() {
-    this.populateModalSelects();
-    document.getElementById("add-course-modal")?.classList.remove("hidden");
-  }
-
-  closeAddCourseModal() {
-    document.getElementById("add-course-modal")?.classList.add("hidden");
-  }
-
-  populateModalSelects() {
-    // Populate Sir selectors
-    const chooseSirSelect = document.getElementById("choose-teacher-select");
-    const courseInstructorSelect = document.getElementById("new-course-instructor");
-    const ytCourseSelect = document.getElementById("yt-course-select");
-    const coursesFilterSir = document.getElementById("courses-filter-sir");
-    const chooseStudentSelect = document.getElementById("choose-student-select");
-
-    if (chooseSirSelect) {
-      chooseSirSelect.innerHTML = store.sirs.map(s => 
-        `<option value="${s.id}" ${s.id === store.activeSirId ? "selected" : ""}>${s.avatar} ${s.name} (${s.subject})</option>`
-      ).join("");
-    }
-
-    if (courseInstructorSelect) {
-      courseInstructorSelect.innerHTML = store.sirs.map(s => 
-        `<option value="${s.id}" ${s.id === store.activeSirId ? "selected" : ""}>${s.avatar} ${s.name} - ${s.subject}</option>`
-      ).join("");
-    }
-
-    if (ytCourseSelect) {
-      // Courses for the active teacher or all courses if wanted
-      const sir = store.getActiveSir();
-      const myCourses = store.courses.filter(c => c.sirId === sir.id);
-      const displayCourses = myCourses.length > 0 ? myCourses : store.courses;
-      ytCourseSelect.innerHTML = displayCourses.map(c => 
-        `<option value="${c.id}">${c.emoji} ${c.title}</option>`
-      ).join("");
-    }
-
-    if (coursesFilterSir) {
-      coursesFilterSir.innerHTML = `<option value="all">Filter by Sir: All</option>` +
-        store.sirs.map(s => `<option value="${s.id}">${s.name}</option>`).join("");
-    }
-
-    if (chooseStudentSelect) {
-      chooseStudentSelect.innerHTML = store.students.map(st => 
-        `<option value="${st.id}" ${st.id === store.activeStudentId ? "selected" : ""}>${st.avatar} ${st.name}</option>`
-      ).join("");
-    }
-
-    // Populate teacher settings form values
-    const currentSir = store.getActiveSir();
-    if (document.getElementById("sir-edit-name")) {
-      document.getElementById("sir-edit-name").value = currentSir.name;
-      document.getElementById("sir-edit-avatar").value = currentSir.avatar;
-      document.getElementById("sir-edit-designation").value = currentSir.designation;
-      document.getElementById("sir-edit-subject").value = currentSir.subject;
-      document.getElementById("sir-edit-bio").value = currentSir.bio;
-      document.getElementById("sir-edit-youtube").value = currentSir.ytChannel || "";
-      document.getElementById("sir-edit-exp").value = currentSir.exp || "10+ Years";
+  populateFilterDropdowns() {
+    const providerSelect = document.getElementById("courses-filter-provider");
+    if (providerSelect) {
+      providerSelect.innerHTML = `<option value="all">All Providers & Universities (${store.providers.length})</option>` +
+        store.providers.map(p => `<option value="${p.id}">${p.shortName || p.name}</option>`).join("");
     }
   }
-
-  // ===========================================================================
-  // 6. RENDER LOGIC: SIRS DIRECTORY & SHOWCASE
-  // ===========================================================================
 
   renderAllViews() {
-    this.renderSirsGrid();
-    this.renderAllCoursesGrid();
-    this.renderStudentDashboard();
-    this.renderStudentDoubtsList();
-    this.renderTeacherDashboard();
-    this.renderTeacherStudioCourses();
-    this.renderTeacherDoubtsList();
-    this.renderTeacherRecentUploads();
-    this.updatePendingDoubtsCounter();
+    this.renderCoursesGrid();
+    this.renderInstitutionsGrid();
+    this.renderClassroom();
+    this.renderMyLearning();
+    this.renderDoubts();
   }
 
-  renderSirsGrid(subjectFilter = "all") {
-    const container = document.getElementById("sirs-grid-container");
+  // --- 1. COURSES GRID (COURSERA STYLE) ---
+  renderCoursesGrid() {
+    const container = document.getElementById("all-courses-grid");
+    const countLabel = document.getElementById("courses-count-label");
     if (!container) return;
 
-    let filtered = store.sirs;
-    if (subjectFilter !== "all") {
-      const q = subjectFilter.toLowerCase();
-      filtered = filtered.filter(s => 
-        s.subject.toLowerCase().includes(q) || 
-        s.name.toLowerCase().includes(q)
-      );
+    let list = store.courses;
+
+    // Filter by subject / channel tag
+    if (this.selectedSubjectFilter !== "all") {
+      const q = this.selectedSubjectFilter.toLowerCase();
+      list = list.filter(c => {
+        const subj = (c.subject || "").toLowerCase();
+        const inst = (c.institution || "").toLowerCase();
+        const prov = (c.instructorName || "").toLowerCase();
+        const title = (c.title || "").toLowerCase();
+        return subj.includes(q) || inst.includes(q) || prov.includes(q) || title.includes(q);
+      });
     }
 
-    document.getElementById("stats-total-sirs").textContent = store.sirs.length;
-    document.getElementById("stats-total-courses").textContent = store.courses.length;
-    let totalVideos = 0;
-    store.courses.forEach(c => totalVideos += (c.lessons ? c.lessons.length : 0));
-    document.getElementById("stats-total-videos").textContent = totalVideos;
+    // Filter by provider dropdown
+    if (this.selectedProviderFilter !== "all") {
+      list = list.filter(c => c.providerId === this.selectedProviderFilter);
+    }
 
-    if (filtered.length === 0) {
-      container.innerHTML = `<div class="empty-state">No Sirs found in this category.</div>`;
+    // Filter by level
+    if (this.selectedLevelFilter !== "all") {
+      list = list.filter(c => (c.level || "").toLowerCase() === this.selectedLevelFilter.toLowerCase());
+    }
+
+    // Filter by global search query
+    if (this.searchQuery) {
+      const q = this.searchQuery;
+      list = list.filter(c => {
+        return (c.title || "").toLowerCase().includes(q) ||
+               (c.desc || "").toLowerCase().includes(q) ||
+               (c.institution || "").toLowerCase().includes(q) ||
+               (c.instructorName || "").toLowerCase().includes(q) ||
+               (c.subject || "").toLowerCase().includes(q);
+      });
+    }
+
+    if (countLabel) {
+      countLabel.textContent = `Showing ${list.length} of ${store.courses.length} courses`;
+    }
+
+    if (list.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 4rem 2rem; text-align: center; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle);">
+          <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">No matching courses found</h3>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Try adjusting your keyword or reset filters to browse all 124+ courses.</p>
+          <button class="btn btn-primary" onclick="app.resetFilters()">Reset All Filters</button>
+        </div>
+      `;
       return;
     }
 
-    container.innerHTML = filtered.map(sir => {
-      const sirCourses = store.courses.filter(c => c.sirId === sir.id);
-      let sirVideosCount = 0;
-      sirCourses.forEach(c => sirVideosCount += (c.lessons ? c.lessons.length : 0));
+    container.innerHTML = list.map(c => {
+      const provider = store.getProviderById(c.providerId);
+      const providerCode = c.providerCode || (provider ? provider.code : "FREE");
+      const providerName = c.institution || (provider ? provider.institution : "Top Provider");
+      const lessonCount = (c.lessons || []).length;
+      const isEnrolled = store.isEnrolled(c.id);
+      const rating = provider ? provider.rating : 4.95;
 
       return `
-        <div class="sir-card" data-sir-id="${sir.id}">
-          <div class="sir-card-top">
-            <div class="sir-avatar">${sir.avatar || "👨‍🏫"}</div>
-            <div class="sir-info">
-              <h3>
-                ${sir.name}
-                <svg class="verified-icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-              </h3>
-              <div class="sir-title">${sir.designation}</div>
+        <article class="course-card" data-course-id="${c.id}">
+          <div class="course-card-cover" style="background-image: url('${c.coverPhoto}');">
+            <div class="course-card-badge-row">
+              <span class="badge-institution">
+                <strong>${providerCode}</strong> ${providerName}
+              </span>
+              <span class="badge-free">Free</span>
             </div>
           </div>
-
-          <p class="sir-bio">${sir.bio}</p>
-
-          <div class="sir-meta-row">
-            <div class="sir-meta-item">
-              <strong>⭐ ${sir.rating || 4.9}</strong> (${sir.studentsCount || 1000}+ students)
+          <div class="course-card-body">
+            <span class="course-institution-name">${providerName}</span>
+            <h3 class="course-card-title" title="${c.title}">${c.title}</h3>
+            <span class="course-instructor-name">${c.instructorName}</span>
+            
+            <div class="course-meta-pills">
+              <span class="meta-pill level">${c.level || "All Levels"}</span>
+              <span class="meta-pill">${c.subject || "Computer Science"}</span>
             </div>
-            <div class="sir-meta-item">
-              <strong>${sirCourses.length}</strong> Courses • <strong>${sirVideosCount}</strong> Videos
+
+            <div class="course-rating-row">
+              <svg viewBox="0 0 24 24" fill="#e88d00" width="14" height="14" style="margin-right:2px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span class="rating-score">${rating}</span>
+              <span class="rating-count">(Verified Course)</span>
             </div>
           </div>
-
-          <div class="sir-card-actions">
-            <button class="btn btn-primary btn-block open-sir-btn" data-sir-id="${sir.id}">
-              <span>View Sir's Channel & Lectures</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+          <div class="course-card-footer">
+            <span class="lesson-count">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              ${lessonCount} lesson${lessonCount === 1 ? '' : 's'}
+            </span>
+            <button class="btn btn-primary btn-xs" onclick="app.openClassroomCourse('${c.id}')">
+              ${isEnrolled ? "Continue" : "Start Free"}
             </button>
           </div>
-        </div>
+        </article>
       `;
     }).join("");
-
-    container.querySelectorAll(".open-sir-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.getAttribute("data-sir-id");
-        this.openSirShowcase(id);
-      });
-    });
   }
 
-  openSirShowcase(sirId) {
-    const sir = store.getSirById(sirId);
-    if (!sir) return;
-    this.selectedShowcaseSirId = sirId;
+  resetFilters() {
+    this.searchQuery = "";
+    this.selectedSubjectFilter = "all";
+    this.selectedProviderFilter = "all";
+    this.selectedLevelFilter = "all";
 
-    const header = document.getElementById("sir-showcase-header");
-    const sirCourses = store.courses.filter(c => c.sirId === sir.id);
-    let totalVideos = 0;
-    sirCourses.forEach(c => totalVideos += (c.lessons ? c.lessons.length : 0));
+    const searchInput = document.getElementById("global-search-input");
+    if (searchInput) searchInput.value = "";
+    document.getElementById("clear-search-btn")?.classList.add("hidden");
 
-    if (header) {
-      header.innerHTML = `
-        <div class="sir-hero-avatar">${sir.avatar || "👨‍🏫"}</div>
-        <div class="sir-hero-details">
-          <h1>
-            ${sir.name}
-            <svg class="verified-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-            </svg>
-          </h1>
-          <div class="sir-hero-designation">${sir.designation}</div>
-          <p class="sir-hero-bio">${sir.bio}</p>
-          <div class="sir-hero-stats">
-            <span>⭐ Rating: <strong>${sir.rating || 4.9} / 5.0</strong></span>
-            <span>👥 Students: <strong>${sir.studentsCount || 1000}</strong></span>
-            <span>📚 Courses: <strong>${sirCourses.length}</strong></span>
-            <span>📹 YouTube Lessons: <strong>${totalVideos}</strong></span>
-            <span>⏳ Exp: <strong>${sir.exp || "10+ Years"}</strong></span>
+    document.querySelectorAll("#category-filter-bar .filter-pill").forEach((p, idx) => {
+      p.classList.toggle("active", idx === 0);
+    });
+
+    const provSelect = document.getElementById("courses-filter-provider");
+    if (provSelect) provSelect.value = "all";
+
+    const lvlSelect = document.getElementById("courses-filter-level");
+    if (lvlSelect) lvlSelect.value = "all";
+
+    this.renderCoursesGrid();
+  }
+
+  // --- 2. INSTITUTIONS & PROVIDERS GRID ---
+  renderInstitutionsGrid() {
+    const container = document.getElementById("institutions-grid-container");
+    if (!container) return;
+
+    container.innerHTML = store.providers.map(p => {
+      const courses = store.courses.filter(c => c.providerId === p.id);
+      return `
+        <article class="institution-card">
+          <div class="institution-header-row">
+            <div class="institution-badge-logo">${p.code || "EDU"}</div>
+            <div class="institution-header-info">
+              <h3>${p.name}</h3>
+              <p>${p.institution || p.designation}</p>
+            </div>
+          </div>
+          <p class="institution-bio">${p.bio}</p>
+          <div class="institution-stats-row">
+            <div class="institution-stats-left">
+              <div class="inst-stat">
+                <strong>${courses.length}</strong>
+                <span>Courses</span>
+              </div>
+              <div class="inst-stat">
+                <strong>${(p.studentsCount || 10000).toLocaleString()}+</strong>
+                <span>Learners</span>
+              </div>
+              <div class="inst-stat">
+                <strong>${p.rating}</strong>
+                <span>Rating</span>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="app.openInstitutionDetail('${p.id}')">
+              View Courses
+            </button>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  openInstitutionDetail(providerId) {
+    const provider = store.getProviderById(providerId);
+    if (!provider) return;
+
+    this.selectedProviderId = providerId;
+    const banner = document.getElementById("institution-hero-banner");
+    const container = document.getElementById("institution-courses-container");
+    const heading = document.getElementById("institution-courses-heading");
+
+    const courses = store.courses.filter(c => c.providerId === providerId);
+
+    if (banner) {
+      banner.innerHTML = `
+        <div class="hero-content">
+          <span class="hero-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Verified Provider Catalog
+          </span>
+          <h1>${provider.name}</h1>
+          <p>${provider.bio}</p>
+        </div>
+        <div class="hero-stats-row">
+          <div class="stat-item">
+            <span class="stat-number">${courses.length}</span>
+            <span class="stat-label">Free Courses</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">${(provider.studentsCount || 10000).toLocaleString()}+</span>
+            <span class="stat-label">Active Learners</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">${provider.rating}</span>
+            <span class="stat-label">Average Rating</span>
+          </div>
+          <div class="stat-item">
+            <a href="${provider.ytChannel || '#'}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-xs" style="color: #fff; border-color: rgba(255,255,255,0.4); margin-top: 0.5rem;">
+              Official Channel
+            </a>
           </div>
         </div>
       `;
     }
 
-    // Populate doubt course select with this Sir's courses
-    const doubtSelect = document.getElementById("doubt-course-select");
-    const askSirName = document.getElementById("ask-sir-name-target");
-    if (askSirName) askSirName.textContent = sir.name;
-    if (doubtSelect) {
-      doubtSelect.innerHTML = sirCourses.map(c => `<option value="${c.id}">${c.title}</option>`).join("");
-      if (sirCourses.length === 0) {
-        doubtSelect.innerHTML = `<option value="general">General Inquiry</option>`;
-      }
+    if (heading) {
+      heading.textContent = `Courses from ${provider.shortName || provider.name}`;
     }
 
-    // Render Sir Courses
-    const coursesContainer = document.getElementById("sir-courses-container");
-    if (coursesContainer) {
-      if (sirCourses.length === 0) {
-        coursesContainer.innerHTML = `<div class="empty-state">No courses published yet by this Sir.</div>`;
-      } else {
-        coursesContainer.innerHTML = sirCourses.map(c => this.createCourseCardHTML(c)).join("");
-        this.attachCourseCardActions(coursesContainer);
-      }
-    }
-
-    // Render Sir Videos
-    const videosContainer = document.getElementById("sir-videos-container");
-    if (videosContainer) {
-      const allLessons = [];
-      sirCourses.forEach(c => {
-        if (c.lessons) {
-          c.lessons.forEach(l => {
-            allLessons.push({ ...l, courseId: c.id, courseTitle: c.title });
-          });
-        }
-      });
-
-      if (allLessons.length === 0) {
-        videosContainer.innerHTML = `<div class="empty-state">No YouTube lessons uploaded yet.</div>`;
-      } else {
-        videosContainer.innerHTML = allLessons.map((l, idx) => `
-          <div class="video-list-item">
-            <div class="video-item-left">
-              <div class="yt-play-icon">▶</div>
-              <div class="video-item-info">
-                <h4>${l.title}</h4>
-                <div class="video-item-sub">
-                  <span>Course: <strong>${l.courseTitle}</strong></span>
-                  <span>⏱️ ${l.duration || "15 mins"}</span>
-                </div>
-              </div>
+    if (container) {
+      container.innerHTML = courses.map(c => `
+        <article class="course-card" data-course-id="${c.id}">
+          <div class="course-card-cover" style="background-image: url('${c.coverPhoto}');">
+            <div class="course-card-badge-row">
+              <span class="badge-institution"><strong>${provider.code}</strong> ${provider.shortName}</span>
+              <span class="badge-free">Free</span>
             </div>
-            <button class="btn btn-outline btn-sm play-lesson-btn" data-course-id="${l.courseId}" data-lesson-id="${l.id}">
-              Play in Classroom
-            </button>
           </div>
-        `).join("");
-
-        videosContainer.querySelectorAll(".play-lesson-btn").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const courseId = btn.getAttribute("data-course-id");
-            const lessonId = btn.getAttribute("data-lesson-id");
-            this.openClassroom(courseId, lessonId);
-          });
-        });
-      }
-    }
-
-    this.switchView("view-sir-showcase");
-  }
-
-  // ===========================================================================
-  // 7. RENDER LOGIC: COURSES & CLASSROOM
-  // ===========================================================================
-
-  createCourseCardHTML(course) {
-    const sir = store.getSirById(course.sirId) || { name: "Educator Sir", avatar: "👨‍🏫" };
-    const lessonCount = course.lessons ? course.lessons.length : 0;
-    const isEnrolled = store.studentProgress.enrolledCourseIds.includes(course.id);
-
-    // Calculate completion progress
-    let completedInCourse = 0;
-    if (course.lessons) {
-      course.lessons.forEach(l => {
-        if (store.studentProgress.completedLessonIds.includes(l.id)) {
-          completedInCourse++;
-        }
-      });
-    }
-    const percent = lessonCount > 0 ? Math.round((completedInCourse / lessonCount) * 100) : 0;
-    const bannerStyle = course.coverPhoto ? `background-image: url('${course.coverPhoto}');` : '';
-    const bannerClass = course.coverPhoto ? 'has-cover' : (course.theme || 'theme-purple');
-
-    return `
-      <div class="course-card" data-course-id="${course.id}">
-        <div class="course-card-banner ${bannerClass}" style="${bannerStyle}">
-          <div class="course-emoji-icon">${course.emoji || '📚'}</div>
-          <span class="course-level-badge">${course.level || 'Intermediate'}</span>
-        </div>
-        <div class="course-card-body">
-          <span class="course-card-subject">${course.subject}</span>
-          <h3 class="course-card-title">${course.title}</h3>
-          
-          <div class="course-card-teacher">
-            <span>${sir.avatar}</span>
-            <strong>${sir.name}</strong>
-          </div>
-
-          <p class="course-card-desc">${course.desc}</p>
-
-          ${isEnrolled ? `
-            <div class="course-progress-wrapper">
-              <div class="course-progress-info">
-                <span>Progress: ${completedInCourse}/${lessonCount} lessons</span>
-                <span>${percent}%</span>
-              </div>
-              <div class="progress-bar-small">
-                <div class="progress-fill" style="width: ${percent}%;"></div>
-              </div>
+          <div class="course-card-body">
+            <span class="course-institution-name">${provider.institution}</span>
+            <h3 class="course-card-title">${c.title}</h3>
+            <span class="course-instructor-name">${c.instructorName}</span>
+            <div class="course-meta-pills">
+              <span class="meta-pill level">${c.level || "All Levels"}</span>
+              <span class="meta-pill">${c.subject}</span>
             </div>
-          ` : ''}
-
-          <div class="course-card-meta">
-            <span>📹 ${lessonCount} YouTube Lectures</span>
-            <span>⭐ 4.9</span>
           </div>
-
           <div class="course-card-footer">
-            ${isEnrolled ? `
-              <button class="btn btn-primary btn-block open-course-player-btn" data-course-id="${course.id}">
-                Resume Learning ▶
-              </button>
-            ` : `
-              <button class="btn btn-primary btn-block enroll-course-btn" data-course-id="${course.id}">
-                Enroll & Start Free
-              </button>
-            `}
+            <span class="lesson-count">${(c.lessons || []).length} lessons</span>
+            <button class="btn btn-primary btn-xs" onclick="app.openClassroomCourse('${c.id}')">Start Learning</button>
           </div>
-        </div>
-      </div>
-    `;
+        </article>
+      `).join("");
+    }
+
+    this.switchView("view-institution-detail");
   }
 
-  attachCourseCardActions(container) {
-    container.querySelectorAll(".enroll-course-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.getAttribute("data-course-id");
-        this.enrollInCourse(id);
-      });
-    });
-
-    container.querySelectorAll(".open-course-player-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.getAttribute("data-course-id");
-        this.openClassroom(id);
-      });
-    });
+  // --- 3. CLASSROOM & DISTRACTION-FREE PLAYER ---
+  openClassroomCourse(courseId) {
+    const course = store.getCourseById(courseId);
+    if (!course || !course.lessons || course.lessons.length === 0) return;
+    this.openClassroomLesson(courseId, course.lessons[0].id);
   }
 
-  enrollInCourse(courseId) {
-    if (!store.studentProgress.enrolledCourseIds.includes(courseId)) {
-      store.studentProgress.enrolledCourseIds.push(courseId);
-      store.save();
-      showToast("Enrolled in course successfully!", "success");
-      this.renderAllViews();
-    }
-    this.openClassroom(courseId);
-  }
+  openClassroomLesson(courseId, lessonId) {
+    const course = store.getCourseById(courseId);
+    if (!course) return;
 
-  renderAllCoursesGrid() {
-    const container = document.getElementById("all-courses-grid");
-    if (!container) return;
+    const lesson = (course.lessons || []).find(l => l.id === lessonId) || course.lessons[0];
+    if (!lesson) return;
 
-    const sirFilter = document.getElementById("courses-filter-sir")?.value || "all";
-    const levelFilter = document.getElementById("courses-filter-level")?.value || "all";
+    this.activeCourseId = courseId;
+    this.activeLessonId = lesson.id;
+    store.setLastWatched(courseId, lesson.id);
 
-    let filtered = store.courses;
-    if (sirFilter !== "all") {
-      filtered = filtered.filter(c => c.sirId === sirFilter);
-    }
-    if (levelFilter !== "all") {
-      filtered = filtered.filter(c => c.level.toLowerCase() === levelFilter.toLowerCase());
-    }
-
-    if (filtered.length === 0) {
-      container.innerHTML = `<div class="empty-state">No courses matching selected filters.</div>`;
-      return;
-    }
-
-    container.innerHTML = filtered.map(c => this.createCourseCardHTML(c)).join("");
-    this.attachCourseCardActions(container);
-  }
-
-  // ===========================================================================
-  // 8. YOUTUBE CLASSROOM PLAYER LOGIC
-  // ===========================================================================
-
-  openClassroom(courseId, lessonId = null) {
-    const course = store.getCourseById(courseId) || store.courses[0];
-    if (!course || !course.lessons || course.lessons.length === 0) {
-      showToast("This course does not have any YouTube lessons yet.", "info");
-      return;
-    }
-
-    this.activeClassroomCourseId = course.id;
-    const lesson = lessonId ? (course.lessons.find(l => l.id === lessonId) || course.lessons[0]) : course.lessons[0];
-    this.activeClassroomLessonId = lesson.id;
-
-    // Track last watched
-    store.studentProgress.lastWatchedCourseId = course.id;
-    store.studentProgress.lastWatchedLessonId = lesson.id;
-    if (!store.studentProgress.enrolledCourseIds.includes(course.id)) {
-      store.studentProgress.enrolledCourseIds.push(course.id);
-    }
-    store.save();
-
-    this.renderClassroomPlayer(course, lesson);
     this.switchView("view-classroom");
+    this.renderClassroom();
   }
 
-  renderClassroomPlayer(course, lesson) {
-    const sir = store.getSirById(course.sirId) || { name: "Educator Sir" };
+  renderClassroom() {
+    const course = store.getCourseById(this.activeCourseId);
+    if (!course || !course.lessons || course.lessons.length === 0) return;
+
+    const lesson = course.lessons.find(l => l.id === this.activeLessonId) || course.lessons[0];
+    this.activeLessonId = lesson.id;
+
+    // Update iframe player
     const iframe = document.getElementById("youtube-player-iframe");
-    const courseTitle = document.getElementById("player-course-title");
-    const lessonTitle = document.getElementById("player-lesson-title");
-    const teacherTag = document.getElementById("player-teacher-tag");
-    const duration = document.getElementById("player-lesson-duration");
-    const originalLink = document.getElementById("player-original-yt-link");
-    const classroomTeacherLabel = document.getElementById("classroom-teacher-name-label");
-
-    const ytId = lesson.ytVideoId || extractYouTubeId(lesson.ytUrl);
-
-    if (iframe) {
-      iframe.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&enablejsapi=1&rel=0`;
-    }
-    if (courseTitle) courseTitle.textContent = course.title;
-    if (lessonTitle) lessonTitle.textContent = lesson.title;
-    if (teacherTag) teacherTag.textContent = `👨‍🏫 ${sir.name}`;
-    if (duration) duration.textContent = `⏱️ ${lesson.duration || "15 mins"}`;
-    if (originalLink) {
-      originalLink.href = lesson.ytUrl || `https://youtube.com/watch?v=${ytId}`;
-    }
-    if (classroomTeacherLabel) classroomTeacherLabel.textContent = sir.name;
-
-    // Update Mark Complete button state
-    const isCompleted = store.studentProgress.completedLessonIds.includes(lesson.id);
-    const completeBtn = document.getElementById("mark-lesson-complete-btn");
-    if (completeBtn) {
-      completeBtn.classList.toggle("btn-primary", isCompleted);
-      completeBtn.classList.toggle("btn-outline", !isCompleted);
-      completeBtn.querySelector(".btn-text").textContent = isCompleted ? "Completed ✓" : "Mark Completed";
+    const videoId = lesson.ytVideoId || extractYouTubeId(lesson.ytUrl);
+    if (iframe && videoId) {
+      const srcUrl = `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0`;
+      if (iframe.src !== srcUrl) {
+        iframe.src = srcUrl;
+      }
     }
 
-    // Load saved notes for this lesson
-    const textarea = document.getElementById("lesson-notes-textarea");
-    if (textarea) {
-      textarea.value = (store.studentProgress.notes && store.studentProgress.notes[lesson.id]) || "";
+    // Update lesson metadata bar
+    const courseTitleEl = document.getElementById("player-course-title");
+    const lessonTitleEl = document.getElementById("player-lesson-title");
+    const institutionTagEl = document.getElementById("player-institution-tag");
+    const durationEl = document.getElementById("player-lesson-duration");
+    const directYtLink = document.getElementById("player-original-yt-link");
+
+    if (courseTitleEl) courseTitleEl.textContent = course.title;
+    if (lessonTitleEl) lessonTitleEl.textContent = lesson.title;
+    if (institutionTagEl) institutionTagEl.textContent = course.institution || course.instructorName;
+    if (durationEl) durationEl.textContent = lesson.duration || "15 mins";
+    if (directYtLink) {
+      directYtLink.href = lesson.ytUrl || `https://www.youtube.com/watch?v=${videoId}`;
     }
 
-    // Render Quiz for current lesson
-    this.renderClassroomQuiz(lesson);
+    // Update Mark Completed button
+    const isCompleted = store.isLessonCompleted(lesson.id);
+    this.updateLessonCompletionUI(isCompleted);
+
+    // Update Playlist UI
+    this.updatePlaylistUI();
+
+    // Load Notes
+    const notesArea = document.getElementById("lesson-notes-textarea");
+    if (notesArea) {
+      notesArea.value = store.getNote(lesson.id);
+    }
+
+    // Render Quiz
+    this.renderQuiz(lesson.quiz);
 
     // Render Resources
-    this.renderClassroomResources(lesson);
-
-    // Render Playlist Sidebar
-    this.renderClassroomPlaylist(course, lesson);
+    this.renderResources(lesson.resources);
   }
 
-  renderClassroomPlaylist(course, activeLesson) {
+  updateLessonCompletionUI(isCompleted) {
+    const btn = document.getElementById("mark-lesson-complete-btn");
+    if (!btn) return;
+
+    if (isCompleted) {
+      btn.classList.add("btn-primary");
+      btn.classList.remove("btn-outline");
+      btn.querySelector(".btn-text").textContent = "Completed";
+    } else {
+      btn.classList.remove("btn-primary");
+      btn.classList.add("btn-outline");
+      btn.querySelector(".btn-text").textContent = "Mark Completed";
+    }
+  }
+
+  updatePlaylistUI() {
+    const course = store.getCourseById(this.activeCourseId);
+    if (!course) return;
+
     const list = document.getElementById("playlist-lessons-container");
-    const title = document.getElementById("playlist-course-name");
-    const progressLabel = document.getElementById("playlist-progress-label");
-    const progressFill = document.getElementById("playlist-progress-fill");
+    const nameEl = document.getElementById("playlist-course-name");
+    const labelEl = document.getElementById("playlist-progress-label");
+    const fillEl = document.getElementById("playlist-progress-fill");
 
-    if (title) title.textContent = course.title;
+    if (nameEl) nameEl.textContent = course.title;
 
+    const total = (course.lessons || []).length;
     let completedCount = 0;
-    const total = course.lessons ? course.lessons.length : 0;
 
     course.lessons.forEach(l => {
-      if (store.studentProgress.completedLessonIds.includes(l.id)) {
-        completedCount++;
-      }
+      if (store.isLessonCompleted(l.id)) completedCount++;
     });
 
     const percent = total > 0 ? Math.round((completedCount / total) * 100) : 0;
-    if (progressLabel) progressLabel.textContent = `${completedCount} of ${total} completed (${percent}%)`;
-    if (progressFill) progressFill.style.width = `${percent}%`;
+    if (labelEl) labelEl.textContent = `${completedCount} of ${total} completed (${percent}%)`;
+    if (fillEl) fillEl.style.width = `${percent}%`;
 
-    if (!list) return;
-    list.innerHTML = (course.lessons || []).map((l, idx) => {
-      const isActive = l.id === activeLesson.id;
-      const isCompleted = store.studentProgress.completedLessonIds.includes(l.id);
-
-      return `
-        <div class="playlist-lesson-item ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}" data-lesson-id="${l.id}">
-          <div class="lesson-check-btn" title="Toggle completed">✓</div>
-          <div class="playlist-lesson-info">
-            <div class="playlist-lesson-title">${idx + 1}. ${l.title}</div>
-            <div class="playlist-lesson-duration">⏱️ ${l.duration || "15 mins"}</div>
+    if (list) {
+      list.innerHTML = (course.lessons || []).map((l, idx) => {
+        const isDone = store.isLessonCompleted(l.id);
+        const isActive = l.id === this.activeLessonId;
+        return `
+          <div class="playlist-lesson-item ${isActive ? 'active' : ''}" onclick="app.openClassroomLesson('${course.id}', '${l.id}')">
+            <div class="playlist-item-left">
+              <div class="lesson-check-box ${isDone ? 'checked' : ''}">
+                ${isDone ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+              </div>
+              <div>
+                <div class="playlist-item-title">${idx + 1}. ${l.title}</div>
+                <div class="playlist-item-dur">${l.duration || '10 mins'}</div>
+              </div>
+            </div>
           </div>
+        `;
+      }).join("");
+    }
+  }
+
+  renderQuiz(quiz) {
+    const container = document.getElementById("classroom-quiz-container");
+    if (!container) return;
+
+    if (!quiz) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--text-muted);">
+          <p>No interactive concept check question attached to this lecture.</p>
         </div>
       `;
-    }).join("");
-
-    list.querySelectorAll(".playlist-lesson-item").forEach(item => {
-      item.addEventListener("click", () => {
-        const id = item.getAttribute("data-lesson-id");
-        const nextLesson = course.lessons.find(l => l.id === id);
-        if (nextLesson) {
-          this.activeClassroomLessonId = nextLesson.id;
-          this.renderClassroomPlayer(course, nextLesson);
-        }
-      });
-    });
-  }
-
-  toggleLessonCompletion(lessonId) {
-    const list = store.studentProgress.completedLessonIds;
-    const idx = list.indexOf(lessonId);
-    if (idx > -1) {
-      list.splice(idx, 1);
-      showToast("Marked as incomplete", "info");
-    } else {
-      list.push(lessonId);
-      showToast("Lesson completed! Keep up the momentum! 🎉", "success");
-    }
-    store.save();
-
-    const course = store.getCourseById(this.activeClassroomCourseId);
-    const lesson = course.lessons.find(l => l.id === this.activeClassroomLessonId);
-    if (course && lesson) {
-      this.renderClassroomPlayer(course, lesson);
-    }
-    this.renderStudentDashboard();
-  }
-
-  saveCurrentNotes() {
-    const textarea = document.getElementById("lesson-notes-textarea");
-    if (!textarea) return;
-
-    if (!store.studentProgress.notes) {
-      store.studentProgress.notes = {};
-    }
-    store.studentProgress.notes[this.activeClassroomLessonId] = textarea.value;
-    store.save();
-
-    const status = document.getElementById("notes-save-status");
-    if (status) {
-      status.textContent = "Saved to browser ✓";
-      setTimeout(() => { status.textContent = "Saved"; }, 2000);
-    }
-    showToast("Notes saved successfully!", "success");
-  }
-
-  renderClassroomQuiz(lesson) {
-    const box = document.getElementById("classroom-quiz-container");
-    if (!box) return;
-
-    if (!lesson.quiz) {
-      box.innerHTML = `<div class="empty-state">No concept check question attached to this lecture yet. Enjoy watching!</div>`;
       return;
     }
 
-    const q = lesson.quiz;
-    box.innerHTML = `
-      <h3 class="quiz-question-title">${q.q}</h3>
+    container.innerHTML = `
+      <div class="quiz-question-title">${quiz.question}</div>
       <div class="quiz-options-list">
-        ${q.opts.map((opt, i) => `
-          <button class="quiz-opt-btn" data-opt-index="${i}">
-            <strong>${String.fromCharCode(65 + i)}.</strong> ${opt}
-          </button>
+        ${quiz.options.map((opt, i) => `
+          <div class="quiz-option-item" onclick="app.answerQuiz(${i}, ${quiz.correctIndex}, this)">
+            <span style="font-weight: 700; color: var(--primary);">${String.fromCharCode(65 + i)}.</span>
+            <span>${opt}</span>
+          </div>
         `).join("")}
       </div>
-      <div class="quiz-feedback-box hidden" id="quiz-feedback">
-        <p><strong>Explanation:</strong> ${q.exp || "Correct answer selected!"}</p>
+      <div id="quiz-feedback-box" class="quiz-explanation-box hidden">
+        <strong>Explanation:</strong> ${quiz.explanation}
       </div>
     `;
-
-    box.querySelectorAll(".quiz-opt-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const selectedIdx = parseInt(btn.getAttribute("data-opt-index"));
-        const feedback = document.getElementById("quiz-feedback");
-        
-        box.querySelectorAll(".quiz-opt-btn").forEach((b, idx) => {
-          b.disabled = true;
-          if (idx === q.correct) {
-            b.classList.add("correct");
-          } else if (idx === selectedIdx) {
-            b.classList.add("incorrect");
-          }
-        });
-
-        if (feedback) feedback.classList.remove("hidden");
-        if (selectedIdx === q.correct) {
-          showToast("Spot on! That's the correct concept! 🌟", "success");
-        } else {
-          showToast("Close! Review the explanation below.", "info");
-        }
-      });
-    });
   }
 
-  renderClassroomResources(lesson) {
+  answerQuiz(selectedIndex, correctIndex, el) {
+    const parent = el.closest(".quiz-options-list");
+    if (!parent) return;
+
+    parent.querySelectorAll(".quiz-option-item").forEach(item => {
+      item.style.pointerEvents = "none";
+    });
+
+    const isCorrect = selectedIndex === correctIndex;
+    el.classList.add(isCorrect ? "correct" : "incorrect");
+
+    if (!isCorrect) {
+      const correctEl = parent.children[correctIndex];
+      if (correctEl) correctEl.classList.add("correct");
+    }
+
+    const feedbackBox = document.getElementById("quiz-feedback-box");
+    if (feedbackBox) {
+      feedbackBox.classList.remove("hidden");
+    }
+
+    showToast(isCorrect ? "Correct answer!" : "Incorrect. Review explanation below.", isCorrect ? "success" : "info");
+  }
+
+  renderResources(resources) {
     const container = document.getElementById("classroom-resources-container");
     if (!container) return;
 
-    const resources = [];
-    if (lesson.resourceLink) {
-      resources.push({
-        title: "Official Lecture Notes & External References",
-        url: lesson.resourceLink,
-        icon: "📄"
-      });
-    }
-    resources.push({
-      title: "YouTube High-Definition Stream Source",
-      url: lesson.ytUrl,
-      icon: "▶️"
-    });
-
-    container.innerHTML = resources.map(r => `
-      <div class="resource-item">
-        <div>
-          <span>${r.icon}</span> <strong>${r.title}</strong>
+    if (!resources || resources.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--text-muted);">
+          <p>No external slide decks or PDF files linked for this lecture.</p>
         </div>
-        <a href="${r.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-xs">
-          Open Link ↗
+      `;
+      return;
+    }
+
+    container.innerHTML = resources.map(res => `
+      <div class="resource-item">
+        <div class="resource-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>${res.title || "Supplemental Learning Material"}</span>
+        </div>
+        <a href="${res.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-xs">
+          Open Resource
         </a>
       </div>
     `).join("");
   }
 
-  handleClassroomDoubtSubmit() {
-    const text = document.getElementById("classroom-doubt-text")?.value.trim();
-    if (!text) return;
+  // --- 4. MY LEARNING DASHBOARD ---
+  renderMyLearning() {
+    const enrolledIds = store.progress.enrolledCourseIds || [];
+    const completedLessonIds = store.progress.completedLessonIds || [];
+    const notesCount = Object.keys(store.progress.notes || {}).length;
 
-    const course = store.getCourseById(this.activeClassroomCourseId);
-    const student = store.getActiveStudent();
+    const statEnrolled = document.getElementById("student-stat-enrolled");
+    const statFinished = document.getElementById("student-stat-completed-lessons");
+    const statDoubts = document.getElementById("student-stat-doubts");
 
-    const newDoubt = {
-      id: "doubt-" + Date.now(),
-      studentId: student.id,
-      studentName: student.name,
-      sirId: course.sirId,
-      courseId: course.id,
-      courseTitle: course.title,
-      title: `Question on ${course.title}`,
-      content: text,
-      timestamp: "Just now",
-      status: "pending",
-      answer: null
-    };
+    if (statEnrolled) statEnrolled.textContent = enrolledIds.length;
+    if (statFinished) statFinished.textContent = completedLessonIds.length;
+    if (statDoubts) statDoubts.textContent = store.doubts.length;
 
-    store.doubts.unshift(newDoubt);
-    store.save();
+    // Continue banner update
+    const lastCourse = store.getCourseById(store.progress.lastWatchedCourseId);
+    const continueTitle = document.getElementById("continue-course-title");
+    const continueSub = document.getElementById("continue-lesson-title");
 
-    document.getElementById("classroom-doubt-text").value = "";
-    showToast("Your question was submitted to Sir! You can view replies in 'My Doubts'.", "success");
-    this.renderStudentDoubtsList();
-    this.updatePendingDoubtsCounter();
-  }
-
-  handleSirShowcaseDoubtSubmit() {
-    const courseId = document.getElementById("doubt-course-select")?.value;
-    const title = document.getElementById("doubt-title-input")?.value.trim();
-    const content = document.getElementById("doubt-content-input")?.value.trim();
-
-    if (!title || !content) {
-      showToast("Please fill in both question title and description.", "error");
-      return;
+    if (lastCourse) {
+      const lastLesson = (lastCourse.lessons || []).find(l => l.id === store.progress.lastWatchedLessonId) || lastCourse.lessons[0];
+      if (continueTitle) continueTitle.textContent = lastCourse.title;
+      if (continueSub) continueSub.textContent = lastLesson ? `Lesson: ${lastLesson.title}` : "Ready to continue learning";
     }
 
-    const course = store.getCourseById(courseId) || { id: "general", title: "General Subject" };
-    const student = store.getActiveStudent();
-
-    const newDoubt = {
-      id: "doubt-" + Date.now(),
-      studentId: student.id,
-      studentName: student.name,
-      sirId: this.selectedShowcaseSirId,
-      courseId: course.id,
-      courseTitle: course.title,
-      title: title,
-      content: content,
-      timestamp: "Just now",
-      status: "pending",
-      answer: null
-    };
-
-    store.doubts.unshift(newDoubt);
-    store.save();
-
-    document.getElementById("ask-sir-doubt-form").reset();
-    showToast("Your doubt was sent to Sir! He will review and answer.", "success");
-    this.renderStudentDoubtsList();
-    this.updatePendingDoubtsCounter();
-  }
-
-  // ===========================================================================
-  // 9. STUDENT DASHBOARD & DOUBTS FEED
-  // ===========================================================================
-
-  renderStudentDashboard() {
-    const enrolledIds = store.studentProgress.enrolledCourseIds || [];
-    const completedIds = store.studentProgress.completedLessonIds || [];
-
-    document.getElementById("student-stat-enrolled").textContent = enrolledIds.length;
-    document.getElementById("student-stat-completed-lessons").textContent = completedIds.length;
-    const myDoubts = store.doubts.filter(d => d.studentId === store.activeStudentId);
-    document.getElementById("student-stat-doubts").textContent = myDoubts.length;
-
-    // Continue banner
-    const lastCourse = store.getCourseById(store.studentProgress.lastWatchedCourseId);
-    if (lastCourse && lastCourse.lessons) {
-      const lastLesson = lastCourse.lessons.find(l => l.id === store.studentProgress.lastWatchedLessonId) || lastCourse.lessons[0];
-      document.getElementById("continue-course-title").textContent = lastCourse.title;
-      document.getElementById("continue-lesson-title").textContent = `Next Lecture: ${lastLesson.title}`;
-    }
-
-    // Enrolled courses grid
-    const container = document.getElementById("student-enrolled-courses-grid");
-    if (!container) return;
+    // Render enrolled courses grid
+    const enrolledGrid = document.getElementById("student-enrolled-courses-grid");
+    if (!enrolledGrid) return;
 
     const enrolledCourses = store.courses.filter(c => enrolledIds.includes(c.id));
+
     if (enrolledCourses.length === 0) {
-      container.innerHTML = `<div class="empty-state">You haven't enrolled in any courses yet. Browse by Sir to start!</div>`;
-    } else {
-      container.innerHTML = enrolledCourses.map(c => this.createCourseCardHTML(c)).join("");
-      this.attachCourseCardActions(container);
-    }
-  }
-
-  renderStudentDoubtsList() {
-    const container = document.getElementById("student-doubts-list");
-    if (!container) return;
-
-    const myDoubts = store.doubts.filter(d => d.studentId === store.activeStudentId);
-    if (myDoubts.length === 0) {
-      container.innerHTML = `<div class="empty-state">No doubts asked yet. Reach out to any Sir with your questions!</div>`;
+      enrolledGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 3rem 1rem; text-align: center; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle);">
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">You haven't enrolled in any courses yet.</p>
+          <button class="btn btn-primary" onclick="app.switchView('view-courses')">Explore Free Courses</button>
+        </div>
+      `;
       return;
     }
 
-    container.innerHTML = myDoubts.map(d => {
-      const sir = store.getSirById(d.sirId) || { name: "Sir", avatar: "👨‍🏫" };
+    enrolledGrid.innerHTML = enrolledCourses.map(c => {
+      const totalLessons = (c.lessons || []).length;
+      let done = 0;
+      (c.lessons || []).forEach(l => {
+        if (store.isLessonCompleted(l.id)) done++;
+      });
+      const pct = totalLessons > 0 ? Math.round((done / totalLessons) * 100) : 0;
+
       return `
-        <div class="doubt-card">
-          <div class="doubt-card-header">
-            <div>
-              <span class="doubt-student-tag">Target: <strong>${sir.avatar} ${sir.name}</strong> • Course: ${d.courseTitle}</span>
-              <h3 class="doubt-question-title">${d.title}</h3>
+        <article class="course-card" data-course-id="${c.id}">
+          <div class="course-card-cover" style="background-image: url('${c.coverPhoto}');">
+            <div class="course-card-badge-row">
+              <span class="badge-institution">${c.institution || "Provider"}</span>
+              <span class="badge-free">${pct}% Done</span>
             </div>
-            <span class="doubt-status-pill ${d.status}">${d.status}</span>
           </div>
-
-          <p class="doubt-question-body">${d.content}</p>
-
-          ${d.answer ? `
-            <div class="doubt-reply-box">
-              <div class="doubt-reply-header">
-                <span>${sir.avatar}</span>
-                <span>Response from ${sir.name}</span>
-              </div>
-              <p class="doubt-reply-content">${d.answer}</p>
+          <div class="course-card-body">
+            <h3 class="course-card-title">${c.title}</h3>
+            <span class="course-instructor-name">${c.instructorName}</span>
+            <div class="progress-bar-small" style="margin-top: 0.75rem;">
+              <div class="progress-fill" style="width: ${pct}%;"></div>
             </div>
-          ` : `
-            <div class="doubt-reply-box" style="border-left-color: var(--warning);">
-              <span style="font-size: 0.85rem; color: var(--warning);">⏳ Waiting for ${sir.name} to respond...</span>
-            </div>
-          `}
-        </div>
+          </div>
+          <div class="course-card-footer">
+            <span class="lesson-count">${done} / ${totalLessons} finished</span>
+            <button class="btn btn-primary btn-xs" onclick="app.openClassroomCourse('${c.id}')">Resume</button>
+          </div>
+        </article>
       `;
     }).join("");
   }
 
-  // ===========================================================================
-  // 10. TEACHER STUDIO LOGIC & UPLOADS
-  // ===========================================================================
+  // --- 5. LEARNER Q&A / DOUBTS ---
+  renderDoubts() {
+    const list = document.getElementById("student-doubts-list");
+    if (!list) return;
 
-  renderTeacherDashboard() {
-    const sir = store.getActiveSir();
-    const myCourses = store.courses.filter(c => c.sirId === sir.id);
-    let totalLessons = 0;
-    myCourses.forEach(c => totalLessons += (c.lessons ? c.lessons.length : 0));
-
-    const pendingDoubts = store.doubts.filter(d => d.sirId === sir.id && d.status === "pending");
-
-    document.getElementById("teacher-hero-name").textContent = sir.name;
-    document.getElementById("t-stat-courses").textContent = myCourses.length;
-    document.getElementById("t-stat-videos").textContent = totalLessons;
-    document.getElementById("t-stat-students").textContent = (sir.studentsCount || 2400).toLocaleString();
-    document.getElementById("t-stat-doubts").textContent = pendingDoubts.length;
-  }
-
-  renderTeacherStudioCourses() {
-    const sir = store.getActiveSir();
-    const myCourses = store.courses.filter(c => c.sirId === sir.id);
-
-    const studioGrid = document.getElementById("teacher-studio-courses-grid");
-    const allCoursesGrid = document.getElementById("teacher-all-courses-grid");
-
-    const renderFn = (container) => {
-      if (!container) return;
-      if (myCourses.length === 0) {
-        container.innerHTML = `<div class="empty-state">You haven't created any courses yet. Click "+ Add New Course" to get started!</div>`;
-        return;
-      }
-
-      container.innerHTML = myCourses.map(c => {
-        const bannerStyle = c.coverPhoto ? `background-image: url('${c.coverPhoto}');` : '';
-        const bannerClass = c.coverPhoto ? 'has-cover' : (c.theme || 'theme-purple');
-        return `
-        <div class="course-card">
-          <div class="course-card-banner ${bannerClass}" style="${bannerStyle}">
-            <div class="course-emoji-icon">${c.emoji || '📚'}</div>
-            <span class="course-level-badge">${c.level}</span>
-          </div>
-          <div class="course-card-body">
-            <span class="course-card-subject">${c.subject}</span>
-            <h3 class="course-card-title">${c.title}</h3>
-            <p class="course-card-desc">${c.desc}</p>
-            <div class="course-card-meta">
-              <span>📹 ${c.lessons ? c.lessons.length : 0} Lessons</span>
-            </div>
-            <div class="course-card-footer">
-              <button class="btn btn-primary btn-sm btn-block upload-to-course-btn" data-course-id="${c.id}">
-                📹 Add YouTube Lesson
-              </button>
-              <button class="btn btn-outline btn-sm preview-as-student-btn" data-course-id="${c.id}">
-                Preview ▶
-              </button>
-            </div>
-          </div>
+    if (store.doubts.length === 0) {
+      list.innerHTML = `
+        <div style="text-align: center; padding: 3rem 1rem; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle);">
+          <p style="color: var(--text-muted);">No questions submitted yet. Have a doubt? Ask using the button above.</p>
         </div>
-        `;
-      }).join("");
-
-      container.querySelectorAll(".upload-to-course-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-course-id");
-          const ytCourseSelect = document.getElementById("yt-course-select");
-          if (ytCourseSelect) ytCourseSelect.value = id;
-          this.switchView("view-teacher-youtube");
-        });
-      });
-
-      container.querySelectorAll(".preview-as-student-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-course-id");
-          this.openClassroom(id);
-        });
-      });
-    };
-
-    renderFn(studioGrid);
-    renderFn(allCoursesGrid);
-  }
-
-  previewYouTubeVideo(urlOrId) {
-    const id = extractYouTubeId(urlOrId);
-    const box = document.getElementById("yt-preview-box");
-    const iframe = document.getElementById("yt-preview-iframe");
-
-    if (id && id.length === 11) {
-      if (iframe) iframe.src = `https://www.youtube-nocookie.com/embed/${id}`;
-      box?.classList.remove("hidden");
-    } else {
-      box?.classList.add("hidden");
-    }
-  }
-
-  handleUploadYouTubeLesson() {
-    const courseId = document.getElementById("yt-course-select")?.value;
-    const url = document.getElementById("yt-video-url")?.value.trim();
-    const title = document.getElementById("yt-video-title")?.value.trim();
-    const duration = document.getElementById("yt-video-duration")?.value.trim() || "15 mins";
-    const desc = document.getElementById("yt-video-desc")?.value.trim() || "";
-    const resourceLink = document.getElementById("yt-resource-link")?.value.trim() || "";
-
-    const ytId = extractYouTubeId(url);
-    if (!ytId) {
-      showToast("Invalid YouTube link or ID! Please check the URL.", "error");
+      `;
       return;
     }
 
-    const course = store.getCourseById(courseId);
-    if (!course) {
-      showToast("Selected course not found.", "error");
-      return;
-    }
-
-    if (!course.lessons) course.lessons = [];
-
-    const newLesson = {
-      id: "lesson-" + Date.now(),
-      title: title,
-      ytUrl: url,
-      ytVideoId: ytId,
-      duration: duration,
-      desc: desc,
-      resourceLink: resourceLink,
-      quiz: {
-        q: `Concept check for: ${title}`,
-        opts: ["Understood clearly", "Need to review timestamp", "Ready for practice questions", "Will ask Sir a doubt"],
-        correct: 0,
-        exp: "Great work completing this lecture!"
-      }
-    };
-
-    course.lessons.push(newLesson);
-    store.save();
-
-    document.getElementById("upload-youtube-form").reset();
-    document.getElementById("yt-preview-box")?.classList.add("hidden");
-
-    showToast(`Published YouTube lesson to "${course.title}"!`, "success");
-    this.renderAllViews();
-    this.renderTeacherRecentUploads();
-  }
-
-  renderTeacherRecentUploads() {
-    const container = document.getElementById("teacher-recent-yt-list");
-    const countBadge = document.getElementById("teacher-yt-count-badge");
-    if (!container) return;
-
-    const sir = store.getActiveSir();
-    const myCourses = store.courses.filter(c => c.sirId === sir.id);
-    const uploads = [];
-
-    myCourses.forEach(c => {
-      if (c.lessons) {
-        c.lessons.forEach(l => {
-          uploads.push({ ...l, courseTitle: c.title });
-        });
-      }
-    });
-
-    if (countBadge) countBadge.textContent = `${uploads.length} videos`;
-
-    if (uploads.length === 0) {
-      container.innerHTML = `<div class="empty-state">No videos uploaded yet. Add your first YouTube lecture above!</div>`;
-      return;
-    }
-
-    container.innerHTML = uploads.slice(-6).reverse().map(u => `
-      <div class="recent-yt-item">
-        <strong>${u.title}</strong>
-        <span>Course: ${u.courseTitle} • ⏱️ ${u.duration}</span>
-      </div>
-    `).join("");
-  }
-
-  handleCreateCourse() {
-    const title = document.getElementById("new-course-title")?.value.trim();
-    const subject = document.getElementById("new-course-subject")?.value.trim();
-    const level = document.getElementById("new-course-level")?.value;
-    const instructor = document.getElementById("new-course-instructor")?.value;
-    const desc = document.getElementById("new-course-desc")?.value.trim();
-    const theme = document.getElementById("new-course-theme")?.value;
-    const emoji = document.getElementById("new-course-emoji")?.value.trim() || "📐";
-    const coverPhoto = document.getElementById("new-course-cover")?.value.trim() || "";
-
-    if (!title || !subject || !desc) {
-      showToast("Please fill in all required fields.", "error");
-      return;
-    }
-
-    const newCourse = {
-      id: "course-" + Date.now(),
-      sirId: instructor,
-      title: title,
-      subject: subject,
-      level: level,
-      desc: desc,
-      theme: theme,
-      emoji: emoji,
-      coverPhoto: coverPhoto,
-      lessons: []
-    };
-
-    store.courses.unshift(newCourse);
-    store.save();
-
-    this.closeAddCourseModal();
-    document.getElementById("create-course-form").reset();
-
-    showToast(`Course "${title}" created successfully! Now attach YouTube video lessons.`, "success");
-    this.populateModalSelects();
-    this.renderAllViews();
-    this.switchView("view-teacher-youtube");
-  }
-
-  renderTeacherDoubtsList() {
-    const container = document.getElementById("teacher-doubts-list");
-    if (!container) return;
-
-    const filter = document.getElementById("teacher-doubt-filter")?.value || "all";
-    const sir = store.getActiveSir();
-
-    let myDoubts = store.doubts.filter(d => d.sirId === sir.id);
-    if (filter === "pending") myDoubts = myDoubts.filter(d => d.status === "pending");
-    if (filter === "answered") myDoubts = myDoubts.filter(d => d.status === "answered");
-
-    if (myDoubts.length === 0) {
-      container.innerHTML = `<div class="empty-state">No doubts matching the current filter.</div>`;
-      return;
-    }
-
-    container.innerHTML = myDoubts.map(d => `
-      <div class="doubt-card" data-doubt-id="${d.id}">
-        <div class="doubt-card-header">
-          <div>
-            <span class="doubt-student-tag">Asked by: <strong>${d.studentName}</strong> • Course: ${d.courseTitle}</span>
-            <h3 class="doubt-question-title">${d.title}</h3>
-          </div>
-          <span class="doubt-status-pill ${d.status}">${d.status}</span>
+    list.innerHTML = store.doubts.map(d => `
+      <div style="background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span style="font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">${d.courseTitle}</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">${d.timestamp}</span>
         </div>
-
-        <p class="doubt-question-body">${d.content}</p>
-
+        <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">${d.title}</h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0.75rem;">${d.content}</p>
+        
         ${d.answer ? `
-          <div class="doubt-reply-box">
-            <div class="doubt-reply-header">
-              <span>${sir.avatar}</span>
-              <span>Your Official Answer:</span>
-            </div>
-            <p class="doubt-reply-content">${d.answer}</p>
+          <div style="background: var(--bg-subtle); border-left: 3px solid var(--success); padding: 0.85rem 1rem; border-radius: var(--radius-xs); margin-top: 0.75rem;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--success); margin-bottom: 0.25rem;">Official Explanation</div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">${d.answer}</p>
           </div>
         ` : `
-          <form class="teacher-answer-form" data-doubt-id="${d.id}">
-            <textarea class="form-control" rows="3" placeholder="Write your explanation to ${d.studentName}..." required></textarea>
-            <div style="display: flex; justify-content: flex-end;">
-              <button type="submit" class="btn btn-primary btn-sm">
-                <span>Send Answer to Student</span>
-              </button>
-            </div>
-          </form>
+          <div style="font-size: 0.78rem; color: var(--warning); font-weight: 600; margin-top: 0.5rem;">Awaiting instructor response</div>
         `}
       </div>
     `).join("");
-
-    container.querySelectorAll(".teacher-answer-form").forEach(form => {
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const doubtId = form.getAttribute("data-doubt-id");
-        const answerText = form.querySelector("textarea").value.trim();
-        if (!answerText) return;
-
-        const targetDoubt = store.doubts.find(d => d.id === doubtId);
-        if (targetDoubt) {
-          targetDoubt.status = "answered";
-          targetDoubt.answer = answerText;
-          store.save();
-          showToast("Answer sent to student!", "success");
-          this.renderTeacherDoubtsList();
-          this.renderTeacherDashboard();
-          this.updatePendingDoubtsCounter();
-        }
-      });
-    });
-  }
-
-  handleEditSirProfile() {
-    const sir = store.getActiveSir();
-    sir.name = document.getElementById("sir-edit-name").value.trim();
-    sir.avatar = document.getElementById("sir-edit-avatar").value.trim() || "👨‍🏫";
-    sir.designation = document.getElementById("sir-edit-designation").value.trim();
-    sir.subject = document.getElementById("sir-edit-subject").value.trim();
-    sir.bio = document.getElementById("sir-edit-bio").value.trim();
-    sir.ytChannel = document.getElementById("sir-edit-youtube").value.trim();
-    sir.exp = document.getElementById("sir-edit-exp").value.trim();
-
-    store.save();
-    showToast("Profile settings saved successfully!", "success");
-    this.updateRoleUI();
-    this.renderAllViews();
-  }
-
-  handleCreateNewSir() {
-    const name = document.getElementById("new-sir-name")?.value.trim();
-    const avatar = document.getElementById("new-sir-avatar")?.value.trim() || "👨‍🏫";
-    const designation = document.getElementById("new-sir-designation")?.value.trim();
-    const bio = document.getElementById("new-sir-bio")?.value.trim() || "Passionate educator.";
-
-    if (!name || !designation) {
-      showToast("Please provide your name and designation.", "error");
-      return;
-    }
-
-    const newSir = {
-      id: "sir-" + Date.now(),
-      name: name,
-      avatar: avatar,
-      designation: designation,
-      subject: designation,
-      bio: bio,
-      rating: 5.0,
-      studentsCount: 1,
-      exp: "1 Year",
-      ytChannel: ""
-    };
-
-    store.sirs.push(newSir);
-    store.activeSirId = newSir.id;
-    store.currentRole = "teacher";
-    store.save();
-
-    document.getElementById("new-sir-modal")?.classList.add("hidden");
-    document.getElementById("create-sir-form").reset();
-
-    showToast(`Welcome ${name}! Your Sir profile has been created.`, "success");
-    this.updateRoleUI();
-    this.populateModalSelects();
-    this.switchView("view-teacher-dashboard");
-    this.renderAllViews();
-  }
-
-  handleCreateNewStudent() {
-    const name = document.getElementById("new-student-name")?.value.trim();
-    const target = document.getElementById("new-student-target")?.value.trim() || "Lifelong Learner";
-
-    if (!name) {
-      showToast("Please enter your name.", "error");
-      return;
-    }
-
-    const newStudent = {
-      id: "student-" + Date.now(),
-      name: name,
-      avatar: "🎓",
-      target: target
-    };
-
-    store.students.push(newStudent);
-    store.activeStudentId = newStudent.id;
-    store.currentRole = "student";
-    store.save();
-
-    document.getElementById("new-student-modal")?.classList.add("hidden");
-    document.getElementById("create-student-form").reset();
-
-    showToast(`Welcome ${name}! Student profile activated.`, "success");
-    this.updateRoleUI();
-    this.populateModalSelects();
-    this.switchView("view-sirs");
-    this.renderAllViews();
-  }
-
-  updatePendingDoubtsCounter() {
-    const sir = store.getActiveSir();
-    const pendingCount = store.doubts.filter(d => d.sirId === sir.id && d.status === "pending").length;
-    const badge = document.getElementById("teacher-pending-doubts-count");
-    if (badge) {
-      badge.textContent = pendingCount;
-      badge.style.display = pendingCount > 0 ? "inline-block" : "none";
-    }
-  }
-
-  // ===========================================================================
-  // 11. GLOBAL SEARCH
-  // ===========================================================================
-
-  handleGlobalSearch(query) {
-    if (!query) {
-      this.renderAllViews();
-      return;
-    }
-    const q = query.toLowerCase();
-
-    // Check if searching for Sirs
-    const matchingSirs = store.sirs.filter(s => 
-      s.name.toLowerCase().includes(q) || 
-      s.subject.toLowerCase().includes(q) || 
-      s.designation.toLowerCase().includes(q)
-    );
-
-    // Check if searching for courses
-    const matchingCourses = store.courses.filter(c => 
-      c.title.toLowerCase().includes(q) || 
-      c.subject.toLowerCase().includes(q) ||
-      (c.desc && c.desc.toLowerCase().includes(q))
-    );
-
-    if (this.currentViewId === "view-sirs") {
-      const container = document.getElementById("sirs-grid-container");
-      if (container) {
-        if (matchingSirs.length === 0) {
-          container.innerHTML = `<div class="empty-state">No teachers matching "${query}".</div>`;
-        } else {
-          container.innerHTML = matchingSirs.map(sir => {
-            const sirCourses = store.courses.filter(c => c.sirId === sir.id);
-            return `
-              <div class="sir-card" data-sir-id="${sir.id}">
-                <div class="sir-card-top">
-                  <div class="sir-avatar">${sir.avatar || "👨‍🏫"}</div>
-                  <div class="sir-info">
-                    <h3>${sir.name}</h3>
-                    <div class="sir-title">${sir.designation}</div>
-                  </div>
-                </div>
-                <p class="sir-bio">${sir.bio}</p>
-                <div class="sir-card-actions">
-                  <button class="btn btn-primary btn-block open-sir-btn" data-sir-id="${sir.id}">
-                    <span>View Sir's Channel & Lectures</span>
-                  </button>
-                </div>
-              </div>
-            `;
-          }).join("");
-
-          container.querySelectorAll(".open-sir-btn").forEach(btn => {
-            btn.addEventListener("click", () => this.openSirShowcase(btn.getAttribute("data-sir-id")));
-          });
-        }
-      }
-    } else {
-      const container = document.getElementById("all-courses-grid");
-      if (container) {
-        if (matchingCourses.length === 0) {
-          container.innerHTML = `<div class="empty-state">No courses matching "${query}".</div>`;
-        } else {
-          container.innerHTML = matchingCourses.map(c => this.createCourseCardHTML(c)).join("");
-          this.attachCourseCardActions(container);
-        }
-      }
-    }
   }
 }
 
-// Instantiate on DOM load
+// Global instance for inline onclick handlers
+let app;
 document.addEventListener("DOMContentLoaded", () => {
-  window.appController = new AppController();
+  app = new AppController();
+  window.app = app;
 });
