@@ -1,689 +1,956 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aether Tutor - Interactive Learning Platform</title>
+  <title>TutorHub - Learn & Teach with Top Sirs</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app-container">
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo-container">
-          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.168.477 4 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18 18.246 18.477 16.5 18c-1.746 0-3.168.477-4 1.253" />
-          </svg>
-          <span class="logo-text">Aether<span>Tutor</span></span>
-        </div>
-      </div>
-      
-      <nav class="sidebar-menu">
-        <button class="nav-item active" data-tab="dashboard">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Dashboard
-        </button>
-        <button class="nav-item" data-tab="chat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          AI Tutor Aura
-        </button>
-        <button class="nav-item" data-tab="courses">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-          Curriculum Explorer
-        </button>
-        <button class="nav-item" data-tab="flashcards">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
-          3D Flashcards
-        </button>
-        <button class="nav-item" data-tab="quiz">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Quiz Studio
-        </button>
-        <button class="nav-item" data-tab="pomodoro">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Study Focus
-        </button>
-      </nav>
-      
-      <div class="sidebar-footer">
-        <button class="nav-item tutor-trigger" data-tab="tutor-portal">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          Tutor Console
-        </button>
-        
-        <div class="user-profile-badge">
-          <div class="avatar">JS</div>
-          <div class="user-info">
-            <span class="user-name">Joshua Tutor</span>
-            <span class="user-role">Premium Learner</span>
-          </div>
-        </div>
-      </div>
-    </aside>
 
-    <!-- Main Workspace -->
-    <main class="main-content">
-      <!-- Navbar / Top Header -->
-      <header class="top-bar">
-        <div class="breadcrumbs">
-          <span id="current-view-title">Dashboard</span>
+  <!-- Toast Notification Hub -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Main Application Wrapper -->
+  <div class="app-layout">
+
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <button id="sidebar-toggle" class="icon-btn mobile-only" aria-label="Toggle Navigation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <a href="#" class="brand-logo" id="brand-home-link">
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">Tutor<span>App</span></span>
+            <span class="brand-tagline">Learn by Sir</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Global Search -->
+      <div class="header-search">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="global-search-input" placeholder="Search courses, YouTube lectures, or teachers (e.g. Raman Sir)..." />
+          <button id="clear-search-btn" class="clear-search hidden">&times;</button>
         </div>
-        <div class="top-actions">
-          <button class="theme-toggle" id="theme-btn" title="Toggle Theme">
-            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-            </svg>
-            <svg class="moon-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-            </svg>
+      </div>
+
+      <!-- Role Switcher & User Profile Controls -->
+      <div class="header-right">
+        <!-- Current Active Role Pill / Switcher -->
+        <div class="role-badge-container">
+          <button id="role-switcher-btn" class="role-pill-btn" title="Click to switch between Teacher and Student mode">
+            <span class="role-indicator-dot"></span>
+            <span class="role-badge-icon" id="header-role-icon">👨‍🏫</span>
+            <div class="role-badge-details">
+              <span class="role-badge-label" id="header-role-title">Teacher Mode</span>
+              <span class="role-badge-name" id="header-user-name">Prof. Raman Sir</span>
+            </div>
+            <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
-          
-          <div class="notification-hub">
-            <button class="icon-btn" title="Notifications">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-              </svg>
-              <span class="badge"></span>
-            </button>
+        </div>
+
+        <!-- Quick Action Button (Dynamic depending on role) -->
+        <button id="header-action-btn" class="btn btn-primary btn-sm">
+          <span class="btn-icon">＋</span>
+          <span class="btn-text">Add Course</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle-btn" class="icon-btn" title="Toggle Light / Dark Mode">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="moon-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Body Layout with Sidebar -->
+    <div class="app-body">
+
+      <!-- Navigation Sidebar -->
+      <aside class="app-sidebar" id="app-sidebar">
+        <div class="sidebar-section-title">NAVIGATION</div>
+
+        <!-- Student Navigation Items -->
+        <nav class="sidebar-nav" id="student-nav">
+          <button class="nav-btn active" data-view="view-sirs">
+            <span class="nav-icon">👨‍🏫</span>
+            <span class="nav-label">Browse by Sir</span>
+            <span class="nav-chip highlight">Popular</span>
+          </button>
+          <button class="nav-btn" data-view="view-courses">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label">All Courses</span>
+          </button>
+          <button class="nav-btn" data-view="view-classroom">
+            <span class="nav-icon">▶️</span>
+            <span class="nav-label">YouTube Classroom</span>
+          </button>
+          <button class="nav-btn" data-view="view-student-dashboard">
+            <span class="nav-icon">🎓</span>
+            <span class="nav-label">My Learning</span>
+          </button>
+          <button class="nav-btn" data-view="view-student-doubts">
+            <span class="nav-icon">💬</span>
+            <span class="nav-label">Ask Sir / Doubts</span>
+          </button>
+        </nav>
+
+        <!-- Teacher Navigation Items -->
+        <nav class="sidebar-nav hidden" id="teacher-nav">
+          <button class="nav-btn active" data-view="view-teacher-dashboard">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Teacher Studio</span>
+          </button>
+          <button class="nav-btn" data-view="view-teacher-courses">
+            <span class="nav-icon">📂</span>
+            <span class="nav-label">My Courses</span>
+          </button>
+          <button class="nav-btn" data-view="view-teacher-youtube">
+            <span class="nav-icon">📹</span>
+            <span class="nav-label">Upload YouTube Lesson</span>
+            <span class="nav-chip pulse">New</span>
+          </button>
+          <button class="nav-btn" data-view="view-teacher-doubts">
+            <span class="nav-icon">📥</span>
+            <span class="nav-label">Student Doubts</span>
+            <span class="nav-counter" id="teacher-pending-doubts-count">0</span>
+          </button>
+          <button class="nav-btn" data-view="view-teacher-profile">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">Sir Profile Settings</span>
+          </button>
+        </nav>
+
+        <!-- Sidebar Quick Stats / Switch Banner -->
+        <div class="sidebar-bottom-card">
+          <div class="role-switch-teaser">
+            <div class="teaser-icon" id="teaser-icon">🔄</div>
+            <div class="teaser-content">
+              <strong id="teaser-title">Switch Mode</strong>
+              <p id="teaser-desc">Toggle between Teacher & Student perspective anytime.</p>
+            </div>
+            <button class="btn btn-outline btn-xs" id="quick-switch-mode-btn">Switch</button>
+          </div>
+
+          <div class="sidebar-meta">
+            <button class="text-link-btn" id="reset-demo-data-btn">Reset Demo Data</button>
+            <span class="dot-separator">•</span>
+            <button class="text-link-btn" id="export-data-btn">Backup</button>
           </div>
         </div>
-      </header>
+      </aside>
 
-      <!-- View Containers -->
-      <div class="panels-container">
-        
-        <!-- DASHBOARD VIEW -->
-        <section class="view-panel active" id="view-dashboard">
-          <div class="welcome-banner">
-            <div class="welcome-text">
-              <h1>Welcome back, <span class="highlight">Joshua</span>! 👋</h1>
-              <p>Ready to level up your understanding today? You are on a 5-day study streak!</p>
-            </div>
-            <div class="welcome-decoration">
-              <div class="orbit">
-                <div class="electron"></div>
+      <!-- Main Content Panel Area -->
+      <main class="app-main-content">
+
+        <!-- ============================================== -->
+        <!-- VIEW: BROWSE BY SIR (STUDENT)                  -->
+        <!-- ============================================== -->
+        <section id="view-sirs" class="content-view active">
+          <!-- Hero Banner -->
+          <div class="hero-banner">
+            <div class="hero-content">
+              <span class="hero-badge">⭐ Top Faculty & Educators</span>
+              <h1>Learn from India's & World's Finest Sirs</h1>
+              <p>Explore specialized courses and free YouTube video playlists curated by each Sir. Choose your mentor, watch structured lectures, and ask doubts directly!</p>
+              
+              <!-- Quick Filter Pills -->
+              <div class="category-filters" id="sirs-subject-filters">
+                <button class="filter-pill active" data-subject="all">All Subjects</button>
+                <button class="filter-pill" data-subject="Physics & Mathematics">Physics & Math</button>
+                <button class="filter-pill" data-subject="Computer Science">Computer Science & AI</button>
+                <button class="filter-pill" data-subject="Algorithms">DSA & Coding</button>
+                <button class="filter-pill" data-subject="Chemistry">Chemistry & Science</button>
               </div>
             </div>
-          </div>
-          
-          <div class="grid-layout three-cols">
-            <!-- Stats -->
-            <div class="card stat-card glow-card">
-              <div class="card-icon gradient-1">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <div class="hero-stats-badge">
+              <div class="stat-item">
+                <span class="stat-number" id="stats-total-sirs">4</span>
+                <span class="stat-label">Verified Sirs</span>
               </div>
-              <div class="stat-info">
-                <h3>Daily Streak</h3>
-                <div class="stat-value" id="dash-streak">5 days</div>
-                <p class="stat-change positive">🔥 Perfect record this week</p>
+              <div class="stat-item">
+                <span class="stat-number" id="stats-total-courses">8</span>
+                <span class="stat-label">Active Courses</span>
               </div>
-            </div>
-            
-            <div class="card stat-card glow-card">
-              <div class="card-icon gradient-2">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              </div>
-              <div class="stat-info">
-                <h3>Study Duration</h3>
-                <div class="stat-value" id="dash-duration">12.4h</div>
-                <p class="stat-change positive">📈 +2.1h vs last week</p>
-              </div>
-            </div>
-            
-            <div class="card stat-card glow-card">
-              <div class="card-icon gradient-3">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              </div>
-              <div class="stat-info">
-                <h3>Curriculum Progress</h3>
-                <div class="stat-value" id="dash-progress">64%</div>
-                <div class="progress-bar-container mini">
-                  <div class="progress-bar-fill" id="dash-progress-fill" style="width: 64%"></div>
-                </div>
+              <div class="stat-item">
+                <span class="stat-number" id="stats-total-videos">24</span>
+                <span class="stat-label">YouTube Lessons</span>
               </div>
             </div>
           </div>
-          
-          <div class="grid-layout two-cols mt-2">
-            <!-- Recent / Active Courses -->
-            <div class="card list-card">
-              <div class="card-header-actions">
-                <h2>Your Study Curriculum</h2>
-                <span class="action-link" id="go-to-courses">Browse All</span>
-              </div>
-              <div class="course-list-compact" id="dash-course-list">
-                <!-- Loaded dynamically -->
-              </div>
+
+          <!-- Sirs Grid -->
+          <div class="section-heading">
+            <div>
+              <h2>Educator Showcase</h2>
+              <p class="section-sub">Select any Sir to view their dedicated courses, YouTube lessons, and notes.</p>
             </div>
-            
-            <!-- Quick Actions / Learning Toolkit -->
-            <div class="card tool-card">
-              <h2>Quick Actions</h2>
-              <div class="quick-actions-grid">
-                <div class="action-button-card" id="act-start-study">
-                  <div class="action-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-                  <div class="action-content">
-                    <h4>Focus Pomodoro</h4>
-                    <p>Start study sess.</p>
-                  </div>
-                </div>
-                <div class="action-button-card" id="act-ai-help">
-                  <div class="action-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                  <div class="action-content">
-                    <h4>Ask Aura AI</h4>
-                    <p>Clear core doubts</p>
-                  </div>
-                </div>
-                <div class="action-button-card" id="act-review-cards">
-                  <div class="action-icon pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg></div>
-                  <div class="action-content">
-                    <h4>Flashcards</h4>
-                    <p>Interactive review</p>
-                  </div>
-                </div>
-                <div class="action-button-card" id="act-test-quiz">
-                  <div class="action-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 11.08 22 12 2 12"/><circle cx="12" cy="12" r="10"/></svg></div>
-                  <div class="action-content">
-                    <h4>Practice Quiz</h4>
-                    <p>Check knowledge</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          </div>
+          <div class="sirs-grid" id="sirs-grid-container">
+            <!-- Rendered dynamically via JS -->
           </div>
         </section>
 
-        <!-- AI CHAT VIEW -->
-        <section class="view-panel" id="view-chat">
-          <div class="chat-workspace">
-            <div class="chat-sidebar">
-              <div class="ai-profile">
-                <div class="aura-glow-container">
-                  <div class="aura-avatar">A</div>
-                  <div class="pulse-ring"></div>
+        <!-- ============================================== -->
+        <!-- VIEW: SIR SHOWCASE PROFILE (STUDENT)           -->
+        <!-- ============================================== -->
+        <section id="view-sir-showcase" class="content-view">
+          <div class="back-nav-bar">
+            <button class="btn btn-ghost btn-sm" id="back-to-sirs-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              Back to All Teachers
+            </button>
+          </div>
+
+          <!-- Sir Profile Header Card -->
+          <div class="sir-profile-hero" id="sir-showcase-header">
+            <!-- Dynamic Sir Header Content -->
+          </div>
+
+          <!-- Sir Showcase Tabs -->
+          <div class="tabs-bar">
+            <button class="tab-btn active" data-sir-tab="sir-tab-courses">Courses by this Sir</button>
+            <button class="tab-btn" data-sir-tab="sir-tab-videos">All YouTube Video Lessons</button>
+            <button class="tab-btn" data-sir-tab="sir-tab-doubt">Ask Sir a Doubt</button>
+          </div>
+
+          <!-- Sir Courses Tab -->
+          <div id="sir-tab-courses" class="sir-tab-content active">
+            <div class="courses-grid" id="sir-courses-container"></div>
+          </div>
+
+          <!-- Sir Videos Tab -->
+          <div id="sir-tab-videos" class="sir-tab-content">
+            <div class="videos-list" id="sir-videos-container"></div>
+          </div>
+
+          <!-- Sir Doubt Tab -->
+          <div id="sir-tab-doubt" class="sir-tab-content">
+            <div class="ask-doubt-card">
+              <div class="ask-doubt-header">
+                <h3>Submit a Question directly to <span id="ask-sir-name-target">Sir</span></h3>
+                <p>Sir reviews questions and publishes explanations to help your concepts.</p>
+              </div>
+              <form id="ask-sir-doubt-form" class="form-grid">
+                <div class="form-group">
+                  <label for="doubt-course-select">Select Course or General Topic</label>
+                  <select id="doubt-course-select" class="form-control" required></select>
                 </div>
-                <h3>Aura</h3>
-                <p class="role">Personal AI Tutor</p>
-                <span class="status-indicator online">Always Online</span>
-              </div>
-              <div class="context-pill">
-                <span class="concept-label">Active Learning Topic:</span>
-                <span class="concept-name" id="chat-active-concept">General Mentoring</span>
-              </div>
-              <div class="preset-prompts">
-                <h4>Suggested Prompts</h4>
-                <button class="prompt-chip" data-prompt="Teach me the core concepts of CSS Flexbox.">Explain Flexbox 📐</button>
-                <button class="prompt-chip" data-prompt="Give me a simple guide to understanding recursion in JavaScript.">Code Recursion 💻</button>
-                <button class="prompt-chip" data-prompt="Explain Quantum Superposition in simple terms with an analogy.">Superposition ⚛️</button>
-                <button class="prompt-chip" data-prompt="How do I write a perfect argumentative essay hook?">Essay Hook ✍️</button>
-              </div>
-            </div>
-            
-            <div class="chat-window">
-              <div class="chat-messages" id="chat-scroller">
-                <!-- Initial Aura Message -->
-                <div class="chat-bubble-container aura-bubble-container">
-                  <div class="bubble-avatar">A</div>
-                  <div class="chat-bubble aura">
-                    <p>Hello Joshua! I'm Aura, your AI Tutor. I can help explain complex concepts, construct quizzes, generate practice problems, or guide you through write-ups. What subject are we exploring today?</p>
-                    <div class="chat-time">Today, 2:30 PM</div>
-                  </div>
+                <div class="form-group">
+                  <label for="doubt-title-input">Question Title / Topic</label>
+                  <input type="text" id="doubt-title-input" class="form-control" placeholder="e.g. Can you explain the intuition behind Schrödinger's wave equation?" required />
                 </div>
-              </div>
-              
-              <!-- Typing Indicator -->
-              <div class="typing-indicator-container hidden" id="chat-typing">
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <small>Aura is assembling a response...</small>
-              </div>
-              
-              <form class="chat-input-area" id="chat-form">
-                <input type="text" id="chat-input" placeholder="Ask Aura a question or request a concept review..." autocomplete="off">
-                <button type="submit" class="send-btn" title="Send Message">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                </button>
+                <div class="form-group">
+                  <label for="doubt-content-input">Detailed Question or YouTube Timestamp</label>
+                  <textarea id="doubt-content-input" class="form-control" rows="4" placeholder="Mention specific questions, formula queries, or YouTube lecture timestamps..." required></textarea>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <span class="btn-icon">🚀</span> Post Doubt to Sir
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         </section>
 
-        <!-- COURSES VIEW -->
-        <section class="view-panel" id="view-courses">
-          <div class="courses-header-split">
+        <!-- ============================================== -->
+        <!-- VIEW: ALL COURSES (STUDENT)                    -->
+        <!-- ============================================== -->
+        <section id="view-courses" class="content-view">
+          <div class="view-header">
             <div>
-              <h1>Curriculum Explorer</h1>
-              <p>Explore master subjects, modules, and interact with the science testing playground.</p>
+              <h1>Explore All Courses</h1>
+              <p class="section-sub">Comprehensive curricula with organized YouTube lectures, structured playlists, and study notes.</p>
             </div>
-            <div class="tabs-control">
-              <button class="sub-tab active" data-subtab="subject-list">Master Courses</button>
-              <button class="sub-tab" data-subtab="interactive-playground">Flexbox Playground</button>
+            <div class="filter-controls">
+              <select id="courses-filter-sir" class="form-control-sm">
+                <option value="all">Filter by Sir: All</option>
+              </select>
+              <select id="courses-filter-level" class="form-control-sm">
+                <option value="all">All Levels</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
             </div>
           </div>
 
-          <!-- Curriculum Catalog Panel -->
-          <div class="sub-panel active" id="subtab-subject-list">
-            <div class="curriculum-grid" id="curriculum-list">
-              <!-- Grid items loaded dynamically from app.js -->
-            </div>
-          </div>
-
-          <!-- Interactive Flexbox Playground -->
-          <div class="sub-panel" id="subtab-interactive-playground">
-            <div class="playground-layout">
-              <div class="playground-sidebar">
-                <h3>Flexbox Sandbox</h3>
-                <p>Tutors use this interactive visualizer to explain layouts. Click flex properties to see changes instantly.</p>
-                
-                <div class="control-group">
-                  <label for="flex-direction">flex-direction</label>
-                  <select id="flex-direction" class="play-control">
-                    <option value="row" selected>row</option>
-                    <option value="row-reverse">row-reverse</option>
-                    <option value="column">column</option>
-                    <option value="column-reverse">column-reverse</option>
-                  </select>
-                </div>
-                
-                <div class="control-group">
-                  <label for="justify-content">justify-content</label>
-                  <select id="justify-content" class="play-control">
-                    <option value="flex-start" selected>flex-start</option>
-                    <option value="flex-end">flex-end</option>
-                    <option value="center">center</option>
-                    <option value="space-between">space-between</option>
-                    <option value="space-around">space-around</option>
-                    <option value="space-evenly">space-evenly</option>
-                  </select>
-                </div>
-                
-                <div class="control-group">
-                  <label for="align-items">align-items</label>
-                  <select id="align-items" class="play-control">
-                    <option value="stretch" selected>stretch</option>
-                    <option value="flex-start">flex-start</option>
-                    <option value="flex-end">flex-end</option>
-                    <option value="center">center</option>
-                    <option value="baseline">baseline</option>
-                  </select>
-                </div>
-
-                <div class="control-group">
-                  <label>Simulated Lesson</label>
-                  <blockquote class="lesson-tip">
-                    "Flexible Box Layout aligns child elements dynamically even when their sizes are unknown. Use <code>justify-content: center</code> and <code>align-items: center</code> to perfectly center items."
-                  </blockquote>
-                </div>
-              </div>
-              
-              <div class="playground-canvas">
-                <div class="flex-box-container" id="flex-playground-container">
-                  <div class="flex-item flex-item-1">Item 1</div>
-                  <div class="flex-item flex-item-2">Item 2</div>
-                  <div class="flex-item flex-item-3">Item 3</div>
-                </div>
-              </div>
-            </div>
+          <div class="courses-grid" id="all-courses-grid">
+            <!-- Rendered by JS -->
           </div>
         </section>
 
-        <!-- FLASHCARDS VIEW -->
-        <section class="view-panel" id="view-flashcards">
-          <div class="flashcard-workspace">
-            <div class="workspace-header">
-              <div>
-                <h1>Active Review Deck</h1>
-                <p>Use active recall to embed concepts into long-term memory. Flip and score yourself.</p>
-              </div>
-              <div class="deck-selector-container">
-                <label for="deck-select">Switch Subject:</label>
-                <select id="deck-select">
-                  <!-- Options dynamic -->
-                </select>
-              </div>
-            </div>
+        <!-- ============================================== -->
+        <!-- VIEW: YOUTUBE CLASSROOM / PLAYER (STUDENT)     -->
+        <!-- ============================================== -->
+        <section id="view-classroom" class="content-view">
+          <div class="classroom-layout">
 
-            <div class="flashcards-hud">
-              <div class="hud-item">
-                <span class="hud-label">Remaining:</span>
-                <span class="hud-val" id="fc-remaining">0/0</span>
-              </div>
-              <div class="hud-item-progress">
-                <div class="progress-bar-container">
-                  <div class="progress-bar-fill" id="fc-progress-fill" style="width: 0%"></div>
+            <!-- Video & Tools Main Column -->
+            <div class="classroom-main">
+              <!-- Video Player Container -->
+              <div class="video-player-wrapper">
+                <div class="responsive-video-box" id="youtube-player-frame-box">
+                  <iframe 
+                    id="youtube-player-iframe" 
+                    src="https://www.youtube-nocookie.com/embed/fNk_zzaMoSs?enablejsapi=1&rel=0" 
+                    title="YouTube Video Lecture" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                  </iframe>
                 </div>
               </div>
-              <div class="hud-item">
-                <span class="hud-label">Correct today:</span>
-                <span class="hud-val highlight" id="fc-score-val">0</span>
-              </div>
-            </div>
 
-            <!-- 3D Card Stack Container -->
-            <div class="card-area">
-              <div class="flashcard-3d" id="main-flashcard">
-                <div class="card-inner">
-                  <div class="card-face card-front">
-                    <span class="card-category" id="fc-front-subj">Physics</span>
-                    <div class="card-body">
-                      <p id="fc-front-text">Question loading...</p>
-                    </div>
-                    <span class="card-instruction">Click card to reveal answer</span>
+              <!-- Active Lesson Info -->
+              <div class="lesson-meta-bar">
+                <div class="lesson-meta-left">
+                  <span class="lesson-badge" id="player-course-title">Mastering Linear Algebra</span>
+                  <h2 id="player-lesson-title">Vectors, what even are they? (Essence of linear algebra)</h2>
+                  <div class="lesson-sub-meta">
+                    <span class="teacher-tag" id="player-teacher-tag">👨‍🏫 Prof. Raman Sir</span>
+                    <span class="meta-dot">•</span>
+                    <span id="player-lesson-duration">⏱️ 10 mins</span>
+                    <span class="meta-dot">•</span>
+                    <a href="#" id="player-original-yt-link" target="_blank" rel="noopener noreferrer" class="yt-direct-link">
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                      Watch on YouTube
+                    </a>
                   </div>
-                  
-                  <div class="card-face card-back">
-                    <span class="card-category" id="fc-back-subj">Physics</span>
-                    <div class="card-body">
-                      <p id="fc-back-text">Answer loading...</p>
+                </div>
+                <div class="lesson-meta-right">
+                  <button id="mark-lesson-complete-btn" class="btn btn-outline btn-sm">
+                    <span class="btn-icon">✓</span>
+                    <span class="btn-text">Mark Completed</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Interactive Tabs below video -->
+              <div class="classroom-tabs-wrapper">
+                <div class="tabs-bar">
+                  <button class="tab-btn active" data-classroom-tab="c-tab-notes">📝 My Timestamped Notes</button>
+                  <button class="tab-btn" data-classroom-tab="c-tab-quiz">⚡ Concept Quick-Check</button>
+                  <button class="tab-btn" data-classroom-tab="c-tab-resources">📎 Teacher Resources & PDF</button>
+                  <button class="tab-btn" data-classroom-tab="c-tab-ask">💬 Ask Question on this Video</button>
+                </div>
+
+                <!-- Notes Tab -->
+                <div id="c-tab-notes" class="classroom-tab-pane active">
+                  <div class="notes-editor-box">
+                    <div class="notes-header">
+                      <span>Personal study notes for this lecture (auto-saved to your browser)</span>
+                      <button class="btn btn-ghost btn-xs" id="clear-notes-btn">Clear Notes</button>
                     </div>
-                    <span class="card-instruction">Rate accuracy below</span>
+                    <textarea id="lesson-notes-textarea" class="form-control" rows="5" placeholder="Write formulas, insights, and reminders here while watching..."></textarea>
+                    <div class="notes-footer">
+                      <span class="notes-status" id="notes-save-status">Saved</span>
+                      <button class="btn btn-primary btn-sm" id="save-notes-btn">Save Notes</button>
+                    </div>
                   </div>
+                </div>
+
+                <!-- Quiz Tab -->
+                <div id="c-tab-quiz" class="classroom-tab-pane">
+                  <div class="concept-quiz-box" id="classroom-quiz-container">
+                    <!-- Dynamic quiz for current video -->
+                  </div>
+                </div>
+
+                <!-- Resources Tab -->
+                <div id="c-tab-resources" class="classroom-tab-pane">
+                  <div class="resources-list" id="classroom-resources-container">
+                    <!-- Dynamic resources -->
+                  </div>
+                </div>
+
+                <!-- Ask Question Tab -->
+                <div id="c-tab-ask" class="classroom-tab-pane">
+                  <form id="classroom-quick-doubt-form" class="form-grid">
+                    <div class="form-group">
+                      <label>Ask a question about this lecture to <strong id="classroom-teacher-name-label">Sir</strong></label>
+                      <textarea id="classroom-doubt-text" class="form-control" rows="3" placeholder="What part of this video was tricky? Ask Sir for clarification..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                      <span class="btn-icon">📨</span> Send Question to Sir
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
 
-            <!-- Controls (Reveal & Rate) -->
-            <div class="card-controls" id="fc-action-reveal">
-              <button class="primary-btn wide-btn" id="fc-reveal-btn">Reveal Answer</button>
-            </div>
-            
-            <div class="card-controls hidden" id="fc-action-rate">
-              <button class="rate-btn hard" id="fc-rate-hard">Again (Incorrect)</button>
-              <button class="rate-btn easy" id="fc-rate-easy">Got it (Correct!)</button>
-            </div>
-            
-            <div class="finish-deck-view hidden" id="fc-empty-state">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <h2>Session Complete!</h2>
-              <p>Excellent effort. You have reviewed all flashcards in this deck.</p>
-              <button class="primary-btn" id="fc-reset-deck">Review Again</button>
-            </div>
-          </div>
-        </section>
-
-        <!-- QUIZZES VIEW -->
-        <section class="view-panel" id="view-quiz">
-          <div class="quiz-container">
-            <!-- Quiz Config / Dashboard Start -->
-            <div id="quiz-start-view">
-              <h1>Quiz Studio</h1>
-              <p>Select a quiz module created by your tutors to test your knowledge.</p>
-              
-              <div class="quiz-grid" id="quiz-list-container">
-                <!-- Loaded dynamically -->
-              </div>
-            </div>
-
-            <!-- Quiz Active Screen -->
-            <div id="quiz-active-view" class="hidden">
-              <div class="quiz-header">
+            <!-- Playlist Sidebar Column -->
+            <div class="classroom-playlist-sidebar">
+              <div class="playlist-header">
                 <div>
-                  <button class="text-back-btn" id="quiz-quit-btn">← Quit Quiz</button>
-                  <h2 id="active-quiz-title">Subject Quiz</h2>
+                  <h3 id="playlist-course-name">Course Playlist</h3>
+                  <span class="playlist-progress-text" id="playlist-progress-label">0 of 0 completed</span>
                 </div>
-                <div class="quiz-progress-hud">
-                  Question <span id="quiz-q-index">1</span> of <span id="quiz-q-total">5</span>
+                <div class="progress-bar-small">
+                  <div class="progress-fill" id="playlist-progress-fill" style="width: 0%;"></div>
                 </div>
               </div>
-              
-              <div class="progress-bar-container">
-                <div class="progress-bar-fill" id="quiz-progress-fill"></div>
-              </div>
-
-              <!-- Active Question Box -->
-              <div class="quiz-card-panel">
-                <div class="question-text" id="quiz-question-text">
-                  What is the difference between synchronous and asynchronous code execution?
-                </div>
-                
-                <div class="options-container" id="quiz-options-box">
-                  <!-- Options dynamic buttons -->
-                </div>
-                
-                <!-- Feedback panel (Hidden until selection) -->
-                <div class="feedback-card hidden" id="quiz-feedback-box">
-                  <div class="feedback-indicator">
-                    <span class="indicator-icon">✔</span>
-                    <span class="indicator-title">Correct!</span>
-                  </div>
-                  <div class="feedback-explanation" id="quiz-explanation-text">
-                    JavaScript is single threaded, so asynchronous operations delegate tasks outside...
-                  </div>
-                  <button class="primary-btn align-right" id="quiz-next-btn">Next Question →</button>
-                </div>
+              <div class="playlist-lessons-list" id="playlist-lessons-container">
+                <!-- Lessons in this course rendered here -->
               </div>
             </div>
 
-            <!-- Quiz Finished Screen -->
-            <div id="quiz-finished-view" class="hidden text-center">
-              <canvas id="confetti-canvas"></canvas>
-              <div class="trophy-award">🏆</div>
-              <h1 id="quiz-result-title">Quiz Completed!</h1>
-              <p class="score-card-text">You scored <strong class="badge-accent" id="quiz-final-score">4/5</strong></p>
-              <p id="quiz-finished-comment">Fantastic job! You've mastered this concept completely.</p>
-              
-              <div class="end-actions">
-                <button class="primary-btn" id="quiz-retry-btn">Try Again</button>
-                <button class="outline-btn" id="quiz-dashboard-btn">Back to Studio</button>
-              </div>
-            </div>
           </div>
         </section>
 
-        <!-- POMODORO TIMER VIEW -->
-        <section class="view-panel" id="view-pomodoro">
-          <div class="pomodoro-workspace">
-            <div class="timer-card">
-              <h1>Study Focus Timer</h1>
-              <p>Maximize your learning using the Pomodoro technique. Focus for 25 minutes, then rest.</p>
-              
-              <!-- Mode Selection -->
-              <div class="timer-modes">
-                <button class="mode-toggle active" data-duration="25">Study Time</button>
-                <button class="mode-toggle" data-duration="5">Short Break</button>
-                <button class="mode-toggle" data-duration="15">Long Break</button>
-              </div>
-
-              <!-- Graphic SVG Timer -->
-              <div class="timer-display-ring">
-                <svg class="ring-svg" viewBox="0 0 200 200">
-                  <circle class="ring-bg" cx="100" cy="100" r="90" />
-                  <circle class="ring-progress" id="timer-progress-circle" cx="100" cy="100" r="90" />
-                </svg>
-                <div class="timer-time" id="timer-time-display">25:00</div>
-              </div>
-
-              <!-- Controls -->
-              <div class="timer-actions">
-                <button class="control-btn toggle" id="timer-start-pause">
-                  <svg viewBox="0 0 24 24" fill="currentColor" class="play-svg"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                  <svg viewBox="0 0 24 24" fill="currentColor" class="pause-svg hidden"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                </button>
-                <button class="control-btn reset" id="timer-reset" title="Reset Session">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                </button>
-              </div>
-
-              <!-- Ambient Audio Panel -->
-              <div class="ambient-audio-selector">
-                <span class="audio-label">Ambient Sound:</span>
-                <span class="audio-name" id="timer-bg-status">Silent</span>
-                <button class="sound-chip active" id="sound-toggle-rain" data-sound="rain">🌧 Rain</button>
-                <button class="sound-chip" id="sound-toggle-white" data-sound="waves">🌊 Waves</button>
-                <button class="sound-chip" id="sound-toggle-forest" data-sound="forest">🌳 Forest</button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- TUTOR PORTAL VIEW -->
-        <section class="view-panel" id="view-tutor-portal">
-          <div class="tutor-header">
+        <!-- ============================================== -->
+        <!-- VIEW: STUDENT DASHBOARD (STUDENT)              -->
+        <!-- ============================================== -->
+        <section id="view-student-dashboard" class="content-view">
+          <div class="view-header">
             <div>
-              <h1>Tutor Console</h1>
-              <p>Manage curriculum, add new subjects with modules, edit flashcard decks, and customize student quizzes.</p>
-            </div>
-            <div class="tutor-actions">
-              <button class="danger-btn ml-1" id="tutor-reset-data">Reset to Defaults</button>
+              <h1>My Learning Dashboard</h1>
+              <p class="section-sub">Track enrolled courses, watch history, and continued progress.</p>
             </div>
           </div>
 
-          <div class="tutor-split-layout">
-            <!-- Sidebar controls -->
-            <div class="tutor-tabs">
-              <button class="tutor-tab-item active" data-portal-section="portal-courses">Courses Editor</button>
-              <button class="tutor-tab-item" data-portal-section="portal-flashcards">Flashcard Creator</button>
-              <button class="tutor-tab-item" data-portal-section="portal-quiz">Quiz Designer</button>
+          <!-- Quick Stats Row -->
+          <div class="stats-cards-row">
+            <div class="stats-card">
+              <div class="card-icon">📚</div>
+              <div class="card-info">
+                <span class="stat-value" id="student-stat-enrolled">0</span>
+                <span class="stat-name">Enrolled Courses</span>
+              </div>
             </div>
-
-            <!-- Editor Workspaces -->
-            <div class="tutor-workspace-body">
-              
-              <!-- 1. COURSE CREATOR -->
-              <div class="tutor-editor-section active" id="portal-courses">
-                <h2>Add New Course Module</h2>
-                <form id="tutor-course-form" class="editor-form">
-                  <div class="form-row">
-                    <div class="form-group flex-1">
-                      <label for="course-title">Course Title</label>
-                      <input type="text" id="course-title" placeholder="e.g. Astrobiology Essentials" required>
-                    </div>
-                    <div class="form-group flex-1">
-                      <label for="course-icon">Icon Icon (Emoji or Word)</label>
-                      <input type="text" id="course-icon" placeholder="e.g. 🪐, 🧪, ⚛️, 💻" required>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="course-desc">Short Description</label>
-                    <textarea id="course-desc" placeholder="Brief outline summarizing study targets..." rows="3" required></textarea>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="form-group flex-1">
-                      <label for="course-difficulty">Difficulty Level</label>
-                      <select id="course-difficulty">
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                      </select>
-                    </div>
-                    <div class="form-group flex-1">
-                      <label for="course-modules">Lessons/Chapters (Comma Separated)</label>
-                      <input type="text" id="course-modules" placeholder="e.g., Intro, Kepler's Laws, Exoplanets" required>
-                    </div>
-                  </div>
-
-                  <button type="submit" class="primary-btn mt-1">Publish Subject Course</button>
-                </form>
+            <div class="stats-card">
+              <div class="card-icon">✅</div>
+              <div class="card-info">
+                <span class="stat-value" id="student-stat-completed-lessons">0</span>
+                <span class="stat-name">Lessons Finished</span>
               </div>
-
-              <!-- 2. FLASHCARD CREATOR -->
-              <div class="tutor-editor-section" id="portal-flashcards">
-                <h2>Add Custom Flashcards</h2>
-                <p class="description">Select a subject deck to insert your card into, or enter a new deck title.</p>
-                <form id="tutor-fc-form" class="editor-form">
-                  <div class="form-row">
-                    <div class="form-group flex-1">
-                      <label for="fc-deck-title">Deck / Subject Name</label>
-                      <input type="text" id="fc-deck-title" placeholder="e.g. Mathematics" list="existing-decks" required>
-                      <datalist id="existing-decks">
-                        <!-- Dynamic options -->
-                      </datalist>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="fc-question">Front Content (Question/Concept)</label>
-                    <textarea id="fc-question" placeholder="Enter flashcard prompt or question..." rows="3" required></textarea>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="fc-answer">Back Content (Explanation/Key Answer)</label>
-                    <textarea id="fc-answer" placeholder="Enter corresponding solution details..." rows="3" required></textarea>
-                  </div>
-
-                  <button type="submit" class="primary-btn mt-1">Deploy Flashcard</button>
-                </form>
-              </div>
-
-              <!-- 3. QUIZ DESIGNER -->
-              <div class="tutor-editor-section" id="portal-quiz">
-                <h2>Add Quiz Question</h2>
-                <p class="description">Select which quiz stack to append to, or create a brand new quiz.</p>
-                <form id="tutor-qz-form" class="editor-form">
-                  <div class="form-row">
-                    <div class="form-group flex-1">
-                      <label for="qz-subject">Quiz Title / Topic</label>
-                      <input type="text" id="qz-subject" placeholder="e.g. Physics 101" list="existing-quizzes" required>
-                      <datalist id="existing-quizzes">
-                        <!-- Dynamic options -->
-                      </datalist>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="qz-question">Question Text</label>
-                    <textarea id="qz-question" placeholder="Search parameters or descriptive question details..." rows="2" required></textarea>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="form-group flex-1">
-                      <label for="qz-opt-a">Option A</label>
-                      <input type="text" id="qz-opt-a" placeholder="First choice" required>
-                    </div>
-                    <div class="form-group flex-1">
-                      <label for="qz-opt-b">Option B</label>
-                      <input type="text" id="qz-opt-b" placeholder="Second choice" required>
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="form-group flex-1">
-                      <label for="qz-opt-c">Option C</label>
-                      <input type="text" id="qz-opt-c" placeholder="Third choice" required>
-                    </div>
-                    <div class="form-group flex-1">
-                      <label for="qz-opt-d">Option D</label>
-                      <input type="text" id="qz-opt-d" placeholder="Fourth choice" required>
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="form-group flex-1">
-                      <label for="qz-correct">Correct Option</label>
-                      <select id="qz-correct">
-                        <option value="A">Option A</option>
-                        <option value="B">Option B</option>
-                        <option value="C">Option C</option>
-                        <option value="D">Option D</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="qz-explanation">Explanation (Shown after answering)</label>
-                    <textarea id="qz-explanation" placeholder="Provide background on why the selected answer is correct..." rows="3" required></textarea>
-                  </div>
-
-                  <button type="submit" class="primary-btn mt-1">Insert Quiz Question</button>
-                </form>
-              </div>
-
             </div>
+            <div class="stats-card">
+              <div class="card-icon">💬</div>
+              <div class="card-info">
+                <span class="stat-value" id="student-stat-doubts">0</span>
+                <span class="stat-name">Doubts Submitted</span>
+              </div>
+            </div>
+            <div class="stats-card">
+              <div class="card-icon">🔥</div>
+              <div class="card-info">
+                <span class="stat-value">5 Days</span>
+                <span class="stat-name">Study Streak</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Continue Learning Banner -->
+          <div class="continue-banner" id="continue-learning-banner">
+            <div class="banner-content">
+              <span class="tag-pill">Jump Back In</span>
+              <h3 id="continue-course-title">Continue where you left off</h3>
+              <p id="continue-lesson-title">Resume your next lesson with one click</p>
+            </div>
+            <button class="btn btn-primary" id="continue-learning-btn">
+              <span class="btn-icon">▶</span> Resume Lecture
+            </button>
+          </div>
+
+          <!-- Enrolled Courses -->
+          <div class="section-heading">
+            <h3>My Enrolled Courses</h3>
+          </div>
+          <div class="courses-grid" id="student-enrolled-courses-grid">
+            <!-- Enrolled courses -->
           </div>
         </section>
 
-      </div>
-    </main>
+        <!-- ============================================== -->
+        <!-- VIEW: STUDENT DOUBTS (STUDENT)                 -->
+        <!-- ============================================== -->
+        <section id="view-student-doubts" class="content-view">
+          <div class="view-header">
+            <div>
+              <h1>My Doubts & Teacher Answers</h1>
+              <p class="section-sub">Questions you asked to Sirs, along with their official responses.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" id="open-ask-doubt-modal-btn">
+              <span class="btn-icon">＋</span> Ask New Doubt
+            </button>
+          </div>
+
+          <div class="doubts-feed" id="student-doubts-list">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+
+        <!-- ============================================== -->
+        <!-- VIEW: TEACHER DASHBOARD (TEACHER)              -->
+        <!-- ============================================== -->
+        <section id="view-teacher-dashboard" class="content-view">
+          <div class="teacher-studio-hero">
+            <div class="studio-welcome">
+              <span class="studio-badge">👨‍🏫 Educator Studio</span>
+              <h1>Welcome back, <span id="teacher-hero-name">Prof. Raman Sir</span>!</h1>
+              <p>Create and manage courses, upload YouTube video lessons, and interact with students asking questions across your content.</p>
+            </div>
+            <div class="studio-quick-actions">
+              <button class="btn btn-primary" id="studio-add-course-btn">
+                <span class="btn-icon">＋</span> Add New Course
+              </button>
+              <button class="btn btn-accent" id="studio-upload-yt-btn">
+                <span class="btn-icon">📹</span> Upload YouTube Lesson
+              </button>
+            </div>
+          </div>
+
+          <!-- Teacher KPI Metrics -->
+          <div class="stats-cards-row">
+            <div class="stats-card">
+              <div class="card-icon">📁</div>
+              <div class="card-info">
+                <span class="stat-value" id="t-stat-courses">0</span>
+                <span class="stat-name">Published Courses</span>
+              </div>
+            </div>
+            <div class="stats-card">
+              <div class="card-icon">▶️</div>
+              <div class="card-info">
+                <span class="stat-value" id="t-stat-videos">0</span>
+                <span class="stat-name">YouTube Lectures</span>
+              </div>
+            </div>
+            <div class="stats-card">
+              <div class="card-icon">👥</div>
+              <div class="card-info">
+                <span class="stat-value" id="t-stat-students">2,450</span>
+                <span class="stat-name">Active Students</span>
+              </div>
+            </div>
+            <div class="stats-card">
+              <div class="card-icon">📥</div>
+              <div class="card-info">
+                <span class="stat-value" id="t-stat-doubts">0</span>
+                <span class="stat-name">Pending Questions</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Courses Management Preview -->
+          <div class="section-heading">
+            <div>
+              <h3>Courses Managed by You</h3>
+              <p class="section-sub">Click any course to manage its lessons and view student feedback.</p>
+            </div>
+          </div>
+          <div class="courses-grid" id="teacher-studio-courses-grid">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: TEACHER COURSES MANAGEMENT (TEACHER)     -->
+        <!-- ============================================== -->
+        <section id="view-teacher-courses" class="content-view">
+          <div class="view-header">
+            <div>
+              <h1>Manage Courses</h1>
+              <p class="section-sub">Add syllabus modules, edit course information, or attach YouTube video playlists.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-create-course-header">
+              <span class="btn-icon">＋</span> Create Course
+            </button>
+          </div>
+
+          <div class="courses-grid" id="teacher-all-courses-grid">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: TEACHER YOUTUBE UPLOAD (TEACHER)         -->
+        <!-- ============================================== -->
+        <section id="view-teacher-youtube" class="content-view">
+          <div class="view-header">
+            <div>
+              <h1>Upload YouTube Video Lesson</h1>
+              <p class="section-sub">Attach any YouTube lecture, tutorial, or problem solving session to your courses with real-time preview.</p>
+            </div>
+          </div>
+
+          <div class="yt-upload-container">
+            <div class="upload-form-card">
+              <form id="upload-youtube-form" class="form-grid">
+                
+                <div class="form-group">
+                  <label for="yt-course-select">Select Target Course *</label>
+                  <select id="yt-course-select" class="form-control" required></select>
+                </div>
+
+                <div class="form-group">
+                  <label for="yt-video-url">YouTube Video URL or Video ID *</label>
+                  <div class="input-with-icon">
+                    <span class="input-icon">🔗</span>
+                    <input type="text" id="yt-video-url" class="form-control" placeholder="https://www.youtube.com/watch?v=... or youtu.be/... or ID" required />
+                  </div>
+                  <span class="form-hint">Supports standard YouTube links, shorts, youtu.be, or direct 11-character video IDs.</span>
+                </div>
+
+                <!-- Instant YouTube Preview Box -->
+                <div id="yt-preview-box" class="yt-preview-box hidden">
+                  <div class="preview-badge">Live YouTube Embed Preview</div>
+                  <div class="preview-iframe-wrapper">
+                    <iframe id="yt-preview-iframe" src="" allowfullscreen></iframe>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group flex-2">
+                    <label for="yt-video-title">Lesson Title *</label>
+                    <input type="text" id="yt-video-title" class="form-control" placeholder="e.g. Lecture 03: Visualizing Dot Products & Projections" required />
+                  </div>
+                  <div class="form-group flex-1">
+                    <label for="yt-video-duration">Approx Duration *</label>
+                    <input type="text" id="yt-video-duration" class="form-control" placeholder="e.g. 15 mins" required />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="yt-video-desc">Lecture Notes / Summary</label>
+                  <textarea id="yt-video-desc" class="form-control" rows="3" placeholder="What key concepts are covered in this video? Provide brief notes..."></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="yt-resource-link">External Resource / PDF Notes Link (Optional)</label>
+                  <input type="url" id="yt-resource-link" class="form-control" placeholder="https://drive.google.com/... or GitHub link" />
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <span class="btn-icon">🚀</span> Publish Lesson to Course
+                  </button>
+                  <button type="reset" class="btn btn-ghost" id="yt-reset-btn">Clear Form</button>
+                </div>
+
+              </form>
+            </div>
+
+            <!-- Recently Added Lessons Sidebar in Teacher view -->
+            <div class="recent-uploads-panel">
+              <div class="panel-header">
+                <h3>Your YouTube Uploads</h3>
+                <span class="badge" id="teacher-yt-count-badge">0 videos</span>
+              </div>
+              <div class="recent-yt-list" id="teacher-recent-yt-list">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: TEACHER DOUBTS INBOX (TEACHER)           -->
+        <!-- ============================================== -->
+        <section id="view-teacher-doubts" class="content-view">
+          <div class="view-header">
+            <div>
+              <h1>Student Doubts & Questions Desk</h1>
+              <p class="section-sub">Answer inquiries submitted by learners across your courses and YouTube lessons.</p>
+            </div>
+            <div class="filter-controls">
+              <select id="teacher-doubt-filter" class="form-control-sm">
+                <option value="all">All Questions</option>
+                <option value="pending">Pending Answers Only</option>
+                <option value="answered">Answered Questions</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="doubts-feed" id="teacher-doubts-list">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: SIR PROFILE SETTINGS (TEACHER)           -->
+        <!-- ============================================== -->
+        <section id="view-teacher-profile" class="content-view">
+          <div class="view-header">
+            <div>
+              <h1>Sir Profile Settings</h1>
+              <p class="section-sub">Customize your public educator profile visible to all students.</p>
+            </div>
+          </div>
+
+          <div class="sir-profile-edit-card">
+            <form id="edit-sir-profile-form" class="form-grid">
+              <div class="form-row">
+                <div class="form-group flex-2">
+                  <label for="sir-edit-name">Display Name / Title *</label>
+                  <input type="text" id="sir-edit-name" class="form-control" required />
+                </div>
+                <div class="form-group flex-1">
+                  <label for="sir-edit-avatar">Avatar Emoji / Icon *</label>
+                  <input type="text" id="sir-edit-avatar" class="form-control" placeholder="👨‍🏫, 👩‍💻, ⚡" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="sir-edit-designation">Academic Designation & Specialization *</label>
+                <input type="text" id="sir-edit-designation" class="form-control" placeholder="e.g. Senior Professor of Theoretical Physics" required />
+              </div>
+
+              <div class="form-group">
+                <label for="sir-edit-subject">Primary Department / Subject *</label>
+                <input type="text" id="sir-edit-subject" class="form-control" placeholder="e.g. Physics & Mathematics" required />
+              </div>
+
+              <div class="form-group">
+                <label for="sir-edit-bio">About Sir / Teaching Philosophy</label>
+                <textarea id="sir-edit-bio" class="form-control" rows="4"></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label for="sir-edit-youtube">YouTube Channel Link</label>
+                  <input type="url" id="sir-edit-youtube" class="form-control" placeholder="https://youtube.com/@channel" />
+                </div>
+                <div class="form-group flex-1">
+                  <label for="sir-edit-exp">Years of Experience</label>
+                  <input type="text" id="sir-edit-exp" class="form-control" placeholder="e.g. 15+ Years" />
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </main>
+    </div>
   </div>
-  
+
+  <!-- ============================================== -->
+  <!-- MODAL: ROLE SWITCHER & ONBOARDING              -->
+  <!-- ============================================== -->
+  <div id="role-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog role-selection-modal">
+      <div class="modal-header">
+        <div>
+          <h2>Who Are You?</h2>
+          <p class="modal-subtitle">Choose your portal to enter TutorApp</p>
+        </div>
+        <button class="modal-close-btn" id="close-role-modal-btn">&times;</button>
+      </div>
+
+      <div class="role-cards-container">
+        <!-- TEACHER ROLE CARD -->
+        <div class="role-select-card" id="select-role-teacher-card">
+          <div class="role-card-badge">Educator Portal</div>
+          <div class="role-card-icon">👨‍🏫</div>
+          <h3>I am a Teacher (Sir)</h3>
+          <p>Create courses, upload YouTube video lectures, manage course playlists, and answer student questions.</p>
+          
+          <div class="profile-picker-box">
+            <label for="choose-teacher-select">Select Teacher Profile:</label>
+            <select id="choose-teacher-select" class="form-control"></select>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="confirm-teacher-role-btn">
+            Enter as Teacher
+          </button>
+          
+          <button class="btn btn-ghost btn-xs btn-block" id="create-new-teacher-trigger">
+            ＋ Create New Sir Profile
+          </button>
+        </div>
+
+        <!-- STUDENT ROLE CARD -->
+        <div class="role-select-card" id="select-role-student-card">
+          <div class="role-card-badge accent">Learner Portal</div>
+          <div class="role-card-icon">🎓</div>
+          <h3>I am a Student</h3>
+          <p>Explore lectures grouped by each Sir, watch embedded YouTube lessons, take notes, and clear your doubts.</p>
+          
+          <div class="profile-picker-box">
+            <label for="choose-student-select">Select Student Profile:</label>
+            <select id="choose-student-select" class="form-control"></select>
+          </div>
+
+          <button class="btn btn-accent btn-block" id="confirm-student-role-btn">
+            Enter as Student
+          </button>
+
+          <button class="btn btn-ghost btn-xs btn-block" id="create-new-student-trigger">
+            ＋ Create New Student Profile
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: ADD NEW COURSE                          -->
+  <!-- ============================================== -->
+  <div id="add-course-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h2>Create New Course</h2>
+          <p class="modal-subtitle">Organize your lessons and syllabus for students</p>
+        </div>
+        <button class="modal-close-btn" id="close-add-course-modal">&times;</button>
+      </div>
+
+      <form id="create-course-form" class="form-grid">
+        <div class="form-group">
+          <label for="new-course-title">Course Title *</label>
+          <input type="text" id="new-course-title" class="form-control" placeholder="e.g. Masterclass on Calculus & Visual Derivatives" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="new-course-subject">Subject / Department *</label>
+            <input type="text" id="new-course-subject" class="form-control" placeholder="e.g. Physics & Mathematics" required />
+          </div>
+          <div class="form-group flex-1">
+            <label for="new-course-level">Skill Level *</label>
+            <select id="new-course-level" class="form-control" required>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate" selected>Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="new-course-instructor">Instructor (Sir) *</label>
+          <select id="new-course-instructor" class="form-control" required></select>
+        </div>
+
+        <div class="form-group">
+          <label for="new-course-desc">Course Description *</label>
+          <textarea id="new-course-desc" class="form-control" rows="3" placeholder="Explain what students will learn, topics covered, and target prerequisites..." required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="new-course-thumbnail">Banner Theme / Icon *</label>
+            <select id="new-course-theme" class="form-control">
+              <option value="theme-purple">🟣 Royal Indigo & Purple</option>
+              <option value="theme-blue">🔵 Cyan & Ocean Blue</option>
+              <option value="theme-emerald">🟢 Emerald Green</option>
+              <option value="theme-amber">🟡 Golden Amber</option>
+              <option value="theme-rose">🔴 Rose Pink & Red</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="new-course-emoji">Emoji Icon</label>
+            <input type="text" id="new-course-emoji" class="form-control" value="📐" />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancel-create-course-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Course</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: CREATE NEW SIR PROFILE                  -->
+  <!-- ============================================== -->
+  <div id="new-sir-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h2>Create New Teacher Profile</h2>
+          <p class="modal-subtitle">Join as a verified educator / Sir</p>
+        </div>
+        <button class="modal-close-btn" id="close-new-sir-modal">&times;</button>
+      </div>
+
+      <form id="create-sir-form" class="form-grid">
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="new-sir-name">Full Name with Title *</label>
+            <input type="text" id="new-sir-name" class="form-control" placeholder="e.g. Prof. Hitesh Sir" required />
+          </div>
+          <div class="form-group flex-1">
+            <label for="new-sir-avatar">Emoji Icon *</label>
+            <input type="text" id="new-sir-avatar" class="form-control" value="👨‍🏫" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="new-sir-designation">Designation / Subject Specialty *</label>
+          <input type="text" id="new-sir-designation" class="form-control" placeholder="e.g. Computer Science & Cloud Architect" required />
+        </div>
+
+        <div class="form-group">
+          <label for="new-sir-bio">Bio & Teaching Philosophy</label>
+          <textarea id="new-sir-bio" class="form-control" rows="3" placeholder="Share your experience and approach to helping students succeed..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancel-new-sir-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save & Login as Sir</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: CREATE NEW STUDENT PROFILE              -->
+  <!-- ============================================== -->
+  <div id="new-student-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h2>Create Student Profile</h2>
+          <p class="modal-subtitle">Start your personalized learning journey</p>
+        </div>
+        <button class="modal-close-btn" id="close-new-student-modal">&times;</button>
+      </div>
+
+      <form id="create-student-form" class="form-grid">
+        <div class="form-group">
+          <label for="new-student-name">Your Name *</label>
+          <input type="text" id="new-student-name" class="form-control" placeholder="e.g. Sneha Patel" required />
+        </div>
+
+        <div class="form-group">
+          <label for="new-student-target">Primary Academic Goal / Target</label>
+          <input type="text" id="new-student-target" class="form-control" placeholder="e.g. B.Tech Computer Science / Physics Olympiad / Full-Stack" />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancel-new-student-btn">Cancel</button>
+          <button type="submit" class="btn btn-accent">Create & Enter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Application Logic -->
   <script src="app.js"></script>
 </body>
 </html>
